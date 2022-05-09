@@ -83,6 +83,7 @@ public class Game {
     }
 
     public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset){
+        // add constraints
         if (this.tiles[startRow + rowOffset][startColumn + columnOffset].getPieceArrayList().size() == 0){
             return true;
         }
@@ -94,6 +95,10 @@ public class Game {
             return true;
         }
         return false;
+    }
+
+    public void changeColor(int row, int column){
+        this.getTiles()[row][column].changeColor(Color.GREEN);
     }
 
     public BoardSquare[][] getTiles(){

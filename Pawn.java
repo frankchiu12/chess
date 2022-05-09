@@ -2,8 +2,11 @@ package chess;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
 
 public class Pawn implements Piece {
 
@@ -40,36 +43,47 @@ public class Pawn implements Piece {
 
     @Override
     public void move(){
+        ArrayList<Pair> pairArrayList = new ArrayList<>();
         if (this.getRow() == 6 && this.color == Color.WHITE){
             if (this.game.checkCanMove(this.getRow(), this.getColumn(), -2, 0)){
-                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
-                this.setRow(this.getRow() - 2);
-                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
+                pairArrayList.add(new Pair(this.getRow() - 2, this.getColumn()));
+//                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
+//                this.setRow(this.getRow() - 2);
+//                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
             }
         }
-        else if (this.getRow() == 1 && this.color == Color.BLACK){
+        if (this.getRow() == 1 && this.color == Color.BLACK){
             if (this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 0)){
-                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
-                this.setRow(this.getRow() + 2);
-                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
+                pairArrayList.add(new Pair(this.getRow() + 2, this.getColumn()));
+//                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
+//                this.setRow(this.getRow() + 2);
+//                this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
             }
         }
-        else if (this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0)){
-            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
-            this.setRow(this.getRow() - 1);
-            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
+        if (this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0)){
+            pairArrayList.add(new Pair(this.getRow() - 1, this.getColumn()));
+//            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
+//            this.setRow(this.getRow() - 1);
+//            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
         }
-        else if (this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0)){
-            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
-            this.setRow(this.getRow() + 1);
-            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
+        if (this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0)){
+            pairArrayList.add(new Pair(this.getRow() + 1, this.getColumn()));
+//            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
+//            this.setRow(this.getRow() + 1);
+//            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
         }
-        else if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 1, Color.WHITE)){
-            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
-            this.setRow(this.getRow() - 1);
-            this.setColumn(this.getColumn() + 1);
-            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().clear();
-            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
+        if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 1, Color.WHITE)){
+            pairArrayList.add(new Pair(this.getRow() - 1, this.getColumn() + 1));
+//            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().remove(this);
+//            this.setRow(this.getRow() - 1);
+//            this.setColumn(this.getColumn() + 1);
+//            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().clear();
+//            this.game.getTiles()[this.getRow()][this.getColumn()].getPieceArrayList().add(this);
+        }
+        for (int i = 0; i < pairArrayList.size(); i++){
+            int row = (int) pairArrayList.get(i).getR();
+            int column = (int) pairArrayList.get(i).getC();
+            this.game.changeColor(row, column);
         }
     }
 
@@ -90,6 +104,5 @@ public class Pawn implements Piece {
     }
 
     private void setColumn(int column){
-        this.imageView.setX(column * 80);
-    }
+        this.imageView.setX(column * 80);}
 }
