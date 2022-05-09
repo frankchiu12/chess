@@ -9,11 +9,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+
 public class Game {
 
     private Pane gamePane;
     private BoardSquare[][] tiles;
-    private Timeline timeline;
     private int previousClickRow;
     private int previousClickColumn;
 
@@ -27,11 +28,11 @@ public class Game {
     public void makeBoard(){
         this.tiles = new BoardSquare[8][8];
         for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if ((row + col) % 2 == 0) {
-                    this.tiles[row][col] = new BoardSquare(this.gamePane, Color.BROWN, row, col);
+            for (int column = 0; column < 8; column++) {
+                if ((row + column) % 2 == 0) {
+                    this.tiles[row][column] = new BoardSquare(this.gamePane, Color.BROWN, row, column);
                 } else {
-                    this.tiles[row][col] = new BoardSquare(this.gamePane, Color.WHITE, row, col);
+                    this.tiles[row][column] = new BoardSquare(this.gamePane, Color.WHITE, row, column);
                 }
             }
         }
@@ -57,11 +58,23 @@ public class Game {
         this.tiles[0][0].addPiece(blackRook2);
     }
 
+    public void clearBoard(){
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if ((row + col) % 2 == 0) {
+                    this.tiles[row][col].changeColor(Color.BROWN);
+                } else {
+                    this.tiles[row][col].changeColor(Color.WHITE);
+                }
+            }
+        }
+    }
+
     private void setUpMainLine(){
         KeyFrame kf = new KeyFrame(Duration.seconds(0.1), (ActionEvent timeline) -> this.timelineActions());
-        this.timeline = new Timeline(kf);
-        this.timeline.setCycleCount(Animation.INDEFINITE);
-        this.timeline.play();
+        Timeline timeline = new Timeline(kf);
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
     public void timelineActions(){
@@ -69,7 +82,7 @@ public class Game {
     }
 
     private void movePieceOnPressed() {
-        this.gamePane.setOnMouseClicked((MouseEvent mouseClicked) -> this.movePiece(mouseClicked));
+        this.gamePane.setOnMouseClicked(this::movePiece);
         this.gamePane.setFocusTraversable(true);
     }
 
@@ -77,35 +90,20 @@ public class Game {
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
         try{
-            if (this.tiles[clickRow][clickColumn].getColor() == Color.BROWN || this.tiles[clickRow][clickColumn].getColor() == Color.WHITE){
-                for (int row = 0; row < 8; row++) {
-                    for (int col = 0; col < 8; col++) {
-                        if ((row + col) % 2 == 0) {
-                            this.tiles[row][col].changeColor(Color.BROWN);
-                        } else {
-                            this.tiles[row][col].changeColor(Color.WHITE);
-                        }
-                    }
-                }
-                Piece pieceClicked = this.tiles[clickRow][clickColumn].getPieceArrayList().get(0);
+            Color tileColor = this.tiles[clickRow][clickColumn].getColor();
+            if (tileColor == Color.BROWN || tileColor == Color.WHITE){
+                this.clearBoard();
+                Piece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
                 pieceClicked.getPossibleMoves();
             }
-            if (this.tiles[clickRow][clickColumn].getColor() == Color.GREEN || this.tiles[clickRow][clickColumn].getColor() == Color.RED){
-                Piece pieceClicked = this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().get(0);
-                if (this.tiles[clickRow][clickColumn].getPieceArrayList().size() != 0){
-                    this.tiles[clickRow][clickColumn].getPieceArrayList().get(0).removeImage();
+            if (tileColor == Color.GREEN || tileColor == Color.RED){
+                Piece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
+                if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
+                    this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
                 }
-                this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().clear();
+                this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                 pieceClicked.move(clickRow, clickColumn);
-                for (int row = 0; row < 8; row++) {
-                    for (int col = 0; col < 8; col++) {
-                        if ((row + col) % 2 == 0) {
-                            this.tiles[row][col].changeColor(Color.BROWN);
-                        } else {
-                            this.tiles[row][col].changeColor(Color.WHITE);
-                        }
-                    }
-                }
+                this.clearBoard();
             }
         } catch (IndexOutOfBoundsException e){
             System.out.println("No piece exists!");
@@ -116,23 +114,34 @@ public class Game {
 
     public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset){
         // add constraints
-        if (this.tiles[startRow + rowOffset][startColumn + columnOffset].getPieceArrayList().size() == 0){
-            return true;
-        }
-        return false;
+        int checkRow = startRow + rowOffset;
+        int checkColumn = startColumn + columnOffset;
+        return this.tilePieceArrayList(checkRow, checkColumn).size() == 0;
     }
 
     public boolean checkCanEat(int startRow, int startColumn, int rowOffset, int columnOffset, Color color){
         int checkRow = startRow + rowOffset;
         int checkColumn = startColumn + columnOffset;
-        if (this.tiles[checkRow][checkColumn].getPieceArrayList().size() == 1 && this.tiles[checkRow][checkColumn].getPieceArrayList().get(0).getColor() == Color.BLACK){
-            return true;
+        return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
+    }
+
+    public Color getOppositeColor(Color color){
+        Color colorToReturn = null;
+        if (color == Color.WHITE){
+            colorToReturn = Color.BLACK;
         }
-        return false;
+        if (color == Color.BLACK){
+            colorToReturn = Color.WHITE;
+        }
+        return colorToReturn;
+    }
+
+    public ArrayList<Piece> tilePieceArrayList(int row, int column){
+        return this.tiles[row][column].getPieceArrayList();
     }
 
     public void changeColor(int row, int column, Color color){
-        this.getTiles()[row][column].changeColor(color);
+        this.tiles[row][column].changeColor(color);
     }
 
     public BoardSquare[][] getTiles(){
