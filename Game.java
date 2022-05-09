@@ -14,6 +14,8 @@ public class Game {
     private Pane gamePane;
     private BoardSquare[][] tiles;
     private Timeline timeline;
+    private int previousClickRow;
+    private int previousClickColumn;
 
     public Game(Pane gamePane){
         this.gamePane = gamePane;
@@ -75,11 +77,29 @@ public class Game {
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
         try{
-            Piece pieceClicked = this.tiles[clickRow][clickColumn].getPieceArrayList().get(0);
-            pieceClicked.move();
+            if (this.tiles[clickRow][clickColumn].getColor() == Color.BROWN || this.tiles[clickRow][clickColumn].getColor() == Color.WHITE){
+                Piece pieceClicked = this.tiles[clickRow][clickColumn].getPieceArrayList().get(0);
+                pieceClicked.getPossibleMoves();
+            }
+            if (this.tiles[clickRow][clickColumn].getColor() == Color.GREEN){
+                Piece pieceClicked = this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().get(0);
+                this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().remove(0);
+                pieceClicked.move(clickRow, clickColumn);
+                for (int row = 0; row < 8; row++) {
+                    for (int col = 0; col < 8; col++) {
+                        if ((row + col) % 2 == 0) {
+                            this.tiles[row][col].changeColor(Color.BROWN);
+                        } else {
+                            this.tiles[row][col].changeColor(Color.WHITE);
+                        }
+                    }
+                }
+            }
         } catch (IndexOutOfBoundsException e){
             System.out.println("No piece exists!");
         }
+        this.previousClickRow = clickRow;
+        this.previousClickColumn = clickColumn;
     }
 
     public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset){
@@ -91,14 +111,16 @@ public class Game {
     }
 
     public boolean checkCanEat(int startRow, int startColumn, int rowOffset, int columnOffset, Color color){
-        if (this.tiles[startRow + rowOffset][startColumn + columnOffset].getPieceArrayList().size() == 1 && this.tiles[startRow + rowOffset][startColumn + columnOffset].getPieceArrayList().get(0).getColor() == Color.BLACK){
+        int checkRow = startRow + rowOffset;
+        int checkColumn = startColumn + columnOffset;
+        if (this.tiles[checkRow][checkColumn].getPieceArrayList().size() == 1 && this.tiles[checkRow][checkColumn].getPieceArrayList().get(0).getColor() == Color.BLACK){
             return true;
         }
         return false;
     }
 
-    public void changeColor(int row, int column){
-        this.getTiles()[row][column].changeColor(Color.GREEN);
+    public void changeColor(int row, int column, Color color){
+        this.getTiles()[row][column].changeColor(color);
     }
 
     public BoardSquare[][] getTiles(){

@@ -34,7 +34,12 @@ public class Rook implements Piece {
     }
 
     @Override
-    public void move() {
+    public void getPossibleMoves() {
+
+    }
+
+    @Override
+    public void move(int clickRow, int clickColumn) {
 
     }
 }
