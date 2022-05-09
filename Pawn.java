@@ -64,9 +64,14 @@ public class Pawn implements Piece {
                 pairArrayList.add(new Pair(this.getRow() + 1, this.getColumn()));
             }
         }
-        if (this.getRow() - 1 > 0 && this.getRow() + 1 < 8 && this.getColumn() - 1 > 0 && this.getColumn() + 1 < 8){
+        if (this.getRow() - 1 >= 0 && this.getRow() + 1 < 8 && this.getColumn() - 1 >= 0 && this.getColumn() + 1 < 8){
             if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 1, Color.WHITE)){
                 pairArrayList.add(new Pair(this.getRow() - 1, this.getColumn() + 1));
+            }
+        }
+        if (this.getRow() - 1 >= 0 && this.getRow() + 1 < 8 && this.getColumn() - 1 >= 0 && this.getColumn() + 1 < 8){
+            if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, -1, Color.WHITE)){
+                pairArrayList.add(new Pair(this.getRow() - 1, this.getColumn() - 1));
             }
         }
 
@@ -75,13 +80,19 @@ public class Pawn implements Piece {
         for (int i = 0; i < pairArrayList.size(); i++){
             int row = (int) pairArrayList.get(i).getR();
             int column = (int) pairArrayList.get(i).getC();
-            this.game.changeColor(row, column, Color.GREEN);
+            if (this.game.getTiles()[row][column].getPieceArrayList().size() != 0){
+                this.game.changeColor(row, column, Color.RED);
+            }
+            else{
+                this.game.changeColor(row, column, Color.GREEN);
+            }
         }
     }
 
     @Override
     public void move(int clickRow, int clickColumn){
-        if (this.game.getTiles()[clickRow][clickColumn].getColor() == Color.GREEN){
+        Color tileColor = this.game.getTiles()[clickRow][clickColumn].getColor();
+        if (tileColor == Color.GREEN || tileColor == Color.RED){
             this.setRow(clickRow);
             this.setColumn(clickColumn);
             this.game.getTiles()[clickRow][clickColumn].getPieceArrayList().clear();

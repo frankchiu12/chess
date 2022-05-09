@@ -90,7 +90,7 @@ public class Game {
                 Piece pieceClicked = this.tiles[clickRow][clickColumn].getPieceArrayList().get(0);
                 pieceClicked.getPossibleMoves();
             }
-            if (this.tiles[clickRow][clickColumn].getColor() == Color.GREEN){
+            if (this.tiles[clickRow][clickColumn].getColor() == Color.GREEN || this.tiles[clickRow][clickColumn].getColor() == Color.RED){
                 Piece pieceClicked = this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().get(0);
                 if (this.tiles[clickRow][clickColumn].getPieceArrayList().size() != 0){
                     this.tiles[clickRow][clickColumn].getPieceArrayList().get(0).removeImage();
