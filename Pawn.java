@@ -53,21 +53,26 @@ public class Pawn implements Piece {
                 pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn()));
             }
         }
-        if (this.getRow() - 1 >= 0 && this.getRow() + 1 < 8 && this.getColumn() - 1 >= 0 && this.getColumn() + 1 < 8){
+        if (this.getRow() - 1 >= 0){
             if (this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn()));
             }
+        }
+        if (this.getRow() + 1 < 8){
             if (this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn()));
             }
+        }
+        if (this.getRow() - 1 >= 0 && this.getColumn() + 1 < 8){
             if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 1, Color.WHITE)){
                 pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() + 1));
             }
+        }
+        if (this.getRow() - 1 >= 0 && this.getColumn() - 1 >= 0){
             if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, -1, Color.WHITE)){
                 pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() - 1));
             }
         }
-
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
         for (Pair pair : pairArrayList) {

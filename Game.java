@@ -48,13 +48,13 @@ public class Game {
             this.tiles[1][column].addPiece(pawn);
         }
 
-        Piece whiteRook1 = new Rook(this.gamePane, 0, 7, Color.WHITE);
+        Piece whiteRook1 = new Rook(this.gamePane, this,0, 7, Color.WHITE);
         this.tiles[7][0].addPiece(whiteRook1);
-        Piece whiteRook2 = new Rook(this.gamePane, 7, 7, Color.WHITE);
+        Piece whiteRook2 = new Rook(this.gamePane, this, 7, 7, Color.WHITE);
         this.tiles[7][7].addPiece(whiteRook2);
-        Piece blackRook1 = new Rook(this.gamePane, 7, 0, Color.BLACK);
+        Piece blackRook1 = new Rook(this.gamePane, this,7, 0, Color.BLACK);
         this.tiles[0][7].addPiece(blackRook1);
-        Piece blackRook2 = new Rook(this.gamePane, 0, 0, Color.BLACK);
+        Piece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK);
         this.tiles[0][0].addPiece(blackRook2);
     }
 
@@ -89,8 +89,8 @@ public class Game {
     private void movePiece(MouseEvent mouseClicked){
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
+        Color tileColor = this.tiles[clickRow][clickColumn].getColor();
         try{
-            Color tileColor = this.tiles[clickRow][clickColumn].getColor();
             if (tileColor == Color.BROWN || tileColor == Color.WHITE){
                 this.clearBoard();
                 Piece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
