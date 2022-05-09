@@ -54,7 +54,7 @@ public class Pawn implements Piece {
                 pairArrayList.add(new Pair(this.getRow() + 2, this.getColumn()));
             }
         }
-        if (this.getRow() - 1 > 0){
+        if (this.getRow() - 1 >= 0){
             if (this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0)){
                 pairArrayList.add(new Pair(this.getRow() - 1, this.getColumn()));
             }
@@ -89,7 +89,8 @@ public class Pawn implements Piece {
         }
     }
 
-    private void removeImage(){
+    @Override
+    public void removeImage(){
         this.gamePane.getChildren().remove(this.imageView);
     }
 
@@ -105,6 +106,5 @@ public class Pawn implements Piece {
         this.imageView.setY(row * 80);
     }
 
-    private void setColumn(int column){
-        this.imageView.setX(column * 80);}
+    private void setColumn(int column){this.imageView.setX(column * 80);}
 }

@@ -7,4 +7,5 @@ public interface Piece {
     Color getColor();
     void getPossibleMoves();
     void move(int clickRow, int clickColumn);
+    void removeImage();
 }

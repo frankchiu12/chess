@@ -42,4 +42,9 @@ public class Rook implements Piece {
     public void move(int clickRow, int clickColumn) {
 
     }
+
+    @Override
+    public void removeImage() {
+
+    }
 }

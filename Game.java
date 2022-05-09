@@ -78,12 +78,24 @@ public class Game {
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
         try{
             if (this.tiles[clickRow][clickColumn].getColor() == Color.BROWN || this.tiles[clickRow][clickColumn].getColor() == Color.WHITE){
+                for (int row = 0; row < 8; row++) {
+                    for (int col = 0; col < 8; col++) {
+                        if ((row + col) % 2 == 0) {
+                            this.tiles[row][col].changeColor(Color.BROWN);
+                        } else {
+                            this.tiles[row][col].changeColor(Color.WHITE);
+                        }
+                    }
+                }
                 Piece pieceClicked = this.tiles[clickRow][clickColumn].getPieceArrayList().get(0);
                 pieceClicked.getPossibleMoves();
             }
             if (this.tiles[clickRow][clickColumn].getColor() == Color.GREEN){
                 Piece pieceClicked = this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().get(0);
-                this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().remove(0);
+                if (this.tiles[clickRow][clickColumn].getPieceArrayList().size() != 0){
+                    this.tiles[clickRow][clickColumn].getPieceArrayList().get(0).removeImage();
+                }
+                this.tiles[this.previousClickRow][this.previousClickColumn].getPieceArrayList().clear();
                 pieceClicked.move(clickRow, clickColumn);
                 for (int row = 0; row < 8; row++) {
                     for (int col = 0; col < 8; col++) {
