@@ -45,62 +45,69 @@ public class Rook implements Piece {
         int iterationRow = this.getRow();
         int iterationColumn = this.getColumn();
         ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
-
         if (iterationRow - 1 >= 0){
-            iterationRow = iterationRow - 1;
-            while(this.getPieceArrayList(iterationRow, iterationColumn).size() == 0){
-                if (iterationRow - 1 >= 0){
-                    if (this.game.checkCanMove(iterationRow, iterationColumn, -1, 0)){
-                        pairArrayList.add(new Pair<>(iterationRow - 1, iterationColumn));
-                    }
-                }
-                iterationRow = iterationRow - 1;
-                if (iterationRow < 0){
+            for (int i = iterationRow; i >= 0; i--){
+                if (i - 1 < 0){
                     break;
+                }
+                if (this.getPieceArrayList(i - 1, iterationColumn).size() != 0){
+                    if (this.getPieceArrayList(i - 1, iterationColumn).size() == 1 && this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                        pairArrayList.add(new Pair<>(i - 1, iterationColumn));
+                    }
+                    break;
+                }
+                if (this.game.checkCanMove(i, iterationColumn, -1, 0) || this.game.checkCanEat(i, iterationColumn, -1, 0, this.color)){
+                    pairArrayList.add(new Pair<>(i - 1, iterationColumn));
                 }
             }
         }
+
+        iterationRow = this.getRow();
+        iterationColumn = this.getColumn();
         if (iterationRow + 1 < 8){
-            iterationRow = iterationRow + 1;
-            while(this.getPieceArrayList(iterationRow, iterationColumn).size() == 0){
-                if (iterationRow + 1 < 8){
-                    if (this.game.checkCanMove(iterationRow, iterationColumn, 1, 0)){
-                        pairArrayList.add(new Pair<>(iterationRow + 1, iterationColumn));
+            for (int i = iterationRow; i < 7; i++){
+                if (this.getPieceArrayList(i + 1, iterationColumn).size() != 0){
+                    if (this.getPieceArrayList(i + 1, iterationColumn).size() == 1 && this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                        pairArrayList.add(new Pair<>(i + 1, iterationColumn));
                     }
-                }
-                iterationRow = iterationRow + 1;
-                if (iterationRow >= 8){
                     break;
+                }
+                if (this.game.checkCanMove(i, iterationColumn, 1, 0)){
+                    pairArrayList.add(new Pair<>(i + 1, iterationColumn));
                 }
             }
         }
 
+        iterationRow = this.getRow();
+        iterationColumn = this.getColumn();
         if (iterationColumn - 1 >= 0){
-            iterationColumn = iterationColumn - 1;
-            while(this.getPieceArrayList(iterationRow, iterationColumn).size() == 0){
-                if (iterationColumn - 1 >= 0){
-                    if (this.game.checkCanMove(iterationRow, iterationColumn, 0, -1)){
-                        pairArrayList.add(new Pair<>(iterationRow, iterationColumn - 1));
-                    }
-                }
-                iterationColumn = iterationColumn - 1;
-                if (iterationColumn < 0){
+            for (int i = iterationColumn; i >= 0; i--){
+                if (i - 1 < 0){
                     break;
+                }
+                if (this.getPieceArrayList(iterationRow, i - 1).size() != 0){
+                    if (this.getPieceArrayList(iterationRow, i - 1).size() == 1 && this.getPieceArrayList(iterationRow, i - 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                        pairArrayList.add(new Pair<>(iterationRow, i - 1));
+                    }
+                    break;
+                }
+                if (this.game.checkCanMove(iterationRow, i, 0, -1)){
+                    pairArrayList.add(new Pair<>(iterationRow, i - 1));
                 }
             }
         }
 
+        iterationRow = this.getRow();
+        iterationColumn = this.getColumn();
         if (iterationColumn + 1 < 8){
-            iterationColumn = iterationColumn + 1;
-            while(this.getPieceArrayList(iterationRow, iterationColumn).size() == 0){
-                if (iterationColumn + 1 < 8){
-                    if (this.game.checkCanMove(iterationRow, iterationColumn, 0, 1)){
-                        pairArrayList.add(new Pair<>(iterationRow, iterationColumn + 1));
+            for (int i = iterationColumn; i < 7; i++){
+                if (this.getPieceArrayList(iterationRow, i + 1).size() != 0){
+                    if (this.getPieceArrayList(iterationRow, i + 1).size() == 1 && this.getPieceArrayList(iterationRow, i + 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                        pairArrayList.add(new Pair<>(iterationRow, i + 1));
                     }
-                }
-                iterationColumn = iterationColumn + 1;
-                if (iterationColumn >= 8){
-                    break;
+                    break;                }
+                if (this.game.checkCanMove(iterationRow, i, 0, 1)){
+                    pairArrayList.add(new Pair<>(iterationRow, i + 1));
                 }
             }
         }

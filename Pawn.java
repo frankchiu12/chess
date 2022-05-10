@@ -44,12 +44,12 @@ public class Pawn implements Piece {
     public void getPossibleMoves(){
         ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
         if (this.getRow() == 6 && this.color == Color.WHITE){
-            if (this.game.checkCanMove(this.getRow(), this.getColumn(), -2, 0)){
+            if (this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), -2, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() - 2, this.getColumn()));
             }
         }
         if (this.getRow() == 1 && this.color == Color.BLACK){
-            if (this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 0)){
+            if (this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn()));
             }
         }
