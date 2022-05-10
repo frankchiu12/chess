@@ -60,6 +60,10 @@ public class Game {
         this.tiles[7][2].addPiece(whiteBishop1);
         Piece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE);
         this.tiles[7][5].addPiece(whiteBishop2);
+        Piece blackBishop1 = new Bishop(this.gamePane, this, 2, 0, Color.BLACK);
+        this.tiles[0][2].addPiece(blackBishop1);
+        Piece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK);
+        this.tiles[0][5].addPiece(blackBishop2);
     }
 
     public void clearBoard(){

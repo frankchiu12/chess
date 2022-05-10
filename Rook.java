@@ -115,9 +115,9 @@ public class Rook implements Piece {
 
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
-        for (Pair pair : pairArrayList) {
-            int row = (int) pair.getR();
-            int column = (int) pair.getC();
+        for (Pair<Integer, Integer> pair : pairArrayList) {
+            int row = pair.getR();
+            int column = pair.getC();
             if (this.getPieceArrayList(row, column).size() != 0) {
                 this.game.changeColor(row, column, Color.RED);
             } else {

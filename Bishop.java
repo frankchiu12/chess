@@ -20,16 +20,24 @@ public class Bishop implements Piece {
         this.color = color;
         this.imageView = new ImageView();
 
-        Image image = new Image("chess/blackRook.png");
+        Image image;
+
+        if (color == Color.BLACK){
+            image = new Image("chess/blackBishop.png");
+            this.imageView.setImage(image);
+            this.imageView.setX(x * 80 + 10);
+            this.imageView.setY(y * 80 + 10);
+            this.imageView.setFitWidth(60);
+            this.imageView.setFitHeight(60);
+        }
         if (color == Color.WHITE){
             image = new Image("chess/whiteBishop.png");
+            this.imageView.setImage(image);
+            this.imageView.setX(x * 80);
+            this.imageView.setY(y * 80);
+            this.imageView.setFitWidth(80);
+            this.imageView.setFitHeight(80);
         }
-
-        this.imageView.setImage(image);
-        this.imageView.setX(x * 80);
-        this.imageView.setY(y * 80);
-        this.imageView.setFitWidth(80);
-        this.imageView.setFitHeight(80);
 
         this.gamePane.getChildren().add(this.imageView);
     }
@@ -162,7 +170,19 @@ public class Bishop implements Piece {
         return (int) (this.imageView.getX() / 80);
     }
 
-    private void setRow(int row){this.imageView.setY(row * 80);}
+    private void setRow(int row){
+        if (this.color == Color.BLACK){
+            this.imageView.setY(row * 80 + 10);
+        } else {
+            this.imageView.setY(row * 80);
+        }
+    }
 
-    private void setColumn(int column){this.imageView.setX(column * 80);}
+    private void setColumn(int column) {
+        if (this.color == Color.BLACK) {
+            this.imageView.setX(column * 80 + 10);
+        } else {
+            this.imageView.setX(column * 80);
+        }
+    }
 }
