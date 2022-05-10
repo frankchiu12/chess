@@ -56,6 +56,10 @@ public class Game {
         this.tiles[0][7].addPiece(blackRook1);
         Piece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK);
         this.tiles[0][0].addPiece(blackRook2);
+        Piece whiteBishop1 = new Bishop(this.gamePane, this, 2, 7, Color.WHITE);
+        this.tiles[7][2].addPiece(whiteBishop1);
+        Piece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE);
+        this.tiles[7][5].addPiece(whiteBishop2);
     }
 
     public void clearBoard(){
@@ -113,7 +117,6 @@ public class Game {
     }
 
     public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset){
-        // add constraints
         int checkRow = startRow + rowOffset;
         int checkColumn = startColumn + columnOffset;
         return this.tilePieceArrayList(checkRow, checkColumn).size() == 0;
