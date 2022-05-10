@@ -54,15 +54,7 @@ public class Bishop implements Piece {
                 if (iterationColumn >= 8){
                     break;
                 }
-                if (this.getPieceArrayList(i - 1, iterationColumn).size() != 0){
-                    if (this.getPieceArrayList(i - 1, iterationColumn).size() == 1 && this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(i - 1, iterationColumn));
-                    }
-                    break;
-                }
-                if (this.game.checkCanMove(i, iterationColumn, -1, 0) || this.game.checkCanEat(i, iterationColumn, -1, 0, this.color)){
-                    pairArrayList.add(new Pair<>(i - 1, iterationColumn));
-                }
+                if (iterateWithRowMinus1(pairArrayList, iterationColumn, i)) break;
             }
         }
 
@@ -77,15 +69,7 @@ public class Bishop implements Piece {
                 if (iterationColumn < 0){
                     break;
                 }
-                if (this.getPieceArrayList(i - 1, iterationColumn).size() != 0){
-                    if (this.getPieceArrayList(i - 1, iterationColumn).size() == 1 && this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(i - 1, iterationColumn));
-                    }
-                    break;
-                }
-                if (this.game.checkCanMove(i, iterationColumn, -1, 0) || this.game.checkCanEat(i, iterationColumn, -1, 0, this.color)){
-                    pairArrayList.add(new Pair<>(i - 1, iterationColumn));
-                }
+                if (iterateWithRowMinus1(pairArrayList, iterationColumn, i)) break;
             }
         }
 
@@ -93,19 +77,12 @@ public class Bishop implements Piece {
         iterationColumn = this.getColumn();
         if (iterationRow + 1 < 8){
             for (int i = iterationRow; i < 7; i++){
+                int row = i + 1;
                 iterationColumn = iterationColumn - 1;
                 if (iterationColumn < 0){
                     break;
                 }
-                if (this.getPieceArrayList(i + 1, iterationColumn).size() != 0){
-                    if (this.getPieceArrayList(i + 1, iterationColumn).size() == 1 && this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(i + 1, iterationColumn));
-                    }
-                    break;
-                }
-                if (this.game.checkCanMove(i, iterationColumn, 1, 0) || this.game.checkCanEat(i, iterationColumn, 1, 0, this.color)){
-                    pairArrayList.add(new Pair<>(i + 1, iterationColumn));
-                }
+                if (iterateWithRowPlus1(pairArrayList, iterationColumn, i, row)) break;
             }
         }
 
@@ -113,33 +90,52 @@ public class Bishop implements Piece {
         iterationColumn = this.getColumn();
         if (iterationRow + 1 < 8){
             for (int i = iterationRow; i < 7; i++){
+                int row = i + 1;
                 iterationColumn = iterationColumn + 1;
                 if (iterationColumn >= 8){
                     break;
                 }
-                if (this.getPieceArrayList(i + 1, iterationColumn).size() != 0){
-                    if (this.getPieceArrayList(i + 1, iterationColumn).size() == 1 && this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(i + 1, iterationColumn));
-                    }
-                    break;
-                }
-                if (this.game.checkCanMove(i, iterationColumn, 1, 0) || this.game.checkCanEat(i, iterationColumn, 1, 0, this.color)){
-                    pairArrayList.add(new Pair<>(i + 1, iterationColumn));
-                }
+                if (iterateWithRowPlus1(pairArrayList, iterationColumn, i, row)) break;
             }
         }
 
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
-        for (Pair pair : pairArrayList) {
-            int row = (int) pair.getR();
-            int column = (int) pair.getC();
+        for (Pair<Integer, Integer> pair : pairArrayList) {
+            int row = pair.getR();
+            int column = pair.getC();
             if (this.getPieceArrayList(row, column).size() != 0) {
                 this.game.changeColor(row, column, Color.RED);
             } else {
                 this.game.changeColor(row, column, Color.GREEN);
             }
         }
+    }
+
+    private boolean iterateWithRowMinus1(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i) {
+        if (this.getPieceArrayList(i - 1, iterationColumn).size() != 0){
+            if (this.getPieceArrayList(i - 1, iterationColumn).size() == 1 && this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                pairArrayList.add(new Pair<>(i - 1, iterationColumn));
+            }
+            return true;
+        }
+        if (this.game.checkCanMove(i, iterationColumn, -1, 0) || this.game.checkCanEat(i, iterationColumn, -1, 0, this.color)){
+            pairArrayList.add(new Pair<>(i - 1, iterationColumn));
+        }
+        return false;
+    }
+
+    private boolean iterateWithRowPlus1(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i, int row) {
+        if (this.getPieceArrayList(row, iterationColumn).size() != 0){
+            if (this.getPieceArrayList(row, iterationColumn).size() == 1 && this.getPieceArrayList(row, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                pairArrayList.add(new Pair<>(row, iterationColumn));
+            }
+            return true;
+        }
+        if (this.game.checkCanMove(i, iterationColumn, 1, 0) || this.game.checkCanEat(i, iterationColumn, 1, 0, this.color)){
+            pairArrayList.add(new Pair<>(row, iterationColumn));
+        }
+        return false;
     }
 
     @Override
