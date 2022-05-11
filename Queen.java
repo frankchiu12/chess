@@ -22,26 +22,13 @@ public class Queen implements Piece {
     }
 
     public void addImage(int x, int y, String imagePath) {
-        Image image;
+        Image image = new Image(imagePath);
         this.imageView = new ImageView();
-
-        if (color == Color.BLACK){
-            image = new Image(imagePath);
-            this.imageView.setImage(image);
-            this.imageView.setX(x * 80 + 10);
-            this.imageView.setY(y * 80 + 10);
-            this.imageView.setFitWidth(60);
-            this.imageView.setFitHeight(60);
-        }
-        if (color == Color.WHITE){
-            image = new Image(imagePath);
-            this.imageView.setImage(image);
-            this.imageView.setX(x * 80);
-            this.imageView.setY(y * 80);
-            this.imageView.setFitWidth(80);
-            this.imageView.setFitHeight(80);
-        }
-
+        this.imageView.setImage(image);
+        this.imageView.setX(x * 80);
+        this.imageView.setY(y * 80);
+        this.imageView.setFitWidth(80);
+        this.imageView.setFitHeight(80);
         this.gamePane.getChildren().add(this.imageView);
     }
 
@@ -75,82 +62,71 @@ public class Queen implements Piece {
     }
 
     public void diagonalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
+
         int iterationRow = this.getRow();
         int iterationColumn = this.getColumn();
 
         if (iterationRow - 1 >= 0){
-            for (int i = iterationRow; i >= 0; i--){
-                iterationColumn = iterationColumn + 1;
-                if (i - 1 < 0){
+            for (int row = iterationRow; row >= 0; row--){
+                iterationColumn ++;
+                if (row - 1 < 0 || iterationColumn >= 8){
                     break;
                 }
-                if (iterationColumn >= 8){
-                    break;
-                }
-                if (iterateWithRowMinus1(pairArrayList, iterationColumn, i)) break;
+                if (iterateWithRowMinus1(pairArrayList, iterationColumn, row)) break;
             }
-        }
 
-        iterationRow = this.getRow();
-        iterationColumn = this.getColumn();
-        if (iterationRow - 1 >= 0){
-            for (int i = iterationRow; i >= 0; i--){
-                iterationColumn = iterationColumn - 1;
-                if (i - 1 < 0){
+            iterationRow = this.getRow();
+            iterationColumn = this.getColumn();
+            for (int row = iterationRow; row >= 0; row--){
+                iterationColumn --;
+                if (row - 1 < 0 || iterationColumn < 0){
                     break;
                 }
-                if (iterationColumn < 0){
-                    break;
-                }
-                if (iterateWithRowMinus1(pairArrayList, iterationColumn, i)) break;
+                if (iterateWithRowMinus1(pairArrayList, iterationColumn, row)) break;
             }
         }
 
         iterationRow = this.getRow();
         iterationColumn = this.getColumn();
         if (iterationRow + 1 < 8){
-            for (int i = iterationRow; i < 7; i++){
-                int row = i + 1;
+            for (int row = iterationRow; row < 7; row++){
                 iterationColumn = iterationColumn - 1;
                 if (iterationColumn < 0){
                     break;
                 }
-                if (iterateWithRowPlus1(pairArrayList, iterationColumn, i, row)) break;
+                if (iterateWithRowPlus1(pairArrayList, iterationColumn, row)) break;
             }
-        }
 
-        iterationRow = this.getRow();
-        iterationColumn = this.getColumn();
-        if (iterationRow + 1 < 8){
-            for (int i = iterationRow; i < 7; i++){
-                int row = i + 1;
+            iterationRow = this.getRow();
+            iterationColumn = this.getColumn();
+            for (int row = iterationRow; row < 7; row++){
                 iterationColumn = iterationColumn + 1;
                 if (iterationColumn >= 8){
                     break;
                 }
-                if (iterateWithRowPlus1(pairArrayList, iterationColumn, i, row)) break;
+                if (iterateWithRowPlus1(pairArrayList, iterationColumn, row)) break;
             }
         }
     }
 
     public void horizontalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
+
         int iterationRow = this.getRow();
         int iterationColumn = this.getColumn();
 
         if (iterationRow - 1 >= 0){
-            for (int i = iterationRow; i >= 0; i--){
-                if (i - 1 < 0){
+            for (int row = iterationRow; row >= 0; row--){
+                if (row - 1 < 0){
                     break;
                 }
-                System.out.println(i-1);
-                if (this.getPieceArrayList(i - 1, iterationColumn).size() != 0){
-                    if (this.getPieceArrayList(i - 1, iterationColumn).size() == 1 && this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(i - 1, iterationColumn));
+                if (this.getPieceArrayList(row - 1, iterationColumn).size() != 0){
+                    if (this.getPieceArrayList(row - 1, iterationColumn).size() == 1 && this.getPieceArrayList(row - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                        pairArrayList.add(new Pair<>(row - 1, iterationColumn));
                     }
                     break;
                 }
-                if (this.game.checkCanMove(i, iterationColumn, -1, 0) || this.game.checkCanEat(i, iterationColumn, -1, 0, this.color)){
-                    pairArrayList.add(new Pair<>(i - 1, iterationColumn));
+                if (this.game.checkCanMove(row, iterationColumn, -1, 0)){
+                    pairArrayList.add(new Pair<>(row - 1, iterationColumn));
                 }
             }
         }
@@ -160,7 +136,7 @@ public class Queen implements Piece {
         if (iterationRow + 1 < 8){
             for (int i = iterationRow; i < 7; i++){
                 if (this.getPieceArrayList(i + 1, iterationColumn).size() != 0){
-                    if (this.getPieceArrayList(i + 1, iterationColumn).size() == 1 && this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                    if (this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
                         pairArrayList.add(new Pair<>(i + 1, iterationColumn));
                     }
                     break;
@@ -179,7 +155,7 @@ public class Queen implements Piece {
                     break;
                 }
                 if (this.getPieceArrayList(iterationRow, i - 1).size() != 0){
-                    if (this.getPieceArrayList(iterationRow, i - 1).size() == 1 && this.getPieceArrayList(iterationRow, i - 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                    if (this.getPieceArrayList(iterationRow, i - 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
                         pairArrayList.add(new Pair<>(iterationRow, i - 1));
                     }
                     break;
@@ -195,10 +171,11 @@ public class Queen implements Piece {
         if (iterationColumn + 1 < 8){
             for (int i = iterationColumn; i < 7; i++){
                 if (this.getPieceArrayList(iterationRow, i + 1).size() != 0){
-                    if (this.getPieceArrayList(iterationRow, i + 1).size() == 1 && this.getPieceArrayList(iterationRow, i + 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                    if (this.getPieceArrayList(iterationRow, i + 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
                         pairArrayList.add(new Pair<>(iterationRow, i + 1));
                     }
-                    break;                }
+                    break;
+                }
                 if (this.game.checkCanMove(iterationRow, i, 0, 1)){
                     pairArrayList.add(new Pair<>(iterationRow, i + 1));
                 }
@@ -206,28 +183,29 @@ public class Queen implements Piece {
         }
     }
 
+    // TODO: combine
     private boolean iterateWithRowMinus1(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i) {
         if (this.getPieceArrayList(i - 1, iterationColumn).size() != 0){
-            if (this.getPieceArrayList(i - 1, iterationColumn).size() == 1 && this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+            if (this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
                 pairArrayList.add(new Pair<>(i - 1, iterationColumn));
             }
             return true;
         }
-        if (this.game.checkCanMove(i, iterationColumn, -1, 0) || this.game.checkCanEat(i, iterationColumn, -1, 0, this.color)){
+        if (this.game.checkCanMove(i, iterationColumn, -1, 0)){
             pairArrayList.add(new Pair<>(i - 1, iterationColumn));
         }
         return false;
     }
 
-    private boolean iterateWithRowPlus1(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i, int row) {
-        if (this.getPieceArrayList(row, iterationColumn).size() != 0){
-            if (this.getPieceArrayList(row, iterationColumn).size() == 1 && this.getPieceArrayList(row, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                pairArrayList.add(new Pair<>(row, iterationColumn));
+    private boolean iterateWithRowPlus1(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i) {
+        if (this.getPieceArrayList(i + 1, iterationColumn).size() != 0){
+            if (this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                pairArrayList.add(new Pair<>(i + 1, iterationColumn));
             }
             return true;
         }
-        if (this.game.checkCanMove(i, iterationColumn, 1, 0) || this.game.checkCanEat(i, iterationColumn, 1, 0, this.color)){
-            pairArrayList.add(new Pair<>(row, iterationColumn));
+        if (this.game.checkCanMove(i, iterationColumn, 1, 0)){
+            pairArrayList.add(new Pair<>(i + 1, iterationColumn));
         }
         return false;
     }
@@ -257,18 +235,10 @@ public class Queen implements Piece {
     }
 
     private void setRow(int row){
-        if (this.color == Color.BLACK){
-            this.imageView.setY(row * 80 + 10);
-        } else {
-            this.imageView.setY(row * 80);
-        }
+        this.imageView.setY(row * 80);
     }
 
     private void setColumn(int column) {
-        if (this.color == Color.BLACK) {
-            this.imageView.setX(column * 80 + 10);
-        } else {
-            this.imageView.setX(column * 80);
-        }
+        this.imageView.setX(column * 80);
     }
 }
