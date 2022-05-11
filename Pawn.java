@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class Pawn implements Piece {
 
+    private final int startingPosition;
     private Pane gamePane;
     private Game game;
     private Color color;
@@ -21,10 +22,8 @@ public class Pawn implements Piece {
         this.color = color;
         this.imageView = new ImageView();
 
-        Image image = new Image("chess/blackPawn.png");
-        if (this.color == Color.WHITE){
-            image = new Image("chess/whitePawn.png");
-        }
+        Image image = this.color == Color.WHITE ? new Image("chess/whitePawn.png") : new Image("chess/blackPawn.png");
+        this.startingPosition = this.color == Color.WHITE ? 6 : 1;
 
         this.imageView.setImage(image);
         this.imageView.setX(x * 80);
@@ -43,45 +42,30 @@ public class Pawn implements Piece {
     @Override
     public void getPossibleMoves(){
         ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
-        if (this.getRow() == 6 && this.color == Color.WHITE){
-            if (this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), -2, 0)){
+        if (this.getRow() == this.startingPosition && this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), -2, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() - 2, this.getColumn()));
-            }
         }
-        if (this.getRow() == 1 && this.color == Color.BLACK){
-            if (this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 0)){
+        if (this.getRow() == this.startingPosition && this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn()));
-            }
         }
-        if (this.getRow() - 1 >= 0){
-            if (this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0)){
+        // TODO: is this check necessary?
+        if (this.getRow() - 1 >= 0 && this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn()));
-            }
         }
-        if (this.getRow() + 1 < 8){
-            if (this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0)){
+        if (this.getRow() + 1 < 8 && this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0)){
                 pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn()));
-            }
         }
-        if (this.getRow() - 1 >= 0 && this.getColumn() + 1 < 8){
-            if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 1, Color.WHITE)){
+        if (this.getRow() - 1 >= 0 && this.getColumn() + 1 < 8 && this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 1, Color.WHITE)){
                 pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() + 1));
-            }
         }
-        if (this.getRow() - 1 >= 0 && this.getColumn() - 1 >= 0){
-            if (this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, -1, Color.WHITE)){
+        if (this.getRow() - 1 >= 0 && this.getColumn() - 1 >= 0 && this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, -1, Color.WHITE)){
                 pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() - 1));
-            }
         }
-        if (this.getRow() + 1 >= 0 && this.getColumn() + 1 < 8){
-            if (this.color == Color.BLACK && this.game.checkCanEat(this.getRow(), this.getColumn(), 1, 1, Color.BLACK)){
+        if (this.getRow() + 1 >= 0 && this.getColumn() + 1 < 8 && this.color == Color.BLACK && this.game.checkCanEat(this.getRow(), this.getColumn(), 1, 1, Color.BLACK)){
                 pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn() + 1));
-            }
         }
-        if (this.getRow() + 1 >= 0 && this.getColumn() - 1 >= 0){
-            if (this.color == Color.BLACK && this.game.checkCanEat(this.getRow(), this.getColumn(), 1, -1, Color.BLACK)){
+        if (this.getRow() + 1 >= 0 && this.getColumn() - 1 >= 0 && this.color == Color.BLACK && this.game.checkCanEat(this.getRow(), this.getColumn(), 1, -1, Color.BLACK)){
                 pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn() - 1));
-            }
         }
 
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);

@@ -114,7 +114,12 @@ public class Game {
                 this.clearBoard();
             }
         } catch (IndexOutOfBoundsException e){
-            System.out.println("No piece exists!");
+            if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
+                System.out.println("No piece exists!");
+            }
+            else {
+                System.out.println("Move invalid!");
+            }
         }
         this.previousClickRow = clickRow;
         this.previousClickColumn = clickColumn;
