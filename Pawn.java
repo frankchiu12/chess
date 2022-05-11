@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class Pawn implements Piece {
 
     private final int startingPosition;
+    private final int direction;
     private Pane gamePane;
     private Game game;
     private Color color;
@@ -24,6 +25,7 @@ public class Pawn implements Piece {
 
         Image image = this.color == Color.WHITE ? new Image("chess/whitePawn.png") : new Image("chess/blackPawn.png");
         this.startingPosition = this.color == Color.WHITE ? 6 : 1;
+        this.direction = this.color == Color.WHITE ? -1 : 1;
 
         this.imageView.setImage(image);
         this.imageView.setX(x * 80);
@@ -42,30 +44,21 @@ public class Pawn implements Piece {
     @Override
     public void getPossibleMoves(){
         ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
-        if (this.getRow() == this.startingPosition && this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), -2, 0)){
-                pairArrayList.add(new Pair<>(this.getRow() - 2, this.getColumn()));
+        if (this.getRow() == this.startingPosition && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction * 2, 0)){
+                pairArrayList.add(new Pair<>(this.getRow() + this.direction * 2, this.getColumn()));
         }
-        if (this.getRow() == this.startingPosition && this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 0)){
-                pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn()));
+        boolean isBeforeEndOfBoard = this.color == Color.WHITE ? this.getRow() > 0 : this.getRow() < 7;
+
+        if (isBeforeEndOfBoard && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction, 0)){
+                pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn()));
         }
-        // TODO: is this check necessary?
-        if (this.getRow() - 1 >= 0 && this.color == Color.WHITE && this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 0)){
-                pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn()));
+
+        if (this.getRow() > 0 && this.getColumn() < this.startingPosition - this.direction && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, 1, this.color)){
+                pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() + 1));
         }
-        if (this.getRow() + 1 < 8 && this.color == Color.BLACK && this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0)){
-                pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn()));
-        }
-        if (this.getRow() - 1 >= 0 && this.getColumn() + 1 < 8 && this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 1, Color.WHITE)){
-                pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() + 1));
-        }
-        if (this.getRow() - 1 >= 0 && this.getColumn() - 1 >= 0 && this.color == Color.WHITE && this.game.checkCanEat(this.getRow(), this.getColumn(), -1, -1, Color.WHITE)){
-                pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() - 1));
-        }
-        if (this.getRow() + 1 >= 0 && this.getColumn() + 1 < 8 && this.color == Color.BLACK && this.game.checkCanEat(this.getRow(), this.getColumn(), 1, 1, Color.BLACK)){
-                pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn() + 1));
-        }
-        if (this.getRow() + 1 >= 0 && this.getColumn() - 1 >= 0 && this.color == Color.BLACK && this.game.checkCanEat(this.getRow(), this.getColumn(), 1, -1, Color.BLACK)){
-                pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn() - 1));
+
+        if (this.getRow() > 0 && this.getColumn() > this.startingPosition - this.direction && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
+                pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() - 1));
         }
 
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
