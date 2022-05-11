@@ -68,7 +68,7 @@ public class Game {
         this.tiles[0][4].addPiece(blackQueen1);
     }
 
-    public void clearBoard(){
+    private void clearBoard(){
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if ((row + col) % 2 == 0) {
@@ -87,7 +87,7 @@ public class Game {
         timeline.play();
     }
 
-    public void timelineActions(){
+    private void timelineActions(){
         this.movePieceOnPressed();
     }
 
