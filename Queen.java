@@ -235,19 +235,10 @@ public class Queen implements Piece {
     }
 
     private void setRow(int row){
-        if (this.color == Color.BLACK){
-            this.imageView.setY(row * 80 + 10);
-        } else {
-            this.imageView.setY(row * 80);
-        }
+        this.imageView.setY(row * 80);
     }
 
-    // TODO: don't make image smaller
     private void setColumn(int column) {
-        if (this.color == Color.BLACK) {
-            this.imageView.setX(column * 80 + 10);
-        } else {
-            this.imageView.setX(column * 80);
-        }
+        this.imageView.setX(column * 80);
     }
 }
