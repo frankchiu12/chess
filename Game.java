@@ -48,23 +48,23 @@ public class Game {
             this.tiles[1][column].addPiece(pawn);
         }
 
-        Piece whiteRook1 = new Rook(this.gamePane, this,0, 7, Color.WHITE);
+        Piece whiteRook1 = new Rook(this.gamePane, this,0, 7, Color.WHITE, "chess/whiteRook.png");
         this.tiles[7][0].addPiece(whiteRook1);
-        Piece whiteRook2 = new Rook(this.gamePane, this, 7, 7, Color.WHITE);
+        Piece whiteRook2 = new Rook(this.gamePane, this, 7, 7, Color.WHITE, "chess/whiteRook.png");
         this.tiles[7][7].addPiece(whiteRook2);
-        Piece blackRook1 = new Rook(this.gamePane, this,7, 0, Color.BLACK);
+        Piece blackRook1 = new Rook(this.gamePane, this,7, 0, Color.BLACK, "chess/blackRook.png");
         this.tiles[0][7].addPiece(blackRook1);
-        Piece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK);
+        Piece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK, "chess/blackRook.png");
         this.tiles[0][0].addPiece(blackRook2);
-        Piece whiteBishop1 = new Bishop(this.gamePane, this, 2, 7, Color.WHITE);
+        Piece whiteBishop1 = new Bishop(this.gamePane, this, 2, 7, Color.WHITE, "chess/whiteBishop.png");
         this.tiles[7][2].addPiece(whiteBishop1);
-        Piece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE);
+        Piece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE, "chess/whiteBishop.png");
         this.tiles[7][5].addPiece(whiteBishop2);
-        Piece blackBishop1 = new Bishop(this.gamePane, this, 2, 0, Color.BLACK);
+        Piece blackBishop1 = new Bishop(this.gamePane, this, 2, 0, Color.BLACK, "chess/blackBishop.png");
         this.tiles[0][2].addPiece(blackBishop1);
-        Piece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK);
+        Piece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK, "chess/blackBishop.png");
         this.tiles[0][5].addPiece(blackBishop2);
-        Piece blackQueen1 = new Queen(this.gamePane, this, 4, 0, Color.BLACK);
+        Piece blackQueen1 = new Queen(this.gamePane, this, 4, 0, Color.BLACK, "chess/blackQueen.png");
         this.tiles[0][4].addPiece(blackQueen1);
     }
 

@@ -14,19 +14,19 @@ public class Queen implements Piece {
     private Color color;
     private ImageView imageView;
 
-    public Queen(Pane gamePane, Game game, int x, int y, Color color) {
+    public Queen(Pane gamePane, Game game, int x, int y, Color color, String imagePath) {
         this.gamePane = gamePane;
         this.game = game;
         this.color = color;
-        this.imageView = new ImageView();
-        this.addImage(x, y);
+        this.addImage(x, y, imagePath);
     }
 
-    public void addImage(int x, int y){
+    public void addImage(int x, int y, String imagePath) {
         Image image;
+        this.imageView = new ImageView();
 
         if (color == Color.BLACK){
-            image = new Image("chess/blackQueen.png");
+            image = new Image(imagePath);
             this.imageView.setImage(image);
             this.imageView.setX(x * 80 + 10);
             this.imageView.setY(y * 80 + 10);
@@ -34,7 +34,7 @@ public class Queen implements Piece {
             this.imageView.setFitHeight(60);
         }
         if (color == Color.WHITE){
-            image = new Image("chess/whiteBishop.png");
+            image = new Image(imagePath);
             this.imageView.setImage(image);
             this.imageView.setX(x * 80);
             this.imageView.setY(y * 80);
@@ -54,8 +54,7 @@ public class Queen implements Piece {
     public void getPossibleMoves() {
         ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
 
-        this.diagonalMovement(pairArrayList);
-        this.horizontalMovement(pairArrayList);
+        this.overallMovement(pairArrayList);
 
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
@@ -68,6 +67,11 @@ public class Queen implements Piece {
                 this.game.changeColor(row, column, Color.GREEN);
             }
         }
+    }
+
+    public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {
+        this.diagonalMovement(pairArrayList);
+        this.horizontalMovement(pairArrayList);
     }
 
     public void diagonalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
@@ -129,7 +133,7 @@ public class Queen implements Piece {
         }
     }
 
-    private void horizontalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
+    public void horizontalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
         int iterationRow = this.getRow();
         int iterationColumn = this.getColumn();
 
