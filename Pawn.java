@@ -16,7 +16,7 @@ public class Pawn extends ChessPiece {
         super(gamePane, game, x, y, color, imagePath);
         this.game = game;
         this.color = color;
-        this.startingPosition = this.color == Color.WHITE ? 6 : 1;
+        this.startingPosition = y;
         this.direction = this.color == Color.WHITE ? -1 : 1;
     }
 

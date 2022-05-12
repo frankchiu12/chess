@@ -72,6 +72,9 @@ public class Game {
         this.tiles[7][3].addPiece(whiteKing);
         ChessPiece blackKing = new King(this.gamePane, this, 3, 0, Color.BLACK, "chess/blackKing.png");
         this.tiles[0][3].addPiece(blackKing);
+
+        ChessPiece blackKnight = new Knight(this.gamePane, this, 1, 0, Color.BLACK, "chess/blackBishop.png");
+        this.tiles[0][1].addPiece(blackKnight);
     }
 
     private void clearBoard(){
@@ -106,24 +109,24 @@ public class Game {
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
         Color tileColor = this.tiles[clickRow][clickColumn].getColor();
+        if (tileColor == Color.BROWN || tileColor == Color.WHITE){
+            this.clearBoard();
+            ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
+            pieceClicked.getPossibleMoves();
+        }
+        if (tileColor == Color.GREEN || tileColor == Color.RED){
+            ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
+            if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
+                this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
+            }
+            this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
+            pieceClicked.move(clickRow, clickColumn);
+            this.clearBoard();
+            this.searchForCheck(pieceClicked.getColor());
+            System.out.println(this.searchForCheck(pieceClicked.getColor()));
+            this.clearBoard();
+        }
         try{
-            if (tileColor == Color.BROWN || tileColor == Color.WHITE){
-                this.clearBoard();
-                ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
-                pieceClicked.getPossibleMoves();
-            }
-            if (tileColor == Color.GREEN || tileColor == Color.RED){
-                ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
-                if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
-                    this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
-                }
-                this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
-                pieceClicked.move(clickRow, clickColumn);
-                this.clearBoard();
-                this.searchForCheck(pieceClicked.getColor());
-                System.out.println(this.searchForCheck(pieceClicked.getColor()));
-                this.clearBoard();
-            }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
                 System.out.println("No piece exists!");
@@ -137,15 +140,25 @@ public class Game {
     }
 
     public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset){
-        int checkRow = startRow + rowOffset;
-        int checkColumn = startColumn + columnOffset;
-        return this.tilePieceArrayList(checkRow, checkColumn).size() == 0;
+        try {
+            int checkRow = startRow + rowOffset;
+            int checkColumn = startColumn + columnOffset;
+            return this.tilePieceArrayList(checkRow, checkColumn).size() == 0;
+        }
+        catch (IndexOutOfBoundsException e){
+            return false;
+        }
     }
 
     public boolean checkCanEat(int startRow, int startColumn, int rowOffset, int columnOffset, Color color){
-        int checkRow = startRow + rowOffset;
-        int checkColumn = startColumn + columnOffset;
-        return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
+        try {
+            int checkRow = startRow + rowOffset;
+            int checkColumn = startColumn + columnOffset;
+            return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
+        }
+        catch (IndexOutOfBoundsException e){
+            return false;
+        }
     }
 
     public boolean searchForCheck(Color color){
