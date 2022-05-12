@@ -20,6 +20,8 @@ public class Game {
     private PlayerColor playerColor;
 
     public Game(Pane gamePane){
+        // TODO: list of pieces to loop through
+        // TODO: dictionary with pair as key and value as ChessPiece
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
         this.makeBoard();
