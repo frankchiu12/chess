@@ -5,13 +5,12 @@ import javafx.scene.layout.Pane;
 
 public class PaneOrganizer {
 
-    private BorderPane root;
-    private Pane gamePane;
+    private final BorderPane root;
 
     public PaneOrganizer(){
         this.root = new BorderPane();
-        this.gamePane = new Pane();
-        new Game(this.gamePane);
+        Pane gamePane = new Pane();
+        new Game(gamePane);
 
         this.root.setCenter(gamePane);
     }
