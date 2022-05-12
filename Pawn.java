@@ -28,14 +28,17 @@ public class Pawn extends ChessPiece {
             pairArrayList.add(new Pair<>(this.getRow() + this.direction * 2, this.getColumn()));
         }
 
+        // TODO: what is this boolean
         if (isBeforeEndOfBoard && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction, 0)){
             pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn()));
         }
 
+        // eat right diagonal
         if (this.getRow() > 0 && this.getColumn() < 7 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, 1, this.color)){
             pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() + 1));
         }
 
+        // eat left diagonal
         if (this.getRow() > 0 && this.getColumn() > 0 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
             pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() - 1));
         }

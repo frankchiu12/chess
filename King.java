@@ -25,57 +25,50 @@ public class King extends ChessPiece {
         int row = this.getRow();
         int column = this.getColumn();
 
-        if (row - 1 >= 0 && column + 1 < 8){
-            if (this.game.checkCanMove(row, column, -1, 1) || this.game.checkCanEat(row, column, -1, 1, this.getColor())){
-                pairArrayList.add(new Pair<>(row - 1, column + 1));
-            }
+        // top right
+        if (this.game.checkCanMove(row, column, -1, 1) || this.game.checkCanEat(row, column, -1, 1, this.getColor())){
+            pairArrayList.add(new Pair<>(row - 1, column + 1));
         }
 
-        if (row - 1 >= 0 && column - 1 >= 0){
-            if (this.game.checkCanMove(row, column, -1, -1) || this.game.checkCanEat(row, column, -1, -1, this.getColor())){
-                pairArrayList.add(new Pair<>(row - 1, column - 1));
-            }
+        // top left
+        if (this.game.checkCanMove(row, column, -1, -1) || this.game.checkCanEat(row, column, -1, -1, this.getColor())){
+            pairArrayList.add(new Pair<>(row - 1, column - 1));
         }
 
-        if (row + 1 < 8 && column + 1 < 8){
-            if (this.game.checkCanMove(row, column, 1, 1) || this.game.checkCanEat(row, column, 1, 1, this.getColor())){
-                pairArrayList.add(new Pair<>(row + 1, column + 1));
-            }
+        // bottom right
+        if (this.game.checkCanMove(row, column, 1, 1) || this.game.checkCanEat(row, column, 1, 1, this.getColor())){
+            pairArrayList.add(new Pair<>(row + 1, column + 1));
         }
 
-        if (row + 1 < 8 && column - 1 >= 0){
-            if (this.game.checkCanMove(row, column, 1, -1) || this.game.checkCanEat(row, column, 1, -1, this.getColor())){
-                pairArrayList.add(new Pair<>(row + 1, column - 1));
-            }
+        // bottom left
+        if (this.game.checkCanMove(row, column, 1, -1) || this.game.checkCanEat(row, column, 1, -1, this.getColor())){
+            pairArrayList.add(new Pair<>(row + 1, column - 1));
         }
     }
 
     public void horizontalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
+
         int row = this.getRow();
         int column = this.getColumn();
 
-        if (row - 1 >= 0){
-            if (this.game.checkCanMove(row, column, -1, 0) || this.game.checkCanEat(row, column, -1, 0, this.getColor())){
-                pairArrayList.add(new Pair<>(row - 1, column));
-            }
+        // top
+        if (this.game.checkCanMove(row, column, -1, 0) || this.game.checkCanEat(row, column, -1, 0, this.getColor())){
+            pairArrayList.add(new Pair<>(row - 1, column));
         }
 
-        if (row + 1 < 8){
-            if (this.game.checkCanMove(row, column, 1, 0) || this.game.checkCanEat(row, column, 1, 0, this.getColor())){
-                pairArrayList.add(new Pair<>(row + 1, column));
-            }
+        // bottom
+        if (this.game.checkCanMove(row, column, 1, 0) || this.game.checkCanEat(row, column, 1, 0, this.getColor())){
+            pairArrayList.add(new Pair<>(row + 1, column));
         }
 
-        if (column - 1 >= 0){
-            if (this.game.checkCanMove(row, column, 0, -1) || this.game.checkCanEat(row, column, 0, -1, this.getColor())){
-                pairArrayList.add(new Pair<>(row, column - 1));
-            }
+        // right
+        if (this.game.checkCanMove(row, column, 0, 1) || this.game.checkCanEat(row, column, 0, 1, this.getColor())){
+            pairArrayList.add(new Pair<>(row, column + 1));
         }
 
-        if (column + 1 < 8){
-            if (this.game.checkCanMove(row, column, 0, 1) || this.game.checkCanEat(row, column, 0, 1, this.getColor())){
-                pairArrayList.add(new Pair<>(row, column + 1));
-            }
+        // left
+        if (this.game.checkCanMove(row, column, 0, -1) || this.game.checkCanEat(row, column, 0, -1, this.getColor())){
+            pairArrayList.add(new Pair<>(row, column - 1));
         }
     }
 }

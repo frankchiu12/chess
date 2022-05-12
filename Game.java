@@ -4,11 +4,12 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import tetris.Piece;
 
 import java.util.ArrayList;
 
@@ -20,12 +21,17 @@ public class Game {
     private int previousClickRow;
     private int previousClickColumn;
     private PlayerColor playerColor;
+    private Label errorMessageLabel;
 
     public Game(Pane gamePane){
         // TODO: list of pieces to loop through
         // TODO: dictionary with pair as key and value as ChessPiece
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
+        this.errorMessageLabel = new Label("Error Messages Are Displayed Here");
+        this.errorMessageLabel.setPrefWidth(200);
+        this.errorMessageLabel.setTranslateX((880-640)/2 * -1 + 200/2);
+        this.errorMessageLabel.setAlignment(Pos.CENTER);
         this.makeBoard();
         this.initializeBoard();
         this.setUpMainLine();
@@ -127,7 +133,7 @@ public class Game {
                 if (this.playerColor.isRightColor(pieceClicked.getColor())){
                     pieceClicked.getPossibleMoves();
                 } else {
-                    System.out.println("Please select a " + this.playerColor.getOppositeColor() + " piece!");
+                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
                 }
             }
             if (tileColor == Color.GREEN || tileColor == Color.RED){
@@ -150,10 +156,10 @@ public class Game {
             }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
-                System.out.println("No piece exists!");
+                this.errorMessageLabel.setText("No piece exists!");
             }
             else {
-                System.out.println("Move invalid!");
+                this.errorMessageLabel.setText("Move invalid!");
             }
         }
         this.previousClickRow = clickRow;
@@ -214,9 +220,7 @@ public class Game {
         return colorToReturn;
     }
 
-    public ArrayList<ChessPiece> tilePieceArrayList(int row, int column){
-        return this.tiles[row][column].getPieceArrayList();
-    }
+    public ArrayList<ChessPiece> tilePieceArrayList(int row, int column){return this.tiles[row][column].getPieceArrayList();}
 
     public void changeColor(int row, int column, Color color){
         this.tiles[row][column].changeColor(color);
@@ -225,4 +229,6 @@ public class Game {
     public BoardSquare[][] getTiles(){
         return this.tiles;
     }
+
+    public Label getErrorMessageLabel(){return this.errorMessageLabel;}
 }

@@ -130,15 +130,15 @@ public class Queen extends ChessPiece {
         iterationRow = this.getRow();
         iterationColumn = this.getColumn();
         if (iterationColumn + 1 < 8){
-            for (int i = iterationColumn; i < 7; i++){
-                if (this.getPieceArrayList(iterationRow, i + 1).size() != 0){
-                    if (this.getPieceArrayList(iterationRow, i + 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(iterationRow, i + 1));
+            for (int column = iterationColumn; column < 7; column++){
+                if (this.getPieceArrayList(iterationRow, column + 1).size() != 0){
+                    if (this.getPieceArrayList(iterationRow, column + 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                        pairArrayList.add(new Pair<>(iterationRow, column + 1));
                     }
                     break;
                 }
-                if (this.game.checkCanMove(iterationRow, i, 0, 1)){
-                    pairArrayList.add(new Pair<>(iterationRow, i + 1));
+                if (this.game.checkCanMove(iterationRow, column, 0, 1)){
+                    pairArrayList.add(new Pair<>(iterationRow, column + 1));
                 }
             }
         }

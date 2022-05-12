@@ -36,50 +36,20 @@ public class Knight extends ChessPiece {
 //            }
 //        }
 
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 1) || this.game.checkCanEat(this.getRow(), this.getColumn(), 2, 1, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn() + 1));
-        }
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), 2, -1)  || this.game.checkCanEat(this.getRow(), this.getColumn(), 2, -1, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn() - 1));
-        }
+        // TODO: note to Jakobi I did this so not sure if possibleMovesArray is necessary
+        this.knightMovement(2,1, pairArrayList);
+        this.knightMovement(2,-1, pairArrayList);
+        this.knightMovement(-2,-1, pairArrayList);
+        this.knightMovement(-2,1, pairArrayList);
+        this.knightMovement(-1,2, pairArrayList);
+        this.knightMovement(-1,-2, pairArrayList);
+        this.knightMovement(1,-2, pairArrayList);
+        this.knightMovement(1,2, pairArrayList);
+    }
 
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), -2, -1)  || this.game.checkCanEat(this.getRow(), this.getColumn(), -2, -1, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() - 2, this.getColumn() - 1));
+    private void knightMovement(int rowOffset, int columnOffset, ArrayList<Pair<Integer, Integer>> pairArrayList){
+        if(this.game.checkCanMove(this.getRow(), this.getColumn(), rowOffset, columnOffset) || this.game.checkCanEat(this.getRow(), this.getColumn(), rowOffset, columnOffset, this.color)) {
+            pairArrayList.add(new Pair<>(this.getRow() + rowOffset, this.getColumn() + columnOffset));
         }
-
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), -2, 1)  || this.game.checkCanEat(this.getRow(), this.getColumn(), -2, 1, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() - 2, this.getColumn() + 1));
-        }
-
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), -1, 2)  || this.game.checkCanEat(this.getRow(), this.getColumn(), -1, 2, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() + 2));
-        }
-
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), -1, -2)  || this.game.checkCanEat(this.getRow(), this.getColumn(), -1, -2, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() - 1, this.getColumn() - 2));
-        }
-
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), 1, -2)  || this.game.checkCanEat(this.getRow(), this.getColumn(), 1, -2, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn() - 2));
-        }
-
-        if(this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 2)  || this.game.checkCanEat(this.getRow(), this.getColumn(), 1, 2, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() + 1, this.getColumn() + 2));
-        }
-//        if (this.getRow() == this.startingPosition && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction * 2, 0)){
-//            pairArrayList.add(new Pair<>(this.getRow() + this.direction * 2, this.getColumn()));
-//        }
-//
-//        if (isBeforeEndOfBoard && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction, 0)){
-//            pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn()));
-//        }
-//
-//        if (this.getRow() > 0 && this.getColumn() < 7 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, 1, this.color)){
-//            pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() + 1));
-//        }
-//
-//        if (this.getRow() > 0 && this.getColumn() > 0 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
-//            pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() - 1));
-//        }
     }
 }

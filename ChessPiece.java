@@ -18,12 +18,12 @@ public class ChessPiece {
         this.gamePane = gamePane;
         this.game = game;
         this.color = color;
+        this.imageView = new ImageView();
         this.addImage(x, y, imagePath);
     }
 
     public void addImage(int x, int y, String imagePath) {
         Image image = new Image(imagePath);
-        this.imageView = new ImageView();
         this.imageView.setImage(image);
         this.imageView.setX(x * 80);
         this.imageView.setY(y * 80);
@@ -36,7 +36,6 @@ public class ChessPiece {
         ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
 
         this.overallMovement(pairArrayList);
-
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
         for (Pair<Integer, Integer> pair : pairArrayList) {
@@ -54,7 +53,6 @@ public class ChessPiece {
         ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
 
         this.overallMovement(pairArrayList);
-
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
         for (Pair<Integer, Integer> pair : pairArrayList) {
@@ -78,25 +76,17 @@ public class ChessPiece {
         }
     }
 
-    public void removeImage(){
-        this.gamePane.getChildren().remove(this.imageView);
-    }
+    public void removeImage(){this.gamePane.getChildren().remove(this.imageView);}
 
     public int getRow(){return (int) (this.imageView.getY() / 80);}
 
-    public int getColumn(){
-        return (int) (this.imageView.getX() / 80);
-    }
+    public int getColumn(){return (int) (this.imageView.getX() / 80);}
 
     public void setRow(int row){this.imageView.setY(row * 80);}
 
-    public void setColumn(int column) {
-        this.imageView.setX(column * 80);
-    }
+    public void setColumn(int column) {this.imageView.setX(column * 80);}
 
-    public Color getColor() {
-        return this.color;
-    }
+    public Color getColor() {return this.color;}
 
     public ArrayList<ChessPiece> getPieceArrayList(int row, int column){return this.game.getTiles()[row][column].getPieceArrayList();}
 }
