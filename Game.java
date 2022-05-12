@@ -76,6 +76,9 @@ public class Game {
         this.tiles[7][3].addPiece(whiteKing);
         ChessPiece blackKing = new King(this.gamePane, this, 3, 0, Color.BLACK, "chess/blackKing.png");
         this.tiles[0][3].addPiece(blackKing);
+
+        ChessPiece blackKnight = new Knight(this.gamePane, this, 1, 0, Color.BLACK, "chess/blackBishop.png");
+        this.tiles[0][1].addPiece(blackKnight);
     }
 
     private void clearBoard(){
@@ -147,15 +150,25 @@ public class Game {
     }
 
     public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset){
-        int checkRow = startRow + rowOffset;
-        int checkColumn = startColumn + columnOffset;
-        return this.tilePieceArrayList(checkRow, checkColumn).size() == 0;
+        try {
+            int checkRow = startRow + rowOffset;
+            int checkColumn = startColumn + columnOffset;
+            return this.tilePieceArrayList(checkRow, checkColumn).size() == 0;
+        }
+        catch (IndexOutOfBoundsException e){
+            return false;
+        }
     }
 
     public boolean checkCanEat(int startRow, int startColumn, int rowOffset, int columnOffset, Color color){
-        int checkRow = startRow + rowOffset;
-        int checkColumn = startColumn + columnOffset;
-        return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
+        try {
+            int checkRow = startRow + rowOffset;
+            int checkColumn = startColumn + columnOffset;
+            return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
+        }
+        catch (IndexOutOfBoundsException e){
+            return false;
+        }
     }
 
     public boolean searchForCheck(){
