@@ -11,7 +11,7 @@ public class PaneOrganizer {
     public PaneOrganizer(){
         this.root = new BorderPane();
         this.gamePane = new Pane();
-        Game game = new Game(this.gamePane);
+        new Game(this.gamePane);
 
         this.root.setCenter(gamePane);
     }

@@ -16,7 +16,6 @@ public class App extends Application {
     }
 
     public static void main(String[] argv){
-        // launch is a method inherited from Application
         launch(argv);
     }
 }

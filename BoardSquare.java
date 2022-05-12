@@ -8,24 +8,21 @@ import java.util.ArrayList;
 
 public class BoardSquare {
 
-    private Pane gamePane;
     private Rectangle boardSquare;
     private Color color;
-    private ArrayList<Piece> pieceArrayList;
+    private ArrayList<ChessPiece> pieceArrayList;
 
     public BoardSquare(Pane gamePane, Color color, int row, int column){
         this.boardSquare = new Rectangle(column * 80, row * 80, 80, 80);
-        this.gamePane = gamePane;
         this.color = color;
         this.pieceArrayList = new ArrayList<>();
+
         this.changeColor(color);
         gamePane.getChildren().add(boardSquare);
         this.boardSquare.setStroke(Color.BLACK);
     }
 
-    public void addPiece(Piece piece){
-        this.pieceArrayList.add(piece);
-    }
+    public void addPiece(ChessPiece chessPiece){this.pieceArrayList.add(chessPiece);}
 
     public void changeColor(Color color){
         this.color = color;
@@ -37,7 +34,5 @@ public class BoardSquare {
         return this.color;
     }
 
-    public ArrayList<Piece> getPieceArrayList(){
-        return this.pieceArrayList;
-    }
+    public ArrayList<ChessPiece> getPieceArrayList(){return this.pieceArrayList;}
 }
