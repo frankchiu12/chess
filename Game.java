@@ -121,6 +121,8 @@ public class Game {
                 pieceClicked.move(clickRow, clickColumn);
                 this.clearBoard();
                 this.searchForCheck(pieceClicked.getColor());
+                System.out.println(this.searchForCheck(pieceClicked.getColor()));
+                this.clearBoard();
             }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
@@ -163,6 +165,7 @@ public class Game {
                 }
             }
         }
+        return false;
     }
 
     public Color getOppositeColor(Color color){
