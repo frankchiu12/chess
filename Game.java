@@ -17,9 +17,11 @@ public class Game {
     private BoardSquare[][] tiles;
     private int previousClickRow;
     private int previousClickColumn;
+    private PlayerColor playerColor;
 
     public Game(Pane gamePane){
         this.gamePane = gamePane;
+        this.playerColor = PlayerColor.WHITE;
         this.makeBoard();
         this.initializeBoard();
         this.setUpMainLine();
@@ -109,24 +111,30 @@ public class Game {
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
         Color tileColor = this.tiles[clickRow][clickColumn].getColor();
-        if (tileColor == Color.BROWN || tileColor == Color.WHITE){
-            this.clearBoard();
-            ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
-            pieceClicked.getPossibleMoves();
-        }
-        if (tileColor == Color.GREEN || tileColor == Color.RED){
-            ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
-            if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
-                this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
-            }
-            this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
-            pieceClicked.move(clickRow, clickColumn);
-            this.clearBoard();
-            this.searchForCheck(pieceClicked.getColor());
-            System.out.println(this.searchForCheck(pieceClicked.getColor()));
-            this.clearBoard();
-        }
         try{
+            if (tileColor == Color.BROWN || tileColor == Color.WHITE){
+                this.clearBoard();
+                ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
+                if (this.playerColor.isRightColor(pieceClicked.getColor())){
+                    pieceClicked.getPossibleMoves();
+                } else {
+                    System.out.println("Please select a " + this.playerColor.getOppositeColor() + " piece!");
+                }
+            }
+            if (tileColor == Color.GREEN || tileColor == Color.RED){
+                ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
+                if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
+                    this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
+                }
+                this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
+                pieceClicked.move(clickRow, clickColumn);
+                this.clearBoard();
+                this.searchForCheck();
+                this.clearBoard();
+                this.playerColor = this.playerColor.getOppositePlayer();
+                // TODO: flip orientation
+//                this.gamePane.setRotate(180.0);
+            }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
                 System.out.println("No piece exists!");
@@ -161,15 +169,15 @@ public class Game {
         }
     }
 
-    public boolean searchForCheck(Color color){
+    public boolean searchForCheck(){
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 if (this.tiles[row][column].getPieceArrayList().size() != 0){
-                    if (this.tiles[row][column].getPieceArrayList().get(0).getColor() == this.getOppositeColor(color)){
-                        this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
-                        for (int r = 0; r < 8; r++) {
-                            for (int c = 0; c < 8; c++) {
-                                if (this.tiles[r][c].getColor() == Color.RED){
+                    this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
+                    for (int r = 0; r < 8; r++) {
+                        for (int c = 0; c < 8; c++) {
+                            if (this.tiles[r][c].getColor() == Color.RED && this.tiles[r][c].getPieceArrayList().size() != 0){
+                                if (this.tiles[r][c].getPieceArrayList().get(0) instanceof King){
                                     return true;
                                 }
                             }
