@@ -120,8 +120,8 @@ public class Game {
                 this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                 pieceClicked.move(clickRow, clickColumn);
                 this.clearBoard();
-                this.searchForCheck(pieceClicked.getColor());
-                System.out.println(this.searchForCheck(pieceClicked.getColor()));
+                this.searchForCheck();
+                System.out.println(this.searchForCheck());
                 this.clearBoard();
             }
         } catch (IndexOutOfBoundsException e){
@@ -148,15 +148,15 @@ public class Game {
         return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
     }
 
-    public boolean searchForCheck(Color color){
+    public boolean searchForCheck(){
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 if (this.tiles[row][column].getPieceArrayList().size() != 0){
-                    if (this.tiles[row][column].getPieceArrayList().get(0).getColor() == this.getOppositeColor(color)){
-                        this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
-                        for (int r = 0; r < 8; r++) {
-                            for (int c = 0; c < 8; c++) {
-                                if (this.tiles[r][c].getColor() == Color.RED){
+                    this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
+                    for (int r = 0; r < 8; r++) {
+                        for (int c = 0; c < 8; c++) {
+                            if (this.tiles[r][c].getColor() == Color.RED && this.tiles[r][c].getPieceArrayList().size() != 0){
+                                if (this.tiles[r][c].getPieceArrayList().get(0) instanceof King){
                                     return true;
                                 }
                             }
