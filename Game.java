@@ -76,9 +76,14 @@ public class Game {
         this.tiles[7][3].addPiece(whiteKing);
         ChessPiece blackKing = new King(this.gamePane, this, 3, 0, Color.BLACK, "chess/blackKing.png");
         this.tiles[0][3].addPiece(blackKing);
-
-        ChessPiece blackKnight = new Knight(this.gamePane, this, 1, 0, Color.BLACK, "chess/blackBishop.png");
-        this.tiles[0][1].addPiece(blackKnight);
+        ChessPiece whiteKnight1 = new Knight(this.gamePane, this, 1, 7, Color.WHITE, "chess/whiteKnight.png");
+        this.tiles[7][1].addPiece(whiteKnight1);
+        ChessPiece whiteKnight2 = new Knight(this.gamePane, this, 6, 7, Color.WHITE, "chess/whiteKnight.png");
+        this.tiles[7][6].addPiece(whiteKnight2);
+        ChessPiece blackKnight1 = new Knight(this.gamePane, this, 1, 0, Color.BLACK, "chess/blackKnight.png");
+        this.tiles[0][1].addPiece(blackKnight1);
+        ChessPiece blackKnight2 = new Knight(this.gamePane, this, 6, 0, Color.BLACK, "chess/blackKnight.png");
+        this.tiles[0][6].addPiece(blackKnight2);
     }
 
     private void clearBoard(){
