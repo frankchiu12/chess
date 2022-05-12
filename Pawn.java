@@ -32,11 +32,11 @@ public class Pawn extends ChessPiece {
             pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn()));
         }
 
-        if (this.getRow() > 0 && this.getColumn() + 1 < 8 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, 1, this.color)){
+        if (this.getRow() > 0 && this.getColumn() < 7 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, 1, this.color)){
             pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() + 1));
         }
 
-        if (this.getRow() > 0 && this.getColumn() - 1 >= 0 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
+        if (this.getRow() > 0 && this.getColumn() > 0 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
             pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() - 1));
         }
     }
