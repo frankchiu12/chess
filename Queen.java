@@ -34,7 +34,7 @@ public class Queen extends ChessPiece {
                 if (row - 1 < 0 || iterationColumn >= 8){
                     break;
                 }
-                if (iterateWithRowMinus1(pairArrayList, iterationColumn, row)) break;
+                if (iterateWithRow(pairArrayList, iterationColumn, row, -1)) break;
             }
 
             iterationRow = this.getRow();
@@ -44,7 +44,7 @@ public class Queen extends ChessPiece {
                 if (row - 1 < 0 || iterationColumn < 0){
                     break;
                 }
-                if (iterateWithRowMinus1(pairArrayList, iterationColumn, row)) break;
+                if (iterateWithRow(pairArrayList, iterationColumn, row, -1)) break;
             }
         }
 
@@ -56,7 +56,7 @@ public class Queen extends ChessPiece {
                 if (iterationColumn < 0){
                     break;
                 }
-                if (iterateWithRowPlus1(pairArrayList, iterationColumn, row)) break;
+                if (iterateWithRow(pairArrayList, iterationColumn, row, 1)) break;
             }
 
             iterationRow = this.getRow();
@@ -66,7 +66,7 @@ public class Queen extends ChessPiece {
                 if (iterationColumn >= 8){
                     break;
                 }
-                if (iterateWithRowPlus1(pairArrayList, iterationColumn, row)) break;
+                if (iterateWithRow(pairArrayList, iterationColumn, row, 1)) break;
             }
         }
     }
@@ -145,29 +145,15 @@ public class Queen extends ChessPiece {
         }
     }
 
-    // TODO: combine
-    private boolean iterateWithRowMinus1(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i) {
-        if (this.getPieceArrayList(i - 1, iterationColumn).size() != 0){
-            if (this.getPieceArrayList(i - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                pairArrayList.add(new Pair<>(i - 1, iterationColumn));
+    private boolean iterateWithRow(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i, int offset) {
+        if (this.getPieceArrayList(i + offset, iterationColumn).size() != 0){
+            if (this.getPieceArrayList(i + offset, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
+                pairArrayList.add(new Pair<>(i + offset, iterationColumn));
             }
             return true;
         }
-        if (this.game.checkCanMove(i, iterationColumn, -1, 0)){
-            pairArrayList.add(new Pair<>(i - 1, iterationColumn));
-        }
-        return false;
-    }
-
-    private boolean iterateWithRowPlus1(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i) {
-        if (this.getPieceArrayList(i + 1, iterationColumn).size() != 0){
-            if (this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                pairArrayList.add(new Pair<>(i + 1, iterationColumn));
-            }
-            return true;
-        }
-        if (this.game.checkCanMove(i, iterationColumn, 1, 0)){
-            pairArrayList.add(new Pair<>(i + 1, iterationColumn));
+        if (this.game.checkCanMove(i, iterationColumn, offset, 0)){
+            pairArrayList.add(new Pair<>(i + offset, iterationColumn));
         }
         return false;
     }
