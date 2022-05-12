@@ -50,6 +50,22 @@ public class ChessPiece {
         }
     }
 
+    public void getCheckMoves(){
+        ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
+
+        this.overallMovement(pairArrayList);
+
+        this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
+
+        for (Pair<Integer, Integer> pair : pairArrayList) {
+            int row = pair.getR();
+            int column = pair.getC();
+            if (this.getPieceArrayList(row, column).size() != 0 && this.getPieceArrayList(row, column).get(0) instanceof King) {
+                this.game.changeColor(row, column, Color.PURPLE);
+            }
+        }
+    }
+
     public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {}
 
     public void move(int clickRow, int clickColumn){

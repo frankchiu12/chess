@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import tetris.Piece;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public class Game {
 
     private final Pane gamePane;
     private BoardSquare[][] tiles;
+    private ChessPiece checkPiece;
     private int previousClickRow;
     private int previousClickColumn;
     private PlayerColor playerColor;
@@ -136,8 +138,12 @@ public class Game {
                 this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                 pieceClicked.move(clickRow, clickColumn);
                 this.clearBoard();
-                this.searchForCheck();
-                this.clearBoard();
+                if (this.searchForCheck()){
+                    this.clearBoard();
+                    this.checkPiece.getCheckMoves();
+                } else {
+                    this.clearBoard();
+                }
                 this.playerColor = this.playerColor.getOppositePlayer();
                 // TODO: flip orientation
 //                this.gamePane.setRotate(180.0);
@@ -183,8 +189,9 @@ public class Game {
                     this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
                     for (int r = 0; r < 8; r++) {
                         for (int c = 0; c < 8; c++) {
-                            if (this.tiles[r][c].getColor() == Color.RED && this.tiles[r][c].getPieceArrayList().size() != 0){
+                            if (this.tiles[r][c].getColor() == Color.RED){
                                 if (this.tiles[r][c].getPieceArrayList().get(0) instanceof King){
+                                    this.checkPiece = this.tiles[row][column].getPieceArrayList().get(0);
                                     return true;
                                 }
                             }
