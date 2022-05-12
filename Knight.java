@@ -30,11 +30,11 @@ public class Knight extends ChessPiece {
     @Override
     public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {
 
-        for (Pair possibleMove : this.possibleMovesArray) {
-            if(this.game.checkCanMove(this.getRow(), this.getColumn(), possibleMove.getR(), 1) || this.game.checkCanEat(this.getRow(), this.getColumn(), 2, 1, this.color)) {
-                pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn() + 1));
-            }
-        }
+//        for (Pair possibleMove : this.possibleMovesArray) {
+//            if(this.game.checkCanMove(this.getRow(), this.getColumn(), possibleMove.getR(), 1) || this.game.checkCanEat(this.getRow(), this.getColumn(), 2, 1, this.color)) {
+//                pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn() + 1));
+//            }
+//        }
 
         if(this.game.checkCanMove(this.getRow(), this.getColumn(), 2, 1) || this.game.checkCanEat(this.getRow(), this.getColumn(), 2, 1, this.color)) {
             pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn() + 1));
