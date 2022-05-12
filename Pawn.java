@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 public class Pawn extends ChessPiece {
 
-    private Game game;
-    private Color color;
-    private int startingPosition;
-    private int direction;
+    private final Game game;
+    private final Color color;
+    private final int startingPosition;
+    private final int direction;
 
     public Pawn(Pane gamePane, Game game, int x, int y, Color color, String imagePath){
         super(gamePane, game, x, y, color, imagePath);

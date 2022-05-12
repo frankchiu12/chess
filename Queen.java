@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Queen extends ChessPiece {
 
-    private Game game;
-    private Color color;
+    private final Game game;
+    private final Color color;
 
     public Queen(Pane gamePane, Game game, int x, int y, Color color, String imagePath) {
         super(gamePane, game, x, y, color, imagePath);

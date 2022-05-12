@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Game {
 
-    private Pane gamePane;
+    private final Pane gamePane;
     private BoardSquare[][] tiles;
     private int previousClickRow;
     private int previousClickColumn;
@@ -64,8 +64,14 @@ public class Game {
         this.tiles[0][2].addPiece(blackBishop1);
         ChessPiece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK, "chess/blackBishop.png");
         this.tiles[0][5].addPiece(blackBishop2);
-        ChessPiece blackQueen1 = new Queen(this.gamePane, this, 4, 0, Color.BLACK, "chess/blackQueen.png");
-        this.tiles[0][4].addPiece(blackQueen1);
+        ChessPiece whiteQueen = new Queen(this.gamePane, this, 4, 7, Color.WHITE, "chess/whiteQueen.png");
+        this.tiles[7][4].addPiece(whiteQueen);
+        ChessPiece blackQueen = new Queen(this.gamePane, this, 4, 0, Color.BLACK, "chess/blackQueen.png");
+        this.tiles[0][4].addPiece(blackQueen);
+        ChessPiece whiteKing = new King(this.gamePane, this, 3, 7, Color.WHITE, "chess/whiteKing.png");
+        this.tiles[7][3].addPiece(whiteKing);
+        ChessPiece blackKing = new King(this.gamePane, this, 3, 0, Color.BLACK, "chess/blackKing.png");
+        this.tiles[0][3].addPiece(blackKing);
     }
 
     private void clearBoard(){
@@ -100,21 +106,22 @@ public class Game {
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
         Color tileColor = this.tiles[clickRow][clickColumn].getColor();
-        if (tileColor == Color.BROWN || tileColor == Color.WHITE){
-            this.clearBoard();
-            ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
-            pieceClicked.getPossibleMoves();
-        }
-        if (tileColor == Color.GREEN || tileColor == Color.RED){
-            ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
-            if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
-                this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
-            }
-            this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
-            pieceClicked.move(clickRow, clickColumn);
-            this.clearBoard();
-        }
         try{
+            if (tileColor == Color.BROWN || tileColor == Color.WHITE){
+                this.clearBoard();
+                ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
+                pieceClicked.getPossibleMoves();
+            }
+            if (tileColor == Color.GREEN || tileColor == Color.RED){
+                ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
+                if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
+                    this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
+                }
+                this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
+                pieceClicked.move(clickRow, clickColumn);
+                this.clearBoard();
+                this.searchForCheck(pieceClicked.getColor());
+            }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
                 System.out.println("No piece exists!");
@@ -137,6 +144,25 @@ public class Game {
         int checkRow = startRow + rowOffset;
         int checkColumn = startColumn + columnOffset;
         return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
+    }
+
+    public boolean searchForCheck(Color color){
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                if (this.tiles[row][column].getPieceArrayList().size() != 0){
+                    if (this.tiles[row][column].getPieceArrayList().get(0).getColor() == this.getOppositeColor(color)){
+                        this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
+                        for (int r = 0; r < 8; r++) {
+                            for (int c = 0; c < 8; c++) {
+                                if (this.tiles[r][c].getColor() == Color.RED){
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public Color getOppositeColor(Color color){
