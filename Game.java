@@ -17,9 +17,11 @@ public class Game {
     private BoardSquare[][] tiles;
     private int previousClickRow;
     private int previousClickColumn;
+    private PlayerColor playerColor;
 
     public Game(Pane gamePane){
         this.gamePane = gamePane;
+        this.playerColor = PlayerColor.WHITE;
         this.makeBoard();
         this.initializeBoard();
         this.setUpMainLine();
@@ -110,7 +112,11 @@ public class Game {
             if (tileColor == Color.BROWN || tileColor == Color.WHITE){
                 this.clearBoard();
                 ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
-                pieceClicked.getPossibleMoves();
+                if (this.playerColor.isRightColor(pieceClicked.getColor())){
+                    pieceClicked.getPossibleMoves();
+                } else {
+                    System.out.println("Please select a " + this.playerColor.getOppositeColor() + " piece!");
+                }
             }
             if (tileColor == Color.GREEN || tileColor == Color.RED){
                 ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
@@ -121,8 +127,10 @@ public class Game {
                 pieceClicked.move(clickRow, clickColumn);
                 this.clearBoard();
                 this.searchForCheck();
-                System.out.println(this.searchForCheck());
                 this.clearBoard();
+                this.playerColor = this.playerColor.getOppositePlayer();
+                // TODO: flip orientation
+//                this.gamePane.setRotate(180.0);
             }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
