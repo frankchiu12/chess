@@ -1,11 +1,14 @@
 package chess;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
+import java.beans.EventHandler;
 
 public class PaneOrganizer {
 
@@ -15,6 +18,9 @@ public class PaneOrganizer {
     public PaneOrganizer(){
         this.root = new BorderPane();
         this.vBox = new VBox();
+        Button quitBtn = new Button("Quit");
+        quitBtn.setOnAction((ActionEvent e) -> System.exit(0));
+        this.vBox.getChildren().add(quitBtn);
         Pane gamePane = new Pane();
         Game game = new Game(gamePane);
 
