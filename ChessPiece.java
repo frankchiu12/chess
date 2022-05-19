@@ -33,14 +33,14 @@ public class ChessPiece {
     }
 
     public void getPossibleMoves() {
-        ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
+        ArrayList<Coordinate<Integer, Integer>> coordinateArrayList = new ArrayList<>();
 
-        this.overallMovement(pairArrayList);
+        this.overallMovement(coordinateArrayList);
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
-        for (Pair<Integer, Integer> pair : pairArrayList) {
-            int row = pair.getR();
-            int column = pair.getC();
+        for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
+            int row = coordinate.getR();
+            int column = coordinate.getC();
             if (this.getPieceArrayList(row, column).size() != 0) {
                 this.game.changeColor(row, column, Color.RED);
             } else {
@@ -50,21 +50,21 @@ public class ChessPiece {
     }
 
     public void getCheckMoves(){
-        ArrayList<Pair<Integer, Integer>> pairArrayList = new ArrayList<>();
+        ArrayList<Coordinate<Integer, Integer>> coordinateArrayList = new ArrayList<>();
 
-        this.overallMovement(pairArrayList);
+        this.overallMovement(coordinateArrayList);
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
-        for (Pair<Integer, Integer> pair : pairArrayList) {
-            int row = pair.getR();
-            int column = pair.getC();
+        for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
+            int row = coordinate.getR();
+            int column = coordinate.getC();
             if (this.getPieceArrayList(row, column).size() != 0 && this.getPieceArrayList(row, column).get(0) instanceof King) {
                 this.game.changeColor(row, column, Color.PURPLE);
             }
         }
     }
 
-    public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {}
+    public void overallMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList) {}
 
     public void move(int clickRow, int clickColumn){
         Color tileColor = this.game.getTiles()[clickRow][clickColumn].getColor();

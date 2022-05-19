@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Game {
 
@@ -20,6 +21,7 @@ public class Game {
     private ChessPiece checkPiece;
     private int previousClickRow;
     private int previousClickColumn;
+    private Stack<Coordinate<Integer, Integer>> stack;
     private PlayerColor playerColor;
     private Label errorMessageLabel;
 
@@ -28,6 +30,7 @@ public class Game {
         // TODO: dictionary with pair as key and value as ChessPiece
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
+        this.stack = new Stack<>();
         this.errorMessageLabel = new Label("Error Messages Are Displayed Here");
         this.errorMessageLabel.setPrefWidth(200);
         this.errorMessageLabel.setTranslateX((880-640)/2 * -1 + 200/2);
@@ -143,6 +146,7 @@ public class Game {
                 }
                 this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                 pieceClicked.move(clickRow, clickColumn);
+                this.stack.add(new Coordinate<>(clickRow, clickColumn));
                 this.clearBoard();
                 if (this.searchForCheck()){
                     this.clearBoard();
@@ -153,6 +157,8 @@ public class Game {
                 this.playerColor = this.playerColor.getOppositePlayer();
                 // TODO: flip orientation
 //                this.gamePane.setRotate(180.0);
+                System.out.println(this.stack.peek().getR());
+                System.out.println(this.stack.peek().getC());
             }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {

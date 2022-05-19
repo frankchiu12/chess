@@ -1,11 +1,11 @@
 package chess;
 
-public class Pair<Row,Column> {
+public class Coordinate<Row,Column> {
 
     private final Row r;
     private final Column c;
 
-    public Pair(Row r, Column c){
+    public Coordinate(Row r, Column c){
         this.r = r;
         this.c = c;
     }

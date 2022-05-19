@@ -21,26 +21,26 @@ public class Pawn extends ChessPiece {
     }
 
     @Override
-    public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {
+    public void overallMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList) {
         boolean isBeforeEndOfBoard = this.color == Color.WHITE ? this.getRow() > 0 : this.getRow() < 7;
 
         if (this.getRow() == this.startingPosition && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction, 0) && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction * 2, 0)){
-            pairArrayList.add(new Pair<>(this.getRow() + this.direction * 2, this.getColumn()));
+            coordinateArrayList.add(new Coordinate<>(this.getRow() + this.direction * 2, this.getColumn()));
         }
 
         // TODO: what is this boolean
         if (isBeforeEndOfBoard && this.game.checkCanMove(this.getRow(), this.getColumn(), this.direction, 0)){
-            pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn()));
+            coordinateArrayList.add(new Coordinate<>(this.getRow() + this.direction, this.getColumn()));
         }
 
         // eat right diagonal
         if (this.getRow() > 0 && this.getColumn() < 7 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, 1, this.color)){
-            pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() + 1));
+            coordinateArrayList.add(new Coordinate<>(this.getRow() + this.direction, this.getColumn() + 1));
         }
 
         // eat left diagonal
         if (this.getRow() > 0 && this.getColumn() > 0 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
-            pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() - 1));
+            coordinateArrayList.add(new Coordinate<>(this.getRow() + this.direction, this.getColumn() - 1));
         }
     }
 }

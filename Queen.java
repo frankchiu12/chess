@@ -17,12 +17,12 @@ public class Queen extends ChessPiece {
     }
 
     @Override
-    public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {
-        this.diagonalMovement(pairArrayList);
-        this.horizontalMovement(pairArrayList);
+    public void overallMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList) {
+        this.diagonalMovement(coordinateArrayList);
+        this.horizontalMovement(coordinateArrayList);
     }
 
-    public void diagonalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
+    public void diagonalMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList){
 
         int iterationRow = this.getRow();
         int iterationColumn = this.getColumn();
@@ -33,7 +33,7 @@ public class Queen extends ChessPiece {
                 if (row - 1 < 0 || iterationColumn >= 8){
                     break;
                 }
-                if (iterateWithRow(pairArrayList, iterationColumn, row, -1)) break;
+                if (iterateWithRow(coordinateArrayList, iterationColumn, row, -1)) break;
             }
 
             iterationRow = this.getRow();
@@ -43,7 +43,7 @@ public class Queen extends ChessPiece {
                 if (row - 1 < 0 || iterationColumn < 0){
                     break;
                 }
-                if (iterateWithRow(pairArrayList, iterationColumn, row, -1)) break;
+                if (iterateWithRow(coordinateArrayList, iterationColumn, row, -1)) break;
             }
         }
 
@@ -55,7 +55,7 @@ public class Queen extends ChessPiece {
                 if (iterationColumn < 0){
                     break;
                 }
-                if (iterateWithRow(pairArrayList, iterationColumn, row, 1)) break;
+                if (iterateWithRow(coordinateArrayList, iterationColumn, row, 1)) break;
             }
 
             iterationRow = this.getRow();
@@ -65,12 +65,12 @@ public class Queen extends ChessPiece {
                 if (iterationColumn >= 8){
                     break;
                 }
-                if (iterateWithRow(pairArrayList, iterationColumn, row, 1)) break;
+                if (iterateWithRow(coordinateArrayList, iterationColumn, row, 1)) break;
             }
         }
     }
 
-    public void horizontalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
+    public void horizontalMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList){
 
         int iterationRow = this.getRow();
         int iterationColumn = this.getColumn();
@@ -82,12 +82,12 @@ public class Queen extends ChessPiece {
                 }
                 if (this.getPieceArrayList(row - 1, iterationColumn).size() != 0){
                     if (this.getPieceArrayList(row - 1, iterationColumn).size() == 1 && this.getPieceArrayList(row - 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(row - 1, iterationColumn));
+                        coordinateArrayList.add(new Coordinate<>(row - 1, iterationColumn));
                     }
                     break;
                 }
                 if (this.game.checkCanMove(row, iterationColumn, -1, 0)){
-                    pairArrayList.add(new Pair<>(row - 1, iterationColumn));
+                    coordinateArrayList.add(new Coordinate<>(row - 1, iterationColumn));
                 }
             }
         }
@@ -98,12 +98,12 @@ public class Queen extends ChessPiece {
             for (int i = iterationRow; i < 7; i++){
                 if (this.getPieceArrayList(i + 1, iterationColumn).size() != 0){
                     if (this.getPieceArrayList(i + 1, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(i + 1, iterationColumn));
+                        coordinateArrayList.add(new Coordinate<>(i + 1, iterationColumn));
                     }
                     break;
                 }
                 if (this.game.checkCanMove(i, iterationColumn, 1, 0)){
-                    pairArrayList.add(new Pair<>(i + 1, iterationColumn));
+                    coordinateArrayList.add(new Coordinate<>(i + 1, iterationColumn));
                 }
             }
         }
@@ -117,12 +117,12 @@ public class Queen extends ChessPiece {
                 }
                 if (this.getPieceArrayList(iterationRow, i - 1).size() != 0){
                     if (this.getPieceArrayList(iterationRow, i - 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(iterationRow, i - 1));
+                        coordinateArrayList.add(new Coordinate<>(iterationRow, i - 1));
                     }
                     break;
                 }
                 if (this.game.checkCanMove(iterationRow, i, 0, -1)){
-                    pairArrayList.add(new Pair<>(iterationRow, i - 1));
+                    coordinateArrayList.add(new Coordinate<>(iterationRow, i - 1));
                 }
             }
         }
@@ -133,26 +133,26 @@ public class Queen extends ChessPiece {
             for (int column = iterationColumn; column < 7; column++){
                 if (this.getPieceArrayList(iterationRow, column + 1).size() != 0){
                     if (this.getPieceArrayList(iterationRow, column + 1).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                        pairArrayList.add(new Pair<>(iterationRow, column + 1));
+                        coordinateArrayList.add(new Coordinate<>(iterationRow, column + 1));
                     }
                     break;
                 }
                 if (this.game.checkCanMove(iterationRow, column, 0, 1)){
-                    pairArrayList.add(new Pair<>(iterationRow, column + 1));
+                    coordinateArrayList.add(new Coordinate<>(iterationRow, column + 1));
                 }
             }
         }
     }
 
-    private boolean iterateWithRow(ArrayList<Pair<Integer, Integer>> pairArrayList, int iterationColumn, int i, int offset) {
+    private boolean iterateWithRow(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList, int iterationColumn, int i, int offset) {
         if (this.getPieceArrayList(i + offset, iterationColumn).size() != 0){
             if (this.getPieceArrayList(i + offset, iterationColumn).get(0).getColor() == this.game.getOppositeColor(this.color)){
-                pairArrayList.add(new Pair<>(i + offset, iterationColumn));
+                coordinateArrayList.add(new Coordinate<>(i + offset, iterationColumn));
             }
             return true;
         }
         if (this.game.checkCanMove(i, iterationColumn, offset, 0)){
-            pairArrayList.add(new Pair<>(i + offset, iterationColumn));
+            coordinateArrayList.add(new Coordinate<>(i + offset, iterationColumn));
         }
         return false;
     }
