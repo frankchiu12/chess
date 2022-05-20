@@ -6,12 +6,15 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class Game {
@@ -118,6 +121,7 @@ public class Game {
 
     private void timelineActions(){
         this.movePieceOnPressed();
+        this.handleKeyPress();
     }
 
     private void movePieceOnPressed() {
@@ -146,7 +150,7 @@ public class Game {
                 }
                 this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                 pieceClicked.move(clickRow, clickColumn);
-                this.stack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked));
+                this.stack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
                 this.clearBoard();
                 if (this.searchForCheck()){
                     this.clearBoard();
@@ -156,7 +160,6 @@ public class Game {
                 }
                 this.playerColor = this.playerColor.getOppositePlayer();
                 // TODO: flip orientation
-//                this.gamePane.setRotate(180.0);
             }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
@@ -211,6 +214,33 @@ public class Game {
             }
         }
         return false;
+    }
+
+    private void handleKeyPress() {
+        this.gamePane.setOnKeyPressed(this::keyPress);
+        this.gamePane.setFocusTraversable(true);
+    }
+
+    private void keyPress(KeyEvent keyPress){
+        KeyCode keyPressed = keyPress.getCode();
+        switch (keyPressed) {
+            case R:
+                this.reverseMove();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void reverseMove(){
+        try{
+            Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToReverse = this.stack.pop();
+            ChessPiece currentChessPiece = moveToReverse.getCurrentPiece();
+            currentChessPiece.reverseMove(moveToReverse.getFromPair().getR(), moveToReverse.getFromPair().getC(), moveToReverse.getToPair().getR(), moveToReverse.getToPair().getC(), moveToReverse.getEatenChessPiece());
+            this.playerColor = this.playerColor.getOppositePlayer();
+        } catch (EmptyStackException e) {
+            System.out.println("No moves to reverse!");
+        }
     }
 
     public Color getOppositeColor(Color color){

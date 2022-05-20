@@ -11,6 +11,7 @@ public class ChessPiece {
 
     private final Pane gamePane;
     private final Game game;
+    private ChessPiece chessPieceEaten;
     private final Color color;
     private ImageView imageView;
 
@@ -71,12 +72,30 @@ public class ChessPiece {
         if (tileColor == Color.GREEN || tileColor == Color.RED){
             this.setRow(clickRow);
             this.setColumn(clickColumn);
+            if (this.getPieceArrayList(clickRow, clickColumn).size() > 0){
+                this.chessPieceEaten = this.getPieceArrayList(clickRow, clickColumn).get(0);
+            }
             this.getPieceArrayList(clickRow, clickColumn).clear();
             this.getPieceArrayList(clickRow, clickColumn).add(this);
         }
     }
 
+    public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten){
+        this.getPieceArrayList(currentRow, currentColumn).clear();
+        this.setRow(previousRow);
+        this.setColumn(previousColumn);
+        this.getPieceArrayList(previousRow, previousColumn).add(this);
+        if (chessPieceEaten != null){
+            chessPieceEaten.setRow(currentRow);
+            chessPieceEaten.setColumn(currentColumn);
+            chessPieceEaten.addImage();
+            this.getPieceArrayList(currentRow, currentColumn).add(chessPieceEaten);
+        }
+    }
+
     public void removeImage(){this.gamePane.getChildren().remove(this.imageView);}
+
+    public void addImage(){this.gamePane.getChildren().add(this.imageView);}
 
     public int getRow(){return (int) (this.imageView.getY() / 80);}
 
@@ -87,6 +106,10 @@ public class ChessPiece {
     public void setColumn(int column) {this.imageView.setX(column * 80);}
 
     public Color getColor() {return this.color;}
+
+    public ChessPiece getChessPieceEaten(){
+        return this.chessPieceEaten;
+    }
 
     public ArrayList<ChessPiece> getPieceArrayList(int row, int column){return this.game.getTiles()[row][column].getPieceArrayList();}
 }
