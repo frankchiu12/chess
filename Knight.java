@@ -47,9 +47,9 @@ public class Knight extends ChessPiece {
         this.knightMovement(1,2, pairArrayList);
     }
 
-    private void knightMovement(int rowOffset, int columnOffset, ArrayList<Pair<Integer, Integer>> pairArrayList){
+    private void knightMovement(int rowOffset, int columnOffset, ArrayList<Pair<Integer, Integer>> possibleMovesArray){
         if(this.game.checkCanMove(this.getRow(), this.getColumn(), rowOffset, columnOffset) || this.game.checkCanEat(this.getRow(), this.getColumn(), rowOffset, columnOffset, this.color)) {
-            pairArrayList.add(new Pair<>(this.getRow() + rowOffset, this.getColumn() + columnOffset));
+            possibleMovesArray.add(new Pair<>(this.getRow() + rowOffset, this.getColumn() + columnOffset));
         }
     }
 }

@@ -42,5 +42,10 @@ public class Pawn extends ChessPiece {
         if (this.getRow() > 0 && this.getColumn() > 0 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
             pairArrayList.add(new Pair<>(this.getRow() + this.direction, this.getColumn() - 1));
         }
+
+        for (int i = 0; i < pairArrayList.size(); i++){
+            System.out.println(pairArrayList.get(i).getR());
+            System.out.println(pairArrayList.get(i).getC());
+        }
     }
 }

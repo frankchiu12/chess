@@ -13,6 +13,7 @@ public class ChessPiece {
     private final Game game;
     private final Color color;
     private ImageView imageView;
+    public boolean hasMoved;
 
     public ChessPiece(Pane gamePane, Game game, int x, int y, Color color, String imagePath) {
         this.gamePane = gamePane;
@@ -20,6 +21,7 @@ public class ChessPiece {
         this.color = color;
         this.imageView = new ImageView();
         this.addImage(x, y, imagePath);
+        this.hasMoved = false;
     }
 
     public void addImage(int x, int y, String imagePath) {
@@ -67,6 +69,7 @@ public class ChessPiece {
     public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {}
 
     public void move(int clickRow, int clickColumn){
+        this.hasMoved = true;
         Color tileColor = this.game.getTiles()[clickRow][clickColumn].getColor();
         if (tileColor == Color.GREEN || tileColor == Color.RED){
             this.setRow(clickRow);

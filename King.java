@@ -18,6 +18,10 @@ public class King extends ChessPiece {
     public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {
         this.diagonalMovement(pairArrayList);
         this.horizontalMovement(pairArrayList);
+        this.castling(pairArrayList);
+    }
+
+    private void castling(ArrayList<Pair<Integer, Integer>> pairArrayList) {
     }
 
     public void diagonalMovement(ArrayList<Pair<Integer, Integer>> pairArrayList){
