@@ -42,5 +42,10 @@ public class Pawn extends ChessPiece {
         if (this.getRow() > 0 && this.getColumn() > 0 && this.game.checkCanEat(this.getRow(), this.getColumn(), this.direction, -1, this.color)){
             coordinateArrayList.add(new Coordinate<>(this.getRow() + this.direction, this.getColumn() - 1));
         }
+
+        for (int i = 0; i < coordinateArrayList.size(); i++){
+            System.out.println(coordinateArrayList.get(i).getR());
+            System.out.println(coordinateArrayList.get(i).getC());
+        }
     }
 }
