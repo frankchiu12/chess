@@ -43,9 +43,9 @@ public class Pawn extends ChessPiece {
             coordinateArrayList.add(new Coordinate<>(this.getRow() + this.direction, this.getColumn() - 1));
         }
 
-        for (int i = 0; i < pairArrayList.size(); i++){
-            System.out.println(pairArrayList.get(i).getR());
-            System.out.println(pairArrayList.get(i).getC());
+        for (int i = 0; i < coordinateArrayList.size(); i++){
+            System.out.println(coordinateArrayList.get(i).getR());
+            System.out.println(coordinateArrayList.get(i).getC());
         }
     }
 }
