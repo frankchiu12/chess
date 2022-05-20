@@ -12,7 +12,7 @@ public class Rook extends Queen {
     }
 
     @Override
-    public void overallMovement(ArrayList<Pair<Integer, Integer>> pairArrayList) {
-        this.horizontalMovement(pairArrayList);
+    public void overallMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList) {
+        this.horizontalMovement(coordinateArrayList);
     }
 }
