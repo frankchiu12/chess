@@ -21,7 +21,7 @@ public class Game {
     private ChessPiece checkPiece;
     private int previousClickRow;
     private int previousClickColumn;
-    private Stack<Coordinate<Integer, Integer>> stack;
+    private Stack<Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece>> stack;
     private PlayerColor playerColor;
     private Label errorMessageLabel;
 
@@ -146,7 +146,7 @@ public class Game {
                 }
                 this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                 pieceClicked.move(clickRow, clickColumn);
-                this.stack.add(new Coordinate<>(clickRow, clickColumn));
+                this.stack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked));
                 this.clearBoard();
                 if (this.searchForCheck()){
                     this.clearBoard();
@@ -157,8 +157,6 @@ public class Game {
                 this.playerColor = this.playerColor.getOppositePlayer();
                 // TODO: flip orientation
 //                this.gamePane.setRotate(180.0);
-                System.out.println(this.stack.peek().getR());
-                System.out.println(this.stack.peek().getC());
             }
         } catch (IndexOutOfBoundsException e){
             if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
