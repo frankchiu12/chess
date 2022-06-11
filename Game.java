@@ -13,9 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.Stack;
+import java.util.*;
 
 public class Game {
 
@@ -24,17 +22,20 @@ public class Game {
     private ChessPiece checkPiece;
     private int previousClickRow;
     private int previousClickColumn;
-    private Stack<Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece>> stack;
+    private final Stack<Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece>> reverseStack;
+    private final Stack<Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece>> unReverseStack;
+    private Color checkedKingColor;
     private PlayerColor playerColor;
-    private Label errorMessageLabel;
+    private final Label errorMessageLabel;
 
     public Game(Pane gamePane){
         // TODO: list of pieces to loop through
         // TODO: dictionary with pair as key and value as ChessPiece
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
-        this.stack = new Stack<>();
-        this.errorMessageLabel = new Label("Error Messages Are Displayed Here");
+        this.reverseStack = new Stack<>();
+        this.unReverseStack = new Stack<>();
+        this.errorMessageLabel = new Label("Error messages are displayed here!");
         this.errorMessageLabel.setPrefWidth(200);
         this.errorMessageLabel.setTranslateX((880-640)/2 * -1 + 200/2);
         this.errorMessageLabel.setAlignment(Pos.CENTER);
@@ -113,13 +114,14 @@ public class Game {
     }
 
     private void setUpMainLine(){
-        KeyFrame kf = new KeyFrame(Duration.seconds(0.1), (ActionEvent timeline) -> this.timelineActions());
+        KeyFrame kf = new KeyFrame(Duration.seconds(2), (ActionEvent timeline) -> this.timelineActions());
         Timeline timeline = new Timeline(kf);
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
     private void timelineActions(){
+        this.errorMessageLabel.setText("Error messages are displayed here!");
         this.movePieceOnPressed();
         this.handleKeyPress();
     }
@@ -145,29 +147,30 @@ public class Game {
             }
             if (tileColor == Color.GREEN || tileColor == Color.RED){
                 ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
-                if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
-                    this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
-                }
-                this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
-                pieceClicked.move(clickRow, clickColumn);
-                this.stack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
-                this.clearBoard();
-                if (this.searchForCheck()){
+                if (this.playerColor.isRightColor(pieceClicked.getColor())){
+                    if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
+                        this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
+                    }
+                    this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
+                    pieceClicked.move(clickRow, clickColumn);
+                    this.reverseStack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
                     this.clearBoard();
-                    this.checkPiece.getCheckMoves();
+                    if (this.searchForCheck()){
+                        this.clearBoard();
+                        this.checkPiece.getCheckMoves();
+                        if (this.checkedKingColor == this.playerColor.convertToColor()) {
+                            System.out.println("Cannot move to check your own king!");
+                        }
+                    } else {
+                        this.clearBoard();
+                    }
+                    this.playerColor = this.playerColor.getOppositePlayer();
                 } else {
-                    this.clearBoard();
+                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
                 }
-                this.playerColor = this.playerColor.getOppositePlayer();
-                // TODO: flip orientation
             }
         } catch (IndexOutOfBoundsException e){
-            if (tileColor == Color.BLACK || tileColor == Color.WHITE) {
-                this.errorMessageLabel.setText("No piece exists!");
-            }
-            else {
-                this.errorMessageLabel.setText("Move invalid!");
-            }
+            this.errorMessageLabel.setText("No piece exists/invalid move!");
         }
         this.previousClickRow = clickRow;
         this.previousClickColumn = clickColumn;
@@ -205,6 +208,7 @@ public class Game {
                             if (this.tiles[r][c].getColor() == Color.RED){
                                 if (this.tiles[r][c].getPieceArrayList().get(0) instanceof King){
                                     this.checkPiece = this.tiles[row][column].getPieceArrayList().get(0);
+                                    this.checkedKingColor = this.tiles[r][c].getPieceArrayList().get(0).getColor();
                                     return true;
                                 }
                             }
@@ -227,6 +231,9 @@ public class Game {
             case R:
                 this.reverseMove();
                 break;
+            case U:
+                this.unReverseMove();
+                break;
             default:
                 break;
         }
@@ -234,12 +241,25 @@ public class Game {
 
     private void reverseMove(){
         try{
-            Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToReverse = this.stack.pop();
+            Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToReverse = this.reverseStack.pop();
+            this.unReverseStack.add(moveToReverse);
             ChessPiece currentChessPiece = moveToReverse.getCurrentPiece();
             currentChessPiece.reverseMove(moveToReverse.getFromPair().getR(), moveToReverse.getFromPair().getC(), moveToReverse.getToPair().getR(), moveToReverse.getToPair().getC(), moveToReverse.getEatenChessPiece());
             this.playerColor = this.playerColor.getOppositePlayer();
         } catch (EmptyStackException e) {
-            System.out.println("No moves to reverse!");
+            this.errorMessageLabel.setText("No moves to reverse!");
+        }
+    }
+
+    private void unReverseMove(){
+        try{
+            Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToUnReverse = this.unReverseStack.pop();
+            this.reverseStack.add(moveToUnReverse);
+            ChessPiece currentChessPiece = moveToUnReverse.getCurrentPiece();
+            currentChessPiece.unReverseMove(moveToUnReverse.getToPair().getR(), moveToUnReverse.getToPair().getC(), moveToUnReverse.getEatenChessPiece());
+            this.playerColor = this.playerColor.getOppositePlayer();
+        } catch (EmptyStackException e) {
+            this.errorMessageLabel.setText("No moves to un-reverse!");
         }
     }
 

@@ -31,4 +31,13 @@ public enum PlayerColor {
             return "black";
         }
     }
+
+    public Color convertToColor(){
+        if (this == PlayerColor.WHITE){
+            return Color.WHITE;
+        }
+        else {
+            return Color.BLACK;
+        }
+    }
 }

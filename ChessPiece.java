@@ -62,7 +62,7 @@ public class ChessPiece {
             int row = coordinate.getR();
             int column = coordinate.getC();
             if (this.getPieceArrayList(row, column).size() != 0 && this.getPieceArrayList(row, column).get(0) instanceof King) {
-                this.game.changeColor(row, column, Color.PURPLE);
+                this.game.changeColor(row, column, Color.RED);
             }
         }
     }
@@ -84,21 +84,33 @@ public class ChessPiece {
     }
 
     public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten){
-        this.getPieceArrayList(currentRow, currentColumn).clear();
         this.setRow(previousRow);
         this.setColumn(previousColumn);
+        this.getPieceArrayList(currentRow, currentColumn).clear();
         this.getPieceArrayList(previousRow, previousColumn).add(this);
         if (chessPieceEaten != null){
             chessPieceEaten.setRow(currentRow);
             chessPieceEaten.setColumn(currentColumn);
-            chessPieceEaten.addImage();
             this.getPieceArrayList(currentRow, currentColumn).add(chessPieceEaten);
+            chessPieceEaten.addImage();
+        }
+    }
+
+    public void unReverseMove(int currentRow, int currentColumn, ChessPiece chessPieceEaten){
+        this.setRow(currentRow);
+        this.setColumn(currentColumn);
+        this.getPieceArrayList(currentRow, currentColumn).clear();
+        this.getPieceArrayList(currentRow, currentColumn).add(this);
+        if (chessPieceEaten != null){
+            chessPieceEaten.removeImage();
         }
     }
 
     public void removeImage(){this.gamePane.getChildren().remove(this.imageView);}
 
     public void addImage(){this.gamePane.getChildren().add(this.imageView);}
+
+    public ImageView getImageView(){return this.imageView;}
 
     public int getRow(){return (int) (this.imageView.getY() / 80);}
 
