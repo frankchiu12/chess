@@ -155,6 +155,9 @@ public class Game {
                     this.errorMessageLabel.setText("No errors!");
                     this.reverseStack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
                     this.clearBoard();
+                    if (this.pawnPromotion() != null){
+                        System.out.println(this.pawnPromotion());
+                    }
                     if (this.searchForCheck()){
                         this.clearBoard();
                         this.checkPiece.getCheckMoves();
@@ -173,7 +176,7 @@ public class Game {
                     this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
                 }
             }
-        } catch (IndexOutOfBoundsException e){
+        } catch (NullPointerException e){
             this.errorMessageLabel.setText("No piece exists/invalid move!");
         }
         this.previousClickRow = clickRow;
@@ -355,6 +358,15 @@ public class Game {
     }
 
     public boolean getCanRightCastle(){return this.canRightCastle();}
+
+    public ChessPiece pawnPromotion(){
+        for (int column = 0; column < 8; column++){
+            if (this.tiles[0][column].getPieceArrayList().size() != 0 && this.tiles[0][column].getPieceArrayList().get(0) instanceof Pawn){
+                return this.tiles[0][column].getPieceArrayList().get(0);
+            }
+        }
+        return null;
+    }
 
     public Color getPlayerColor(){
         return this.playerColor.convertToColor();

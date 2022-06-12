@@ -116,6 +116,8 @@ public class ChessPiece {
         }
     }
 
+    public void pawnPromotion(){}
+
     public void leftRookCastle(){
         if (this.game.getPlayerColor() == Color.WHITE){
             this.game.getTiles()[7][0].getPieceArrayList().get(0).rookJump(7, 0, 7, 2);
