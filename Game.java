@@ -24,7 +24,6 @@ public class Game {
     private int previousClickRow;
     private int previousClickColumn;
     private final Stack<Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece>> reverseStack;
-    private final Stack<Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece>> unReverseStack;
     private Color checkedKingColor;
     private PlayerColor playerColor;
     private final Label errorMessageLabel;
@@ -35,7 +34,6 @@ public class Game {
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
-        this.unReverseStack = new Stack<>();
         this.errorMessageLabel = new Label("Error messages are displayed here!");
         this.errorMessageLabel.setPrefWidth(200);
         this.errorMessageLabel.setTranslateX((880-640)/2 * -1 + 200/2);
@@ -231,15 +229,8 @@ public class Game {
 
     private void keyPress(KeyEvent keyPress){
         KeyCode keyPressed = keyPress.getCode();
-        switch (keyPressed) {
-            case R:
-                this.reverseMove();
-                break;
-            case U:
-                this.unReverseMove();
-                break;
-            default:
-                break;
+        if (keyPressed == KeyCode.R) {
+            this.reverseMove();
         }
     }
 
@@ -271,32 +262,12 @@ public class Game {
     private void reverseMove(){
         try{
             Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToReverse = this.reverseStack.pop();
-            this.unReverseStack.add(moveToReverse);
             ChessPiece currentChessPiece = moveToReverse.getCurrentPiece();
             this.rotate();
             currentChessPiece.reverseMove(moveToReverse.getFromPair().getR(), moveToReverse.getFromPair().getC(), moveToReverse.getToPair().getR(), moveToReverse.getToPair().getC(), moveToReverse.getEatenChessPiece());
             this.playerColor = this.playerColor.getOppositePlayer();
         } catch (EmptyStackException e) {
             this.errorMessageLabel.setText("No moves to reverse!");
-        }
-    }
-
-    private void unReverseMove(){
-        try{
-            Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToUnReverse = this.unReverseStack.pop();
-            this.reverseStack.add(moveToUnReverse);
-            ChessPiece currentChessPiece = moveToUnReverse.getCurrentPiece();
-            if (this.playerColor.convertToColor() == Color.WHITE){
-                currentChessPiece.unReverseMove(moveToUnReverse.getToPair().getR(), moveToUnReverse.getToPair().getC(), moveToUnReverse.getEatenChessPiece());
-            }
-            else if (this.playerColor.convertToColor() == Color.BLACK){
-                System.out.println("reaching");
-                currentChessPiece.unReverseMove(7 - moveToUnReverse.getToPair().getR(), 7 - moveToUnReverse.getToPair().getC(), moveToUnReverse.getEatenChessPiece());
-            }
-            this.rotate();
-            this.playerColor = this.playerColor.getOppositePlayer();
-        } catch (EmptyStackException e) {
-            this.errorMessageLabel.setText("No moves to un-reverse!");
         }
     }
 
