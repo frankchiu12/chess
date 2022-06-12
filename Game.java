@@ -167,29 +167,8 @@ public class Game {
                     } else {
                         this.clearBoard();
                     }
+                    this.rotate();
                     this.playerColor = this.playerColor.getOppositePlayer();
-                    Rotate rotate = new Rotate();
-                    rotate.setAngle(180);
-                    rotate.setPivotX(320);
-                    rotate.setPivotY(320);
-                    this.gamePane.getTransforms().add(rotate);
-                    BoardSquare[][] tilesCopy = new BoardSquare[8][8];
-                    for (int row = 0; row < 8; row++) {
-                        for (int column = 0; column < 8; column++) {
-                            tilesCopy[row][column] = new BoardSquare(this.gamePane, Color.TRANSPARENT, row, column);
-                            tilesCopy[row][column].replacePieceArrayList(new ArrayList<>(this.tiles[row][column].getPieceArrayList()));
-                        }
-                    }
-                    for (int row = 0; row < 8; row++) {
-                        for (int column = 0; column < 8; column++) {
-                            this.tiles[row][column].replacePieceArrayList(tilesCopy[7 - row][7 - column].getPieceArrayList());
-                            if (this.tiles[row][column].getPieceArrayList().size() != 0){
-                                this.tiles[row][column].getPieceArrayList().get(0).setRow(7 - this.tiles[row][column].getPieceArrayList().get(0).getRow());
-                                this.tiles[row][column].getPieceArrayList().get(0).setColumn(7 - this.tiles[row][column].getPieceArrayList().get(0).getColumn());
-                            }
-                        }
-                    }
-                    this.gamePane.getTransforms().add(rotate);
                 } else {
                     this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
                 }
@@ -264,11 +243,37 @@ public class Game {
         }
     }
 
+    private void rotate(){
+        Rotate rotate = new Rotate();
+        rotate.setAngle(180);
+        rotate.setPivotX(320);
+        rotate.setPivotY(320);
+        this.gamePane.getTransforms().add(rotate);
+        BoardSquare[][] tilesCopy = new BoardSquare[8][8];
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                tilesCopy[row][column] = new BoardSquare(this.gamePane, Color.TRANSPARENT, row, column);
+                tilesCopy[row][column].replacePieceArrayList(new ArrayList<>(this.tiles[row][column].getPieceArrayList()));
+            }
+        }
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                this.tiles[row][column].replacePieceArrayList(tilesCopy[7 - row][7 - column].getPieceArrayList());
+                if (this.tiles[row][column].getPieceArrayList().size() != 0){
+                    this.tiles[row][column].getPieceArrayList().get(0).setRow(7 - this.tiles[row][column].getPieceArrayList().get(0).getRow());
+                    this.tiles[row][column].getPieceArrayList().get(0).setColumn(7 - this.tiles[row][column].getPieceArrayList().get(0).getColumn());
+                }
+            }
+        }
+        this.gamePane.getTransforms().add(rotate);
+    }
+
     private void reverseMove(){
         try{
             Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToReverse = this.reverseStack.pop();
             this.unReverseStack.add(moveToReverse);
             ChessPiece currentChessPiece = moveToReverse.getCurrentPiece();
+            this.rotate();
             currentChessPiece.reverseMove(moveToReverse.getFromPair().getR(), moveToReverse.getFromPair().getC(), moveToReverse.getToPair().getR(), moveToReverse.getToPair().getC(), moveToReverse.getEatenChessPiece());
             this.playerColor = this.playerColor.getOppositePlayer();
         } catch (EmptyStackException e) {
@@ -281,7 +286,14 @@ public class Game {
             Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToUnReverse = this.unReverseStack.pop();
             this.reverseStack.add(moveToUnReverse);
             ChessPiece currentChessPiece = moveToUnReverse.getCurrentPiece();
-            currentChessPiece.unReverseMove(moveToUnReverse.getToPair().getR(), moveToUnReverse.getToPair().getC(), moveToUnReverse.getEatenChessPiece());
+            if (this.playerColor.convertToColor() == Color.WHITE){
+                currentChessPiece.unReverseMove(moveToUnReverse.getToPair().getR(), moveToUnReverse.getToPair().getC(), moveToUnReverse.getEatenChessPiece());
+            }
+            else if (this.playerColor.convertToColor() == Color.BLACK){
+                System.out.println("reaching");
+                currentChessPiece.unReverseMove(7 - moveToUnReverse.getToPair().getR(), 7 - moveToUnReverse.getToPair().getC(), moveToUnReverse.getEatenChessPiece());
+            }
+            this.rotate();
             this.playerColor = this.playerColor.getOppositePlayer();
         } catch (EmptyStackException e) {
             this.errorMessageLabel.setText("No moves to un-reverse!");
