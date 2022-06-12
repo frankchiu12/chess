@@ -13,7 +13,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-
 import java.util.*;
 
 public class Game {
@@ -114,7 +113,7 @@ public class Game {
     }
 
     private void setUpMainLine(){
-        KeyFrame kf = new KeyFrame(Duration.seconds(2), (ActionEvent timeline) -> this.timelineActions());
+        KeyFrame kf = new KeyFrame(Duration.seconds(0.1), (ActionEvent timeline) -> this.timelineActions());
         Timeline timeline = new Timeline(kf);
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -245,14 +244,27 @@ public class Game {
             if (this.isCheck){
                 return false;
             }
-            if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
-                return false;
+            if (this.playerColor.convertToColor() == Color.WHITE){
+                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
+                    return false;
+                }
+                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0){
+                    return false;
+                }
+                if (this.tiles[7][0].getPieceArrayList().size() == 0 || !(this.tiles[7][0].getPieceArrayList().get(0) instanceof Rook)){
+                    return false;
+                }
             }
-            if (!(this.tiles[7][0].getPieceArrayList().get(0) instanceof Rook) || this.tiles[7][0].getPieceArrayList().get(0).getColor() != playerColor.convertToColor()){
-                return false;
-            }
-            if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0){
-                return false;
+            if (this.playerColor.convertToColor() == Color.BLACK){
+                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
+                    return false;
+                }
+                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0 || this.tiles[7][3].getPieceArrayList().size() != 0){
+                    return false;
+                }
+                if (this.tiles[7][0].getPieceArrayList().size() == 0 || !(this.tiles[7][0].getPieceArrayList().get(0) instanceof Rook)){
+                    return false;
+                }
             }
         } catch (IndexOutOfBoundsException e) {
         }
@@ -311,6 +323,10 @@ public class Game {
 
     public boolean getCanLeftCastle(){
         return this.canLeftCastle();
+    }
+
+    public Color getPlayerColor(){
+        return this.playerColor.convertToColor();
     }
 
     public void changeColor(int row, int column, Color color){
