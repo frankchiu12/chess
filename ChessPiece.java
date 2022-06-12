@@ -13,9 +13,8 @@ public class ChessPiece {
     private final Game game;
     private ChessPiece chessPieceEaten;
     private final Color color;
-    private ImageView imageView;
+    private final ImageView imageView;
     public boolean hasMoved;
-    public boolean leftRookJump;
 
     public ChessPiece(Pane gamePane, Game game, int x, int y, Color color, String imagePath) {
         this.gamePane = gamePane;
