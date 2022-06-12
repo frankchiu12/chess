@@ -4,7 +4,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 
 public class ChessPiece {
@@ -87,6 +86,12 @@ public class ChessPiece {
             if (this.game.getPlayerColor() == Color.BLACK && clickRow == 7 && clickColumn == 2){
                 this.leftRookCastle();
             }
+            if (this.game.getPlayerColor() == Color.WHITE && clickRow == 7 && clickColumn == 5){
+                this.rightRookCastle();
+            }
+            if (this.game.getPlayerColor() == Color.BLACK && clickRow == 7 && clickColumn == 6){
+                this.rightRookCastle();
+            }
             this.hasMoved = true;
         }
     }
@@ -117,6 +122,15 @@ public class ChessPiece {
         }
         if (this.game.getPlayerColor() == Color.BLACK){
             this.game.getTiles()[7][0].getPieceArrayList().get(0).rookJump(7, 0, 7, 3);
+        }
+    }
+
+    public void rightRookCastle(){
+        if (this.game.getPlayerColor() == Color.WHITE){
+            this.game.getTiles()[7][7].getPieceArrayList().get(0).rookJump(7, 7, 7, 4);
+        }
+        if (this.game.getPlayerColor() == Color.BLACK){
+            this.game.getTiles()[7][7].getPieceArrayList().get(0).rookJump(7, 7, 7, 5);
         }
     }
 

@@ -152,9 +152,6 @@ public class Game {
                     }
                     this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                     pieceClicked.move(clickRow, clickColumn);
-                    if (pieceClicked instanceof King){
-                        this.errorMessageLabel.setText("hi");
-                    }
                     this.errorMessageLabel.setText("No errors!");
                     this.reverseStack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
                     this.clearBoard();
@@ -271,6 +268,38 @@ public class Game {
         return true;
     }
 
+    public boolean canRightCastle(){
+        try {
+            if (this.isCheck){
+                return false;
+            }
+            if (this.playerColor.convertToColor() == Color.WHITE){
+                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
+                    return false;
+                }
+                if (this.tiles[7][4].getPieceArrayList().size() != 0 || this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
+                    return false;
+                }
+                if (this.tiles[7][7].getPieceArrayList().size() == 0 || !(this.tiles[7][7].getPieceArrayList().get(0) instanceof Rook)){
+                    return false;
+                }
+            }
+            if (this.playerColor.convertToColor() == Color.BLACK){
+                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
+                    return false;
+                }
+                if (this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
+                    return false;
+                }
+                if (this.tiles[7][7].getPieceArrayList().size() == 0 || !(this.tiles[7][7].getPieceArrayList().get(0) instanceof Rook)){
+                    return false;
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {
+        }
+        return true;
+    }
+
     private void rotate(){
         Rotate rotate = new Rotate();
         rotate.setAngle(180);
@@ -324,6 +353,8 @@ public class Game {
     public boolean getCanLeftCastle(){
         return this.canLeftCastle();
     }
+
+    public boolean getCanRightCastle(){return this.canRightCastle();}
 
     public Color getPlayerColor(){
         return this.playerColor.convertToColor();
