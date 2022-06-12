@@ -15,6 +15,7 @@ public class ChessPiece {
     private final Color color;
     private ImageView imageView;
     public boolean hasMoved;
+    public boolean leftRookJump;
 
     public ChessPiece(Pane gamePane, Game game, int x, int y, Color color, String imagePath) {
         this.gamePane = gamePane;
@@ -70,7 +71,6 @@ public class ChessPiece {
     public void overallMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList) {}
 
     public void move(int clickRow, int clickColumn){
-        this.hasMoved = true;
         Color tileColor = this.game.getTiles()[clickRow][clickColumn].getColor();
         if (tileColor == Color.GREEN || tileColor == Color.RED){
             this.setRow(clickRow);
@@ -81,6 +81,19 @@ public class ChessPiece {
             this.getPieceArrayList(clickRow, clickColumn).clear();
             this.getPieceArrayList(clickRow, clickColumn).add(this);
         }
+        if (this instanceof King && !this.hasMoved){
+            if (clickRow == 7 && clickColumn == 1){
+                this.leftRookJump();
+            }
+            this.hasMoved = true;
+        }
+    }
+
+    public void rookJump(int previousRow, int previousColumn, int jumpRow, int jumpColumn){
+        this.setRow(jumpRow);
+        this.setColumn(jumpColumn);
+        this.getPieceArrayList(previousRow, previousColumn).clear();
+        this.getPieceArrayList(jumpRow, jumpColumn).add(this);
     }
 
     public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten){
@@ -96,19 +109,17 @@ public class ChessPiece {
         }
     }
 
-    public void unReverseMove(int currentRow, int currentColumn, ChessPiece chessPieceEaten){
-        this.setRow(currentRow);
-        this.setColumn(currentColumn);
-        this.getPieceArrayList(currentRow, currentColumn).clear();
-        this.getPieceArrayList(currentRow, currentColumn).add(this);
-        if (chessPieceEaten != null){
-            chessPieceEaten.removeImage();
+    public void leftRookJump(){
+        if (this.game.getTiles()[7][0].getPieceArrayList().get(0) instanceof Rook){
+            this.game.getTiles()[7][0].getPieceArrayList().get(0).rookJump(7, 0, 7, 2);
         }
     }
 
     public void removeImage(){this.gamePane.getChildren().remove(this.imageView);}
 
     public void addImage(){this.gamePane.getChildren().add(this.imageView);}
+
+    public boolean getHasMoved(){return this.hasMoved;}
 
     public int getRow(){return (int) (this.imageView.getY() / 80);}
 
@@ -120,9 +131,7 @@ public class ChessPiece {
 
     public Color getColor() {return this.color;}
 
-    public ChessPiece getChessPieceEaten(){
-        return this.chessPieceEaten;
-    }
+    public ChessPiece getChessPieceEaten(){return this.chessPieceEaten;}
 
     public ArrayList<ChessPiece> getPieceArrayList(int row, int column){return this.game.getTiles()[row][column].getPieceArrayList();}
 }
