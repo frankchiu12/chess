@@ -82,10 +82,10 @@ public class ChessPiece {
         }
         if (this instanceof King && !this.hasMoved){
             if (this.game.getPlayerColor() == Color.WHITE && clickRow == 7 && clickColumn == 1){
-                this.leftRookJump();
+                this.leftRookCastle();
             }
             if (this.game.getPlayerColor() == Color.BLACK && clickRow == 7 && clickColumn == 2){
-                this.leftRookJump();
+                this.leftRookCastle();
             }
             this.hasMoved = true;
         }
@@ -111,7 +111,7 @@ public class ChessPiece {
         }
     }
 
-    public void leftRookJump(){
+    public void leftRookCastle(){
         if (this.game.getPlayerColor() == Color.WHITE){
             this.game.getTiles()[7][0].getPieceArrayList().get(0).rookJump(7, 0, 7, 2);
         }
