@@ -56,13 +56,13 @@ public class ChessPiece {
         ArrayList<Coordinate<Integer, Integer>> coordinateArrayList = new ArrayList<>();
 
         this.overallMovement(coordinateArrayList);
-        this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
+        this.game.changeColor(7 - this.getRow(), 7 - this.getColumn(), Color.YELLOW);
 
         for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
             int row = coordinate.getR();
             int column = coordinate.getC();
             if (this.getPieceArrayList(row, column).size() != 0 && this.getPieceArrayList(row, column).get(0) instanceof King) {
-                this.game.changeColor(row, column, Color.RED);
+                this.game.changeColor(7 - row, 7 - column, Color.RED);
             }
         }
     }
@@ -109,8 +109,6 @@ public class ChessPiece {
     public void removeImage(){this.gamePane.getChildren().remove(this.imageView);}
 
     public void addImage(){this.gamePane.getChildren().add(this.imageView);}
-
-    public ImageView getImageView(){return this.imageView;}
 
     public int getRow(){return (int) (this.imageView.getY() / 80);}
 

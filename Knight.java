@@ -8,8 +8,6 @@ import java.util.ArrayList;
 public class Knight extends ChessPiece {
     private final Game game;
     private final Color color;
-    private final int startingPosition;
-    private final int direction;
     private final ArrayList<Coordinate<Integer, Integer>> possibleMovesArray;
 
 
@@ -17,8 +15,6 @@ public class Knight extends ChessPiece {
         super(gamePane, game, x, y, color, imagePath);
         this.game = game;
         this.color = color;
-        this.startingPosition = y;
-        this.direction = this.color == Color.WHITE ? -1 : 1;
         this.possibleMovesArray = new ArrayList<>();
         this.possibleMovesArray.add(new Coordinate(1, 2));
         this.possibleMovesArray.add(new Coordinate(1, -2));
@@ -29,14 +25,6 @@ public class Knight extends ChessPiece {
 
     @Override
     public void overallMovement(ArrayList<Coordinate<Integer, Integer>> coordinateArrayList) {
-
-//        for (Pair possibleMove : this.possibleMovesArray) {
-//            if(this.game.checkCanMove(this.getRow(), this.getColumn(), possibleMove.getR(), 1) || this.game.checkCanEat(this.getRow(), this.getColumn(), 2, 1, this.color)) {
-//                pairArrayList.add(new Pair<>(this.getRow() + 2, this.getColumn() + 1));
-//            }
-//        }
-
-        // TODO: note to Jakobi I did this so not sure if possibleMovesArray is necessary
         this.knightMovement(2,1, coordinateArrayList);
         this.knightMovement(2,-1, coordinateArrayList);
         this.knightMovement(-2,-1, coordinateArrayList);

@@ -3,6 +3,7 @@ package chess;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import tetris.Piece;
 
 import java.util.ArrayList;
 
@@ -35,4 +36,9 @@ public class BoardSquare {
     }
 
     public ArrayList<ChessPiece> getPieceArrayList(){return this.pieceArrayList;}
+
+    public void replacePieceArrayList(ArrayList<ChessPiece> newPieceArrayList){
+        this.pieceArrayList.clear();
+        this.pieceArrayList.addAll(newPieceArrayList);
+    }
 }
