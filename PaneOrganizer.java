@@ -24,8 +24,11 @@ public class PaneOrganizer {
         this.root.setCenter(gamePane);
         this.root.setRight(this.vBox);
         this.vBox.setAlignment(Pos.CENTER);
-        this.vBox.setSpacing(100);
+        this.vBox.setSpacing(25);
         this.vBox.getChildren().add(game.getErrorMessageLabel());
+//        this.vBox.getChildren().add(game.getPawnPromotionLabel());
+        this.vBox.getChildren().add(game.getTextField());
+        this.vBox.getChildren().add(game.getSubmitButton());
 
         Button quitBtn = new Button("Quit");
         quitBtn.setOnAction((ActionEvent e) -> System.exit(0));

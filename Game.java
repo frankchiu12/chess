@@ -5,7 +5,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -27,6 +29,9 @@ public class Game {
     private Color checkedKingColor;
     private PlayerColor playerColor;
     private final Label errorMessageLabel;
+    private final Label pawnPromotionLabel;
+    private final TextField textField;
+    private final Button submitButton;
 
     public Game(Pane gamePane){
         // TODO: list of pieces to loop through
@@ -34,10 +39,28 @@ public class Game {
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
+
         this.errorMessageLabel = new Label("Error messages are displayed here!");
         this.errorMessageLabel.setPrefWidth(200);
         this.errorMessageLabel.setTranslateX((880-640)/2 * -1 + 200/2);
         this.errorMessageLabel.setAlignment(Pos.CENTER);
+
+        this.pawnPromotionLabel = new Label("Chess Piece: ");
+        this.pawnPromotionLabel.setPrefWidth(200);
+        this.pawnPromotionLabel.setTranslateX((880-640)/2 * -1 + 200/2);
+        this.pawnPromotionLabel.setAlignment(Pos.CENTER);
+
+        this.textField = new TextField();
+        this.textField.setPrefWidth(200);
+        this.textField.setTranslateX((880-640)/2 * -1 + 200/2);
+
+        this.submitButton = new Button("Submit");
+        this.submitButton.setOnAction((ActionEvent e) -> this.getPawnPromotionPiece());
+        this.submitButton.setPrefWidth(100);
+        this.submitButton.setTranslateX((880-640)/2 * -1 + 100);
+        this.submitButton.setAlignment(Pos.CENTER);
+        this.submitButton.setFocusTraversable(false);
+
         this.makeBoard();
         this.initializeBoard();
         this.setUpMainLine();
@@ -155,8 +178,8 @@ public class Game {
                     this.errorMessageLabel.setText("No errors!");
                     this.reverseStack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
                     this.clearBoard();
-                    if (this.pawnPromotion() != null){
-                        System.out.println(this.pawnPromotion());
+                    if (this.checkPawnPromotion() != null){
+                        this.promotePawn();
                     }
                     if (this.searchForCheck()){
                         this.clearBoard();
@@ -176,8 +199,10 @@ public class Game {
                     this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
                 }
             }
-        } catch (NullPointerException e){
+        } catch (IndexOutOfBoundsException e){
             this.errorMessageLabel.setText("No piece exists/invalid move!");
+        } catch (InterruptedException e){
+
         }
         this.previousClickRow = clickRow;
         this.previousClickColumn = clickColumn;
@@ -340,6 +365,10 @@ public class Game {
         }
     }
 
+    public String getPawnPromotionPiece(){
+        return this.textField.getText();
+    }
+
     public Color getOppositeColor(Color color){
         Color colorToReturn = null;
         if (color == Color.WHITE){
@@ -359,13 +388,73 @@ public class Game {
 
     public boolean getCanRightCastle(){return this.canRightCastle();}
 
-    public ChessPiece pawnPromotion(){
+    public ChessPiece checkPawnPromotion(){
         for (int column = 0; column < 8; column++){
             if (this.tiles[0][column].getPieceArrayList().size() != 0 && this.tiles[0][column].getPieceArrayList().get(0) instanceof Pawn){
                 return this.tiles[0][column].getPieceArrayList().get(0);
             }
         }
         return null;
+    }
+
+    public void promotePawn() throws InterruptedException {
+        String pawnPromotionPieceText = this.getPawnPromotionPiece();
+        if (Objects.equals(pawnPromotionPieceText, "Queen") || pawnPromotionPieceText.isEmpty()){
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece queen = null;
+            if (this.playerColor.convertToColor() == Color.WHITE){
+                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteQueen.png");
+            }
+            if (this.playerColor.convertToColor() == Color.BLACK){
+                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackQueen.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(queen);
+        }
+        if (Objects.equals(pawnPromotionPieceText, "Rook")){
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece rook = null;
+            if (this.playerColor.convertToColor() == Color.WHITE){
+                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteRook.png");
+            }
+            if (this.playerColor.convertToColor() == Color.BLACK){
+                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackRook.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(rook);
+        }
+        if (Objects.equals(pawnPromotionPieceText, "Bishop")){
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece bishop = null;
+            if (this.playerColor.convertToColor() == Color.WHITE){
+                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteBishop.png");
+            }
+            if (this.playerColor.convertToColor() == Color.BLACK){
+                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackBishop.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(bishop);
+        }
+        if (Objects.equals(pawnPromotionPieceText, "Knight")){
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece knight = null;
+            if (this.playerColor.convertToColor() == Color.WHITE){
+                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteKnight.png");
+            }
+            if (this.playerColor.convertToColor() == Color.BLACK){
+                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackKnight.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(knight);
+        }
     }
 
     public Color getPlayerColor(){
@@ -381,4 +470,10 @@ public class Game {
     }
 
     public Label getErrorMessageLabel(){return this.errorMessageLabel;}
+
+    public Label getPawnPromotionLabel(){return this.pawnPromotionLabel;}
+
+    public TextField getTextField(){return this.textField;}
+
+    public Button getSubmitButton(){return this.submitButton;}
 }
