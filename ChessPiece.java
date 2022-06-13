@@ -108,12 +108,10 @@ public class ChessPiece {
         this.setColumn(currentColumn);
         this.getPieceArrayList(previousRow, previousColumn).clear();
         if (this.getPieceArrayList(currentRow, currentColumn).size() != 0){
-//            System.out.println("current row" + currentRow);
-//            System.out.println("current column" + currentColumn);
-//            System.out.println("simulateMove" + this.getPieceArrayList(currentRow, currentColumn).get(0));
             this.chessPieceEaten = this.getPieceArrayList(currentRow, currentColumn).get(0);
-            System.out.println(this.chessPieceEaten);
             this.chessPieceEaten.removeImage();
+        } else {
+            this.chessPieceEaten = null;
         }
         this.getPieceArrayList(currentRow, currentColumn).clear();
         this.getPieceArrayList(currentRow, currentColumn).add(this);
@@ -155,6 +153,10 @@ public class ChessPiece {
     public void removeImage(){this.gamePane.getChildren().remove(this.imageView);}
 
     public void addImage(){this.gamePane.getChildren().add(this.imageView);}
+
+    public ImageView getImageView() {
+        return imageView;
+    }
 
     public boolean getHasMoved(){return this.hasMoved;}
 

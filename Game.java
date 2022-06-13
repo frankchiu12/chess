@@ -263,9 +263,6 @@ public class Game {
                     for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
                         this.tiles[row][column].getPieceArrayList().get(0).simulateMove(row, column, coordinate.getR(), coordinate.getC());
                         if (!this.underCheck()) {
-                            System.out.println(this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0));
-                            System.out.println(coordinate.getR());
-                            System.out.println(coordinate.getC());
                             this.clearBoard();
                             this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
                             System.out.println("returning false");
