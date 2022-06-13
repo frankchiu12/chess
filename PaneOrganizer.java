@@ -4,31 +4,26 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
-import java.beans.EventHandler;
 
 public class PaneOrganizer {
 
     private final BorderPane root;
-    private VBox vBox;
 
     public PaneOrganizer(){
         this.root = new BorderPane();
-        this.vBox = new VBox();
         Pane gamePane = new Pane();
         Game game = new Game(gamePane);
+        VBox vBox = new VBox();
 
         this.root.setCenter(gamePane);
-        this.root.setRight(this.vBox);
-        this.vBox.setAlignment(Pos.CENTER);
-        this.vBox.setSpacing(25);
-        this.vBox.getChildren().add(game.getErrorMessageLabel());
-//        this.vBox.getChildren().add(game.getPawnPromotionLabel());
-        this.vBox.getChildren().add(game.getTextField());
-        this.vBox.getChildren().add(game.getSubmitButton());
+        this.root.setRight(vBox);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setSpacing(25);
+        vBox.getChildren().add(game.getErrorMessageLabel());
+        vBox.getChildren().add(game.getTextField());
+        vBox.getChildren().add(game.getSubmitButton());
 
         Button quitBtn = new Button("Quit");
         quitBtn.setOnAction((ActionEvent e) -> System.exit(0));
@@ -36,7 +31,7 @@ public class PaneOrganizer {
         quitBtn.setTranslateX((880-640)/2 * -1 + 100);
         quitBtn.setAlignment(Pos.CENTER);
         quitBtn.setFocusTraversable(false);
-        this.vBox.getChildren().add(quitBtn);
+        vBox.getChildren().add(quitBtn);
     }
 
     public BorderPane getRoot(){

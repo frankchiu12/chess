@@ -2,7 +2,6 @@ package chess;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 
 public class Rook extends Queen {

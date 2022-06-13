@@ -34,8 +34,7 @@ public class Game {
     private final Button submitButton;
 
     public Game(Pane gamePane){
-        // TODO: list of pieces to loop through
-        // TODO: dictionary with pair as key and value as ChessPiece
+        // TODO: save
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
@@ -181,10 +180,10 @@ public class Game {
                     if (this.checkPawnPromotion() != null){
                         this.promotePawn();
                     }
-                    if (this.searchForCheck()){
+                    if (this.underCheck()){
                         this.clearBoard();
-                        System.out.println(this.searchForCheckMate());
                         if (this.searchForCheckMate()){
+                            System.out.println("reaching");
                             this.errorMessageLabel.setText("CHECKMATE!");
                         } else {
                             this.errorMessageLabel.setText("CHECK!");
@@ -235,17 +234,13 @@ public class Game {
         }
     }
 
-    public boolean searchForCheck(){
+    public boolean underCheck(){
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 if (this.tiles[row][column].getPieceArrayList().size() != 0){
                     this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
                     for (int r = 0; r < 8; r++) {
                         for (int c = 0; c < 8; c++) {
-//                            if (r == 1 && c == 4 && this.tiles[row][column].getPieceArrayList().get(0) instanceof Bishop){
-//                                System.out.println(this.tiles[row][column].getPieceArrayList().get(0));
-//                                System.out.println(this.tiles[r][c].getColor());
-//                            }
                             if (this.tiles[r][c].getColor() == Color.RED){
                                 if (this.tiles[r][c].getPieceArrayList().get(0) instanceof King){
                                     this.checkPiece = this.tiles[row][column].getPieceArrayList().get(0);
@@ -267,18 +262,20 @@ public class Game {
                 if (this.tiles[row][column].getPieceArrayList().size() != 0 && this.tiles[row][column].getPieceArrayList().get(0).getColor() != this.playerColor.convertToColor()){
                     ArrayList<Coordinate<Integer, Integer>> coordinateArrayList = new ArrayList<>();
                     this.tiles[row][column].getPieceArrayList().get(0).overallMovement(coordinateArrayList);
-                    System.out.println(this.tiles[row][column].getPieceArrayList().get(0));
                     for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
-                        System.out.println(coordinate.getR());
-                        System.out.println(coordinate.getC());
                         this.tiles[row][column].getPieceArrayList().get(0).simulateMove(row, column, coordinate.getR(), coordinate.getC());
-                        if (!this.searchForCheck()) {
+                        if (!this.underCheck()) {
+                            System.out.println(this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0));
+                            System.out.println(coordinate.getR());
+                            System.out.println(coordinate.getC());
                             this.clearBoard();
                             this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
+                            System.out.println("returning false");
                             return false;
+                        } else {
+                            this.clearBoard();
+                            this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
                         }
-                        this.clearBoard();
-                        this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
                     }
                 }
             }
@@ -326,7 +323,7 @@ public class Game {
                     return false;
                 }
             }
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
         return true;
     }
@@ -358,17 +355,19 @@ public class Game {
                     return false;
                 }
             }
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
         return true;
     }
 
     private void rotate(){
+        // rotate gamePane
         Rotate rotate = new Rotate();
         rotate.setAngle(180);
         rotate.setPivotX(320);
         rotate.setPivotY(320);
         this.gamePane.getTransforms().add(rotate);
+
         BoardSquare[][] tilesCopy = new BoardSquare[8][8];
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {

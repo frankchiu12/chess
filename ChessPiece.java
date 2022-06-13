@@ -108,7 +108,11 @@ public class ChessPiece {
         this.setColumn(currentColumn);
         this.getPieceArrayList(previousRow, previousColumn).clear();
         if (this.getPieceArrayList(currentRow, currentColumn).size() != 0){
+//            System.out.println("current row" + currentRow);
+//            System.out.println("current column" + currentColumn);
+//            System.out.println("simulateMove" + this.getPieceArrayList(currentRow, currentColumn).get(0));
             this.chessPieceEaten = this.getPieceArrayList(currentRow, currentColumn).get(0);
+            System.out.println(this.chessPieceEaten);
             this.chessPieceEaten.removeImage();
         }
         this.getPieceArrayList(currentRow, currentColumn).clear();

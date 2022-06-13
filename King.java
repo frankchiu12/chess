@@ -2,18 +2,15 @@ package chess;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 
 public class King extends ChessPiece {
 
     private final Game game;
-    private boolean hasCastled;
 
     public King(Pane gamePane, Game game, int x, int y, Color color, String imagePath) {
         super(gamePane, game, x, y, color, imagePath);
         this.game = game;
-        this.hasCastled = false;
     }
 
     @Override
