@@ -73,7 +73,7 @@ public class ChessPiece {
         if (tileColor == Color.GREEN || tileColor == Color.RED){
             this.setRow(clickRow);
             this.setColumn(clickColumn);
-            if (this.getPieceArrayList(clickRow, clickColumn).size() > 0){
+            if (this.getPieceArrayList(clickRow, clickColumn).size() != 0){
                 this.chessPieceEaten = this.getPieceArrayList(clickRow, clickColumn).get(0);
             }
             this.getPieceArrayList(clickRow, clickColumn).clear();
@@ -101,6 +101,18 @@ public class ChessPiece {
         this.setColumn(jumpColumn);
         this.getPieceArrayList(previousRow, previousColumn).clear();
         this.getPieceArrayList(jumpRow, jumpColumn).add(this);
+    }
+
+    public void simulateMove(int previousRow, int previousColumn, int currentRow, int currentColumn){
+        this.setRow(currentRow);
+        this.setColumn(currentColumn);
+        this.getPieceArrayList(previousRow, previousColumn).clear();
+        if (this.getPieceArrayList(currentRow, currentColumn).size() != 0){
+            this.chessPieceEaten = this.getPieceArrayList(currentRow, currentColumn).get(0);
+            this.chessPieceEaten.removeImage();
+        }
+        this.getPieceArrayList(currentRow, currentColumn).clear();
+        this.getPieceArrayList(currentRow, currentColumn).add(this);
     }
 
     public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten){

@@ -183,8 +183,13 @@ public class Game {
                     }
                     if (this.searchForCheck()){
                         this.clearBoard();
+                        System.out.println(this.searchForCheckMate());
+                        if (this.searchForCheckMate()){
+                            this.errorMessageLabel.setText("CHECKMATE!");
+                        } else {
+                            this.errorMessageLabel.setText("CHECK!");
+                        }
                         this.checkPiece.getCheckMoves();
-                        this.errorMessageLabel.setText("CHECK!");
                         if (this.checkedKingColor == this.playerColor.convertToColor()) {
                             this.errorMessageLabel.setText("Cannot move to check yourself!");
                         }
@@ -199,9 +204,9 @@ public class Game {
                     this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
                 }
             }
-        } catch (IndexOutOfBoundsException e){
+        } catch (NullPointerException e){
             this.errorMessageLabel.setText("No piece exists/invalid move!");
-        } catch (InterruptedException e){
+        } catch (InterruptedException ignored){
 
         }
         this.previousClickRow = clickRow;
@@ -237,6 +242,10 @@ public class Game {
                     this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
                     for (int r = 0; r < 8; r++) {
                         for (int c = 0; c < 8; c++) {
+//                            if (r == 1 && c == 4 && this.tiles[row][column].getPieceArrayList().get(0) instanceof Bishop){
+//                                System.out.println(this.tiles[row][column].getPieceArrayList().get(0));
+//                                System.out.println(this.tiles[r][c].getColor());
+//                            }
                             if (this.tiles[r][c].getColor() == Color.RED){
                                 if (this.tiles[r][c].getPieceArrayList().get(0) instanceof King){
                                     this.checkPiece = this.tiles[row][column].getPieceArrayList().get(0);
@@ -252,6 +261,31 @@ public class Game {
         return false;
     }
 
+    public boolean searchForCheckMate(){
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                if (this.tiles[row][column].getPieceArrayList().size() != 0 && this.tiles[row][column].getPieceArrayList().get(0).getColor() != this.playerColor.convertToColor()){
+                    ArrayList<Coordinate<Integer, Integer>> coordinateArrayList = new ArrayList<>();
+                    this.tiles[row][column].getPieceArrayList().get(0).overallMovement(coordinateArrayList);
+                    System.out.println(this.tiles[row][column].getPieceArrayList().get(0));
+                    for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
+                        System.out.println(coordinate.getR());
+                        System.out.println(coordinate.getC());
+                        this.tiles[row][column].getPieceArrayList().get(0).simulateMove(row, column, coordinate.getR(), coordinate.getC());
+                        if (!this.searchForCheck()) {
+                            this.clearBoard();
+                            this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
+                            return false;
+                        }
+                        this.clearBoard();
+                        this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     private void handleKeyPress() {
         this.gamePane.setOnKeyPressed(this::keyPress);
         this.gamePane.setFocusTraversable(true);
@@ -260,6 +294,7 @@ public class Game {
     private void keyPress(KeyEvent keyPress){
         KeyCode keyPressed = keyPress.getCode();
         if (keyPressed == KeyCode.R) {
+            this.clearBoard();
             this.reverseMove();
         }
     }
