@@ -203,7 +203,7 @@ public class Game {
                     this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
                 }
             }
-        } catch (NullPointerException e){
+        } catch (IndexOutOfBoundsException e){
             this.errorMessageLabel.setText("No piece exists/invalid move!");
         } catch (InterruptedException ignored){
 
