@@ -183,7 +183,6 @@ public class Game {
                     if (this.underCheck()){
                         this.clearBoard();
                         if (this.searchForCheckMate()){
-                            System.out.println("reaching");
                             this.errorMessageLabel.setText("CHECKMATE!");
                         } else {
                             this.errorMessageLabel.setText("CHECK!");
@@ -206,7 +205,6 @@ public class Game {
         } catch (IndexOutOfBoundsException e){
             this.errorMessageLabel.setText("No piece exists/invalid move!");
         } catch (InterruptedException ignored){
-
         }
         this.previousClickRow = clickRow;
         this.previousClickColumn = clickColumn;
