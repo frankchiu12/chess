@@ -1,5 +1,6 @@
 package chess;
 
+import chess.finishedCode.Coordinate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -41,7 +42,7 @@ public class ChessPiece {
         this.game.changeColor(this.getRow(), this.getColumn(), Color.YELLOW);
 
         for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
-            int row = coordinate.getR();
+            int row = coordinate.getRow();
             int column = coordinate.getC();
             if (this.getPieceArrayList(row, column).size() != 0) {
                 this.game.changeColor(row, column, Color.RED);
@@ -58,7 +59,7 @@ public class ChessPiece {
         this.game.changeColor(7 - this.getRow(), 7 - this.getColumn(), Color.YELLOW);
 
         for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
-            int row = coordinate.getR();
+            int row = coordinate.getRow();
             int column = coordinate.getC();
             if (this.getPieceArrayList(row, column).size() != 0 && this.getPieceArrayList(row, column).get(0) instanceof King) {
                 this.game.changeColor(7 - row, 7 - column, Color.RED);
@@ -129,8 +130,6 @@ public class ChessPiece {
             chessPieceEaten.addImage();
         }
     }
-
-    public void pawnPromotion(){}
 
     public void leftRookCastle(){
         if (this.game.getPlayerColor() == Color.WHITE){

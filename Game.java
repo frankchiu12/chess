@@ -1,5 +1,8 @@
 package chess;
 
+import chess.finishedCode.Coordinate;
+import chess.finishedCode.Move;
+import chess.finishedCode.PlayerColor;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -24,7 +27,7 @@ public class Game {
     private ChessPiece checkPiece;
     private int previousClickRow;
     private int previousClickColumn;
-    private final Stack<Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece>> reverseStack;
+    private final Stack<Move> reverseStack;
     private boolean isCheck;
     private Color checkedKingColor;
     private PlayerColor playerColor;
@@ -70,9 +73,9 @@ public class Game {
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 if ((row + column) % 2 == 0) {
-                    this.tiles[row][column] = new BoardSquare(this.gamePane, Color.BROWN, row, column);
-                } else {
                     this.tiles[row][column] = new BoardSquare(this.gamePane, Color.WHITE, row, column);
+                } else {
+                    this.tiles[row][column] = new BoardSquare(this.gamePane, Color.BROWN, row, column);
                 }
             }
         }
@@ -80,45 +83,45 @@ public class Game {
 
     public void initializeBoard(){
         for (int column = 0; column < 8; column++){
-            ChessPiece pawn = new Pawn(this.gamePane, this, column, 6, Color.WHITE, "chess/pngs/whitePawn.png");
+            ChessPiece pawn = new Pawn(this.gamePane, this, column, 6, Color.WHITE, "chess/png/whitePawn.png");
             this.tiles[6][column].addPiece(pawn);
         }
         for (int column = 0; column < 8; column++){
-            ChessPiece pawn = new Pawn(this.gamePane, this, column, 1, Color.BLACK, "chess/pngs/blackPawn.png");
+            ChessPiece pawn = new Pawn(this.gamePane, this, column, 1, Color.BLACK, "chess/png/blackPawn.png");
             this.tiles[1][column].addPiece(pawn);
         }
 
-        ChessPiece whiteRook1 = new Rook(this.gamePane, this,0, 7, Color.WHITE, "chess/pngs/whiteRook.png");
+        ChessPiece whiteRook1 = new Rook(this.gamePane, this,0, 7, Color.WHITE, "chess/png/whiteRook.png");
         this.tiles[7][0].addPiece(whiteRook1);
-        ChessPiece whiteRook2 = new Rook(this.gamePane, this, 7, 7, Color.WHITE, "chess/pngs/whiteRook.png");
+        ChessPiece whiteRook2 = new Rook(this.gamePane, this, 7, 7, Color.WHITE, "chess/png/whiteRook.png");
         this.tiles[7][7].addPiece(whiteRook2);
-        ChessPiece blackRook1 = new Rook(this.gamePane, this,7, 0, Color.BLACK, "chess/pngs/blackRook.png");
+        ChessPiece blackRook1 = new Rook(this.gamePane, this,7, 0, Color.BLACK, "chess/png/blackRook.png");
         this.tiles[0][7].addPiece(blackRook1);
-        ChessPiece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK, "chess/pngs/blackRook.png");
+        ChessPiece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK, "chess/png/blackRook.png");
         this.tiles[0][0].addPiece(blackRook2);
-        ChessPiece whiteBishop1 = new Bishop(this.gamePane, this, 2, 7, Color.WHITE, "chess/pngs/whiteBishop.png");
+        ChessPiece whiteBishop1 = new Bishop(this.gamePane, this, 2, 7, Color.WHITE, "chess/png/whiteBishop.png");
         this.tiles[7][2].addPiece(whiteBishop1);
-        ChessPiece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE, "chess/pngs/whiteBishop.png");
+        ChessPiece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE, "chess/png/whiteBishop.png");
         this.tiles[7][5].addPiece(whiteBishop2);
-        ChessPiece blackBishop1 = new Bishop(this.gamePane, this, 2, 0, Color.BLACK, "chess/pngs/blackBishop.png");
+        ChessPiece blackBishop1 = new Bishop(this.gamePane, this, 2, 0, Color.BLACK, "chess/png/blackBishop.png");
         this.tiles[0][2].addPiece(blackBishop1);
-        ChessPiece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK, "chess/pngs/blackBishop.png");
+        ChessPiece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK, "chess/png/blackBishop.png");
         this.tiles[0][5].addPiece(blackBishop2);
-        ChessPiece whiteQueen = new Queen(this.gamePane, this, 4, 7, Color.WHITE, "chess/pngs/whiteQueen.png");
-        this.tiles[7][4].addPiece(whiteQueen);
-        ChessPiece blackQueen = new Queen(this.gamePane, this, 4, 0, Color.BLACK, "chess/pngs/blackQueen.png");
-        this.tiles[0][4].addPiece(blackQueen);
-        ChessPiece whiteKing = new King(this.gamePane, this, 3, 7, Color.WHITE, "chess/pngs/whiteKing.png");
-        this.tiles[7][3].addPiece(whiteKing);
-        ChessPiece blackKing = new King(this.gamePane, this, 3, 0, Color.BLACK, "chess/pngs/blackKing.png");
-        this.tiles[0][3].addPiece(blackKing);
-        ChessPiece whiteKnight1 = new Knight(this.gamePane, this, 1, 7, Color.WHITE, "chess/pngs/whiteKnight.png");
+        ChessPiece whiteQueen = new Queen(this.gamePane, this, 3, 7, Color.WHITE, "chess/png/whiteQueen.png");
+        this.tiles[7][3].addPiece(whiteQueen);
+        ChessPiece blackQueen = new Queen(this.gamePane, this, 3, 0, Color.BLACK, "chess/png/blackQueen.png");
+        this.tiles[0][3].addPiece(blackQueen);
+        ChessPiece whiteKing = new King(this.gamePane, this, 4, 7, Color.WHITE, "chess/png/whiteKing.png");
+        this.tiles[7][4].addPiece(whiteKing);
+        ChessPiece blackKing = new King(this.gamePane, this, 4, 0, Color.BLACK, "chess/png/blackKing.png");
+        this.tiles[0][4].addPiece(blackKing);
+        ChessPiece whiteKnight1 = new Knight(this.gamePane, this, 1, 7, Color.WHITE, "chess/png/whiteKnight.png");
         this.tiles[7][1].addPiece(whiteKnight1);
-        ChessPiece whiteKnight2 = new Knight(this.gamePane, this, 6, 7, Color.WHITE, "chess/pngs/whiteKnight.png");
+        ChessPiece whiteKnight2 = new Knight(this.gamePane, this, 6, 7, Color.WHITE, "chess/png/whiteKnight.png");
         this.tiles[7][6].addPiece(whiteKnight2);
-        ChessPiece blackKnight1 = new Knight(this.gamePane, this, 1, 0, Color.BLACK, "chess/pngs/blackKnight.png");
+        ChessPiece blackKnight1 = new Knight(this.gamePane, this, 1, 0, Color.BLACK, "chess/png/blackKnight.png");
         this.tiles[0][1].addPiece(blackKnight1);
-        ChessPiece blackKnight2 = new Knight(this.gamePane, this, 6, 0, Color.BLACK, "chess/pngs/blackKnight.png");
+        ChessPiece blackKnight2 = new Knight(this.gamePane, this, 6, 0, Color.BLACK, "chess/png/blackKnight.png");
         this.tiles[0][6].addPiece(blackKnight2);
     }
 
@@ -126,9 +129,9 @@ public class Game {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if ((row + col) % 2 == 0) {
-                    this.tiles[row][col].changeColor(Color.BROWN);
-                } else {
                     this.tiles[row][col].changeColor(Color.WHITE);
+                } else {
+                    this.tiles[row][col].changeColor(Color.BROWN);
                 }
             }
         }
@@ -160,22 +163,22 @@ public class Game {
             if (tileColor == Color.BROWN || tileColor == Color.WHITE || isRedKingMove) {
                 this.clearBoard();
                 ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
-                if (this.playerColor.isRightColor(pieceClicked.getColor())){
+                if (this.playerColor.isRightTurn(pieceClicked.getColor())){
                     pieceClicked.getPossibleMoves();
                 } else {
-                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
+                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColorString() + " piece!");
                 }
             }
             if (tileColor == Color.GREEN || tileColor == Color.RED){
                 ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
-                if (this.playerColor.isRightColor(pieceClicked.getColor())){
+                if (this.playerColor.isRightTurn(pieceClicked.getColor())){
                     if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
                         this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
                     }
                     this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
                     pieceClicked.move(clickRow, clickColumn);
                     this.errorMessageLabel.setText("No errors!");
-                    this.reverseStack.add(new Move<>(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
+                    this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
                     this.clearBoard();
                     if (this.checkPawnPromotion() != null){
                         this.promotePawn();
@@ -188,7 +191,7 @@ public class Game {
                             this.errorMessageLabel.setText("CHECK!");
                         }
                         this.checkPiece.getCheckMoves();
-                        if (this.checkedKingColor == this.playerColor.convertToColor()) {
+                        if (this.checkedKingColor == this.playerColor.convertPlayerColorToColor()) {
                             this.errorMessageLabel.setText("Cannot move to check yourself!");
                         }
                         this.isCheck = true;
@@ -197,9 +200,9 @@ public class Game {
                         this.isCheck = false;
                     }
                     this.rotate();
-                    this.playerColor = this.playerColor.getOppositePlayer();
+                    this.playerColor = this.playerColor.getOppositePlayerColor();
                 } else {
-                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColor() + " piece!");
+                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColorString() + " piece!");
                 }
             }
         } catch (IndexOutOfBoundsException e){
@@ -257,19 +260,18 @@ public class Game {
     public boolean searchForCheckMate(){
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
-                if (this.tiles[row][column].getPieceArrayList().size() != 0 && this.tiles[row][column].getPieceArrayList().get(0).getColor() != this.playerColor.convertToColor()){
+                if (this.tiles[row][column].getPieceArrayList().size() != 0 && this.tiles[row][column].getPieceArrayList().get(0).getColor() != this.playerColor.convertPlayerColorToColor()){
                     ArrayList<Coordinate<Integer, Integer>> coordinateArrayList = new ArrayList<>();
                     this.tiles[row][column].getPieceArrayList().get(0).overallMovement(coordinateArrayList);
                     for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
-                        this.tiles[row][column].getPieceArrayList().get(0).simulateMove(row, column, coordinate.getR(), coordinate.getC());
+                        this.tiles[row][column].getPieceArrayList().get(0).simulateMove(row, column, coordinate.getRow(), coordinate.getC());
                         if (!this.underCheck()) {
                             this.clearBoard();
-                            this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
-                            System.out.println("returning false");
+                            this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
                             return false;
                         } else {
                             this.clearBoard();
-                            this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getR(), coordinate.getC(), this.tiles[coordinate.getR()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
+                            this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
                         }
                     }
                 }
@@ -296,7 +298,7 @@ public class Game {
             if (this.isCheck){
                 return false;
             }
-            if (this.playerColor.convertToColor() == Color.WHITE){
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
                 if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
                     return false;
                 }
@@ -307,7 +309,7 @@ public class Game {
                     return false;
                 }
             }
-            if (this.playerColor.convertToColor() == Color.BLACK){
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
                 if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
                     return false;
                 }
@@ -328,7 +330,7 @@ public class Game {
             if (this.isCheck){
                 return false;
             }
-            if (this.playerColor.convertToColor() == Color.WHITE){
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
                 if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
                     return false;
                 }
@@ -339,7 +341,7 @@ public class Game {
                     return false;
                 }
             }
-            if (this.playerColor.convertToColor() == Color.BLACK){
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
                 if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
                     return false;
                 }
@@ -384,11 +386,11 @@ public class Game {
 
     private void reverseMove(){
         try{
-            Move<ChessPiece, Coordinate<Integer, Integer>, Coordinate<Integer, Integer>, ChessPiece> moveToReverse = this.reverseStack.pop();
+            Move moveToReverse = this.reverseStack.pop();
             ChessPiece currentChessPiece = moveToReverse.getCurrentPiece();
             this.rotate();
-            currentChessPiece.reverseMove(moveToReverse.getFromPair().getR(), moveToReverse.getFromPair().getC(), moveToReverse.getToPair().getR(), moveToReverse.getToPair().getC(), moveToReverse.getEatenChessPiece());
-            this.playerColor = this.playerColor.getOppositePlayer();
+            currentChessPiece.reverseMove(moveToReverse.getFromCoordinate().getRow(), moveToReverse.getFromCoordinate().getC(), moveToReverse.getToCoordinate().getRow(), moveToReverse.getToCoordinate().getC(), moveToReverse.getEatenChessPiece());
+            this.playerColor = this.playerColor.getOppositePlayerColor();
         } catch (EmptyStackException e) {
             this.errorMessageLabel.setText("No moves to reverse!");
         }
@@ -434,11 +436,11 @@ public class Game {
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece queen = null;
-            if (this.playerColor.convertToColor() == Color.WHITE){
-                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteQueen.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
+                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/whiteQueen.png");
             }
-            if (this.playerColor.convertToColor() == Color.BLACK){
-                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackQueen.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
+                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/blackQueen.png");
             }
             this.tiles[pawnRow][pawnColumn].addPiece(queen);
         }
@@ -448,11 +450,11 @@ public class Game {
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece rook = null;
-            if (this.playerColor.convertToColor() == Color.WHITE){
-                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteRook.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
+                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/whiteRook.png");
             }
-            if (this.playerColor.convertToColor() == Color.BLACK){
-                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackRook.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
+                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/blackRook.png");
             }
             this.tiles[pawnRow][pawnColumn].addPiece(rook);
         }
@@ -462,11 +464,11 @@ public class Game {
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece bishop = null;
-            if (this.playerColor.convertToColor() == Color.WHITE){
-                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteBishop.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
+                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/whiteBishop.png");
             }
-            if (this.playerColor.convertToColor() == Color.BLACK){
-                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackBishop.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
+                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/blackBishop.png");
             }
             this.tiles[pawnRow][pawnColumn].addPiece(bishop);
         }
@@ -476,18 +478,18 @@ public class Game {
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece knight = null;
-            if (this.playerColor.convertToColor() == Color.WHITE){
-                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/whiteKnight.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
+                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/whiteKnight.png");
             }
-            if (this.playerColor.convertToColor() == Color.BLACK){
-                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertToColor(), "chess/pngs/blackKnight.png");
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
+                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/png/blackKnight.png");
             }
             this.tiles[pawnRow][pawnColumn].addPiece(knight);
         }
     }
 
     public Color getPlayerColor(){
-        return this.playerColor.convertToColor();
+        return this.playerColor.convertPlayerColorToColor();
     }
 
     public void changeColor(int row, int column, Color color){

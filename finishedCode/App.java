@@ -1,5 +1,6 @@
-package chess;
+package chess.finishedCode;
 
+import chess.PaneOrganizer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
