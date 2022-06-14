@@ -1,6 +1,6 @@
 package chess;
 
-import chess.finishedCode.Coordinate;
+import chess.codeFinished.Coordinate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

@@ -1,4 +1,4 @@
-package chess.finishedCode;
+package chess.codeFinished;
 
 import chess.ChessPiece;
 
