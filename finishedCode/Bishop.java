@@ -1,9 +1,10 @@
-package chess;
+package chess.finishedCode;
 
+import chess.Game;
+import chess.Queen;
 import chess.finishedCode.Coordinate;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 
 public class Bishop extends Queen {

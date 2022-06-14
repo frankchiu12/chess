@@ -1,8 +1,6 @@
 package chess;
 
-import chess.finishedCode.Coordinate;
-import chess.finishedCode.Move;
-import chess.finishedCode.PlayerColor;
+import chess.finishedCode.*;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -190,7 +188,7 @@ public class Game {
                         } else {
                             this.errorMessageLabel.setText("CHECK!");
                         }
-                        this.checkPiece.getCheckMoves();
+                        this.checkPiece.getCheckMove();
                         if (this.checkedKingColor == this.playerColor.convertPlayerColorToColor()) {
                             this.errorMessageLabel.setText("Cannot move to check yourself!");
                         }
@@ -299,10 +297,10 @@ public class Game {
                 return false;
             }
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
+                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
                     return false;
                 }
-                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0){
+                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0 || this.tiles[7][3].getPieceArrayList().size() != 0){
                     return false;
                 }
                 if (this.tiles[7][0].getPieceArrayList().size() == 0 || !(this.tiles[7][0].getPieceArrayList().get(0) instanceof Rook)){
@@ -310,10 +308,10 @@ public class Game {
                 }
             }
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
+                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)) {
                     return false;
                 }
-                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0 || this.tiles[7][3].getPieceArrayList().size() != 0){
+                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0){
                     return false;
                 }
                 if (this.tiles[7][0].getPieceArrayList().size() == 0 || !(this.tiles[7][0].getPieceArrayList().get(0) instanceof Rook)){
@@ -331,10 +329,10 @@ public class Game {
                 return false;
             }
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
+                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
                     return false;
                 }
-                if (this.tiles[7][4].getPieceArrayList().size() != 0 || this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
+                if (this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
                     return false;
                 }
                 if (this.tiles[7][7].getPieceArrayList().size() == 0 || !(this.tiles[7][7].getPieceArrayList().get(0) instanceof Rook)){
@@ -342,10 +340,10 @@ public class Game {
                 }
             }
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
+                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
                     return false;
                 }
-                if (this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
+                if (this.tiles[7][4].getPieceArrayList().size() != 0 || this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
                     return false;
                 }
                 if (this.tiles[7][7].getPieceArrayList().size() == 0 || !(this.tiles[7][7].getPieceArrayList().get(0) instanceof Rook)){

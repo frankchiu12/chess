@@ -19,19 +19,18 @@ public class PaneOrganizer {
 
         this.root.setCenter(gamePane);
         this.root.setRight(vBox);
+
         vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(25);
-        vBox.getChildren().add(game.getErrorMessageLabel());
-        vBox.getChildren().add(game.getTextField());
-        vBox.getChildren().add(game.getSubmitButton());
 
-        Button quitBtn = new Button("Quit");
-        quitBtn.setOnAction((ActionEvent e) -> System.exit(0));
-        quitBtn.setPrefWidth(100);
-        quitBtn.setTranslateX((880-640)/2 * -1 + 100);
-        quitBtn.setAlignment(Pos.CENTER);
-        quitBtn.setFocusTraversable(false);
-        vBox.getChildren().add(quitBtn);
+        Button quitButton = new Button("Quit");
+        quitButton.setOnAction((ActionEvent e) -> System.exit(0));
+        quitButton.setPrefWidth(100);
+        quitButton.setTranslateX(-20);
+        quitButton.setAlignment(Pos.CENTER);
+        quitButton.setFocusTraversable(false);
+
+        vBox.getChildren().addAll(game.getErrorMessageLabel(), game.getTextField(), game.getSubmitButton(), quitButton);
     }
 
     public BorderPane getRoot(){

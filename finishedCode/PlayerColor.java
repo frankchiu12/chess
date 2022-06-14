@@ -3,6 +3,7 @@ package chess.finishedCode;
 import javafx.scene.paint.Color;
 
 public enum PlayerColor {
+
     WHITE, BLACK;
 
     public Color convertPlayerColorToColor() {

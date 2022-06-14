@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     @Override
-    public void start(Stage stage){
+    public void start(Stage stage) {
         PaneOrganizer organizer = new PaneOrganizer();
         Scene scene = new Scene(organizer.getRoot(), 880, 640);
         stage.setScene(scene);
