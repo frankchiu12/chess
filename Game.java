@@ -18,7 +18,7 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: reverse pawn promotion, save, timer
+// TODO: reverse pawn promotion, restart, timer
 
 public class Game {
     
@@ -32,11 +32,11 @@ public class Game {
     private ChessPiece checkPiece;
     private Color checkedKingColor;
 
-    private final Stack<Move> reverseStack;
+    private Stack<Move> reverseStack;
 
-    private final Label errorMessageLabel;
-    private final TextField textField;
-    private final Button submitButton;
+    private Label errorMessageLabel;
+    private TextField textField;
+    private Button submitButton;
 
     public Game(Pane gamePane) {
         this.gamePane = gamePane;
@@ -441,13 +441,14 @@ public class Game {
      */
     public String getPawnPromotionPiece() {return this.textField.getText();}
 
-    // TODO: fix
+    // TODO: add to
     public void promotePawn() throws InterruptedException {
         String pawnPromotionPieceText = this.getPawnPromotionPiece();
+        // Queen (defaults to Queen if no text is entered into the textField)
         if (Objects.equals(pawnPromotionPieceText, "Queen") || pawnPromotionPieceText.isEmpty()) {
-            this.checkPawnPromotion().removeImage();
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.checkPawnPromotion().removeImage();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece queen = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
@@ -458,10 +459,11 @@ public class Game {
             }
             this.tiles[pawnRow][pawnColumn].addPiece(queen);
         }
-        if (Objects.equals(pawnPromotionPieceText, "Rook")) {
-            this.checkPawnPromotion().removeImage();
+        // Rook
+        else if (Objects.equals(pawnPromotionPieceText, "Rook")) {
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.checkPawnPromotion().removeImage();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece rook = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
@@ -472,10 +474,11 @@ public class Game {
             }
             this.tiles[pawnRow][pawnColumn].addPiece(rook);
         }
-        if (Objects.equals(pawnPromotionPieceText, "Bishop")) {
-            this.checkPawnPromotion().removeImage();
+        // Bishop
+        else if (Objects.equals(pawnPromotionPieceText, "Bishop")) {
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.checkPawnPromotion().removeImage();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece bishop = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
@@ -486,10 +489,11 @@ public class Game {
             }
             this.tiles[pawnRow][pawnColumn].addPiece(bishop);
         }
-        if (Objects.equals(pawnPromotionPieceText, "Knight")) {
-            this.checkPawnPromotion().removeImage();
+        // Knight
+        else if (Objects.equals(pawnPromotionPieceText, "Knight")) {
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.checkPawnPromotion().removeImage();
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece knight = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
@@ -546,12 +550,15 @@ public class Game {
     /**
      * defines key presses
      */
+    // TODO
     private void keyPress(KeyEvent keyPress) {
         KeyCode keyPressed = keyPress.getCode();
         // R reverses the most recent move
         if (keyPressed == KeyCode.R) {
             this.clearBoard();
             this.reverseMove();
+        } else if (keyPressed == KeyCode.S) {
+//            this.restart();
         }
     }
 
@@ -569,6 +576,34 @@ public class Game {
             this.errorMessageLabel.setText("No moves to reverse!");
         }
     }
+
+//    /**
+//     * restart the game
+//     */
+//    private void restart() {
+//        this.playerColor = PlayerColor.WHITE;
+//        this.reverseStack = new Stack<>();
+//
+//        this.errorMessageLabel = new Label("Error messages are displayed here!");
+//        this.errorMessageLabel.setPrefWidth(200);
+//        this.errorMessageLabel.setTranslateX(-20);
+//        this.errorMessageLabel.setAlignment(Pos.CENTER);
+//
+//        this.textField = new TextField();
+//        this.textField.setPrefWidth(200);
+//        this.textField.setTranslateX(-20);
+//
+//        this.submitButton = new Button("Submit");
+//        this.submitButton.setOnAction((ActionEvent e) -> this.getPawnPromotionPiece());
+//        this.submitButton.setPrefWidth(100);
+//        this.submitButton.setTranslateX(-20);
+//        this.submitButton.setAlignment(Pos.CENTER);
+//        this.submitButton.setFocusTraversable(false);
+//
+//        this.makeBoard();
+//        this.initializeBoard();
+//        this.setUpMainTimeLine();
+//    }
 
     public BoardSquare[][] getTiles() {return this.tiles;}
 
