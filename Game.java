@@ -18,48 +18,56 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-public class Game {
+// TODO: reverse pawn promotion, save, timer
 
+public class Game {
+    
     private final Pane gamePane;
     private BoardSquare[][] tiles;
-    private ChessPiece checkPiece;
+    private PlayerColor playerColor;
     private int previousClickRow;
     private int previousClickColumn;
-    private final Stack<Move> reverseStack;
+
     private boolean isCheck;
+    private ChessPiece checkPiece;
     private Color checkedKingColor;
-    private PlayerColor playerColor;
+
+    private final Stack<Move> reverseStack;
+
     private final Label errorMessageLabel;
     private final TextField textField;
     private final Button submitButton;
 
-    public Game(Pane gamePane){
+    public Game(Pane gamePane) {
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
 
         this.errorMessageLabel = new Label("Error messages are displayed here!");
         this.errorMessageLabel.setPrefWidth(200);
-        this.errorMessageLabel.setTranslateX((880-640)/2 * -1 + 200/2);
+        this.errorMessageLabel.setTranslateX(-20);
         this.errorMessageLabel.setAlignment(Pos.CENTER);
 
         this.textField = new TextField();
         this.textField.setPrefWidth(200);
-        this.textField.setTranslateX((880-640)/2 * -1 + 200/2);
+        this.textField.setTranslateX(-20);
 
         this.submitButton = new Button("Submit");
         this.submitButton.setOnAction((ActionEvent e) -> this.getPawnPromotionPiece());
         this.submitButton.setPrefWidth(100);
-        this.submitButton.setTranslateX((880-640)/2 * -1 + 100);
+        this.submitButton.setTranslateX(-20);
         this.submitButton.setAlignment(Pos.CENTER);
         this.submitButton.setFocusTraversable(false);
 
         this.makeBoard();
         this.initializeBoard();
-        this.setUpMainLine();
+        this.setUpMainTimeLine();
     }
 
-    public void makeBoard(){
+    /**
+     * makes the underlying board
+     */
+    public void makeBoard() {
         this.tiles = new BoardSquare[8][8];
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
@@ -72,40 +80,20 @@ public class Game {
         }
     }
 
-    public void initializeBoard(){
-        for (int column = 0; column < 8; column++){
+    /**
+     * initialize the ChessPieces on the board
+     */
+    public void initializeBoard() {
+        // Pawn
+        for (int column = 0; column < 8; column++) {
             ChessPiece pawn = new Pawn(this.gamePane, this, column, 6, Color.WHITE, "chess/chessPiecePNG/whitePawn.png");
             this.tiles[6][column].addPiece(pawn);
         }
-        for (int column = 0; column < 8; column++){
+        for (int column = 0; column < 8; column++) {
             ChessPiece pawn = new Pawn(this.gamePane, this, column, 1, Color.BLACK, "chess/chessPiecePNG/blackPawn.png");
             this.tiles[1][column].addPiece(pawn);
         }
-
-        ChessPiece whiteRook1 = new Rook(this.gamePane, this,0, 7, Color.WHITE, "chess/chessPiecePNG/whiteRook.png");
-        this.tiles[7][0].addPiece(whiteRook1);
-        ChessPiece whiteRook2 = new Rook(this.gamePane, this, 7, 7, Color.WHITE, "chess/chessPiecePNG/whiteRook.png");
-        this.tiles[7][7].addPiece(whiteRook2);
-        ChessPiece blackRook1 = new Rook(this.gamePane, this,7, 0, Color.BLACK, "chess/chessPiecePNG/blackRook.png");
-        this.tiles[0][7].addPiece(blackRook1);
-        ChessPiece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK, "chess/chessPiecePNG/blackRook.png");
-        this.tiles[0][0].addPiece(blackRook2);
-        ChessPiece whiteBishop1 = new Bishop(this.gamePane, this, 2, 7, Color.WHITE, "chess/chessPiecePNG/whiteBishop.png");
-        this.tiles[7][2].addPiece(whiteBishop1);
-        ChessPiece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE, "chess/chessPiecePNG/whiteBishop.png");
-        this.tiles[7][5].addPiece(whiteBishop2);
-        ChessPiece blackBishop1 = new Bishop(this.gamePane, this, 2, 0, Color.BLACK, "chess/chessPiecePNG/blackBishop.png");
-        this.tiles[0][2].addPiece(blackBishop1);
-        ChessPiece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK, "chess/chessPiecePNG/blackBishop.png");
-        this.tiles[0][5].addPiece(blackBishop2);
-        ChessPiece whiteQueen = new Queen(this.gamePane, this, 3, 7, Color.WHITE, "chess/chessPiecePNG/whiteQueen.png");
-        this.tiles[7][3].addPiece(whiteQueen);
-        ChessPiece blackQueen = new Queen(this.gamePane, this, 3, 0, Color.BLACK, "chess/chessPiecePNG/blackQueen.png");
-        this.tiles[0][3].addPiece(blackQueen);
-        ChessPiece whiteKing = new King(this.gamePane, this, 4, 7, Color.WHITE, "chess/chessPiecePNG/whiteKing.png");
-        this.tiles[7][4].addPiece(whiteKing);
-        ChessPiece blackKing = new King(this.gamePane, this, 4, 0, Color.BLACK, "chess/chessPiecePNG/blackKing.png");
-        this.tiles[0][4].addPiece(blackKing);
+        // Knight
         ChessPiece whiteKnight1 = new Knight(this.gamePane, this, 1, 7, Color.WHITE, "chess/chessPiecePNG/whiteKnight.png");
         this.tiles[7][1].addPiece(whiteKnight1);
         ChessPiece whiteKnight2 = new Knight(this.gamePane, this, 6, 7, Color.WHITE, "chess/chessPiecePNG/whiteKnight.png");
@@ -114,9 +102,40 @@ public class Game {
         this.tiles[0][1].addPiece(blackKnight1);
         ChessPiece blackKnight2 = new Knight(this.gamePane, this, 6, 0, Color.BLACK, "chess/chessPiecePNG/blackKnight.png");
         this.tiles[0][6].addPiece(blackKnight2);
+        // Bishop
+        ChessPiece whiteBishop1 = new Bishop(this.gamePane, this, 2, 7, Color.WHITE, "chess/chessPiecePNG/whiteBishop.png");
+        this.tiles[7][2].addPiece(whiteBishop1);
+        ChessPiece whiteBishop2 = new Bishop(this.gamePane, this, 5, 7, Color.WHITE, "chess/chessPiecePNG/whiteBishop.png");
+        this.tiles[7][5].addPiece(whiteBishop2);
+        ChessPiece blackBishop1 = new Bishop(this.gamePane, this, 2, 0, Color.BLACK, "chess/chessPiecePNG/blackBishop.png");
+        this.tiles[0][2].addPiece(blackBishop1);
+        ChessPiece blackBishop2 = new Bishop(this.gamePane, this, 5, 0, Color.BLACK, "chess/chessPiecePNG/blackBishop.png");
+        this.tiles[0][5].addPiece(blackBishop2);
+        // Rook
+        ChessPiece whiteRook1 = new Rook(this.gamePane, this,0, 7, Color.WHITE, "chess/chessPiecePNG/whiteRook.png");
+        this.tiles[7][0].addPiece(whiteRook1);
+        ChessPiece whiteRook2 = new Rook(this.gamePane, this, 7, 7, Color.WHITE, "chess/chessPiecePNG/whiteRook.png");
+        this.tiles[7][7].addPiece(whiteRook2);
+        ChessPiece blackRook1 = new Rook(this.gamePane, this,7, 0, Color.BLACK, "chess/chessPiecePNG/blackRook.png");
+        this.tiles[0][7].addPiece(blackRook1);
+        ChessPiece blackRook2 = new Rook(this.gamePane, this, 0, 0, Color.BLACK, "chess/chessPiecePNG/blackRook.png");
+        this.tiles[0][0].addPiece(blackRook2);
+        // Queen
+        ChessPiece whiteQueen = new Queen(this.gamePane, this, 3, 7, Color.WHITE, "chess/chessPiecePNG/whiteQueen.png");
+        this.tiles[7][3].addPiece(whiteQueen);
+        ChessPiece blackQueen = new Queen(this.gamePane, this, 3, 0, Color.BLACK, "chess/chessPiecePNG/blackQueen.png");
+        this.tiles[0][3].addPiece(blackQueen);
+        // King
+        ChessPiece whiteKing = new King(this.gamePane, this, 4, 7, Color.WHITE, "chess/chessPiecePNG/whiteKing.png");
+        this.tiles[7][4].addPiece(whiteKing);
+        ChessPiece blackKing = new King(this.gamePane, this, 4, 0, Color.BLACK, "chess/chessPiecePNG/blackKing.png");
+        this.tiles[0][4].addPiece(blackKing);
     }
 
-    private void clearBoard(){
+    /**
+     * clear the board of highlights
+     */
+    private void clearBoard() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if ((row + col) % 2 == 0) {
@@ -128,67 +147,96 @@ public class Game {
         }
     }
 
-    private void setUpMainLine(){
+    /**
+     * set up main timeline
+     */
+    private void setUpMainTimeLine() {
         KeyFrame kf = new KeyFrame(Duration.seconds(0.1), (ActionEvent timeline) -> this.timelineActions());
         Timeline timeline = new Timeline(kf);
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
-    private void timelineActions(){
-        this.movePieceOnPressed();
+    /**
+     * timeline actions that are called on a loop
+     */
+    private void timelineActions() {
+        this.movePieceOnClick();
         this.handleKeyPress();
     }
 
-    private void movePieceOnPressed() {
+    /**
+     * move ChessPieces when they are clicked
+     */
+    private void movePieceOnClick() {
         this.gamePane.setOnMouseClicked(this::movePiece);
         this.gamePane.setFocusTraversable(true);
     }
 
-    private void movePiece(MouseEvent mouseClicked){
+    // TODO: add to
+    private void movePiece(MouseEvent mouseClicked) {
+        // get the row, column, and color of the tile that was clicked
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
         Color tileColor = this.tiles[clickRow][clickColumn].getColor();
-        try{
+        try {
             boolean isRedKingMove = tileColor == Color.RED && this.tilePieceArrayList(clickRow, clickColumn).get(0) instanceof King;
+            // if the tile color is brown or white or a King under check
             if (tileColor == Color.BROWN || tileColor == Color.WHITE || isRedKingMove) {
                 this.clearBoard();
+                // get the ChessPiece that was clicked
                 ChessPiece pieceClicked = this.tilePieceArrayList(clickRow, clickColumn).get(0);
-                if (this.playerColor.isRightTurn(pieceClicked.getColor())){
+                // if the turn is correct
+                if (this.playerColor.isRightTurn(pieceClicked.getColor())) {
+                    // get the possible moves of the ChessPiece that was clicked
                     pieceClicked.getPossibleMoves();
                 } else {
                     this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColorString() + " piece!");
                 }
             }
-            if (tileColor == Color.GREEN || tileColor == Color.RED){
+            // if the tile color is green or red
+            if (tileColor == Color.GREEN || tileColor == Color.RED) {
+                // get the ChessPiece that was clicked previously (before the click for the move)
                 ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
-                if (this.playerColor.isRightTurn(pieceClicked.getColor())){
-                    if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0){
+                // if the turn is correct
+                if (this.playerColor.isRightTurn(pieceClicked.getColor())) {
+                    // if there is a ChessPiece being eaten
+                    if (this.tilePieceArrayList(clickRow, clickColumn).size() != 0) {
+                        // remove the image of the ChessPiece being eaten
                         this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
                     }
+                    // clear the pieceArrayList of the ChessPiece that was clicked previously
                     this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
+                    // move the ChessPiece
                     pieceClicked.move(clickRow, clickColumn);
-                    this.errorMessageLabel.setText("No errors!");
+                    // add the move to the reverseStack
                     this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
                     this.clearBoard();
-                    if (this.checkPawnPromotion() != null){
-                        this.promotePawn();
-                    }
-                    if (this.underCheck()){
+                    this.errorMessageLabel.setText("No errors!");
+                    // if there is a check
+                    if (this.underCheck()) {
                         this.clearBoard();
-                        if (this.searchForCheckMate()){
-                            this.errorMessageLabel.setText("CHECKMATE!");
+                        // if there is a checkmate
+                        if (this.searchForCheckMate()) {
+                            // TODO: stop timeline
+                            this.errorMessageLabel.setText("CHECKMATE! " + this.playerColor.getOppositeColorString() + " won!");
                         } else {
                             this.errorMessageLabel.setText("CHECK!");
                         }
                         this.checkPiece.getCheckMove();
+                        // if there is a move by a player that checks themselves
                         if (this.checkedKingColor == this.playerColor.convertPlayerColorToColor()) {
-                            this.errorMessageLabel.setText("Cannot move to check yourself!");
+                            // TODO: stop timeline
+                            this.errorMessageLabel.setText("Cannot move to check yourself!" + this.playerColor.getOppositeColorString() + " won!");
                         }
                         this.isCheck = true;
                     } else {
                         this.clearBoard();
                         this.isCheck = false;
+                    }
+                    // if there is a Pawn promotion
+                    if (this.checkPawnPromotion() != null) {
+                        this.promotePawn();
                     }
                     this.rotate();
                     this.playerColor = this.playerColor.getOppositePlayerColor();
@@ -196,49 +244,61 @@ public class Game {
                     this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColorString() + " piece!");
                 }
             }
-        } catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             this.errorMessageLabel.setText("No piece exists/invalid move!");
-        } catch (InterruptedException ignored){
+        } catch (InterruptedException ignored) {
         }
         this.previousClickRow = clickRow;
         this.previousClickColumn = clickColumn;
     }
 
-    public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset){
+    /**
+     * check whether a move is valid
+     */
+    public boolean checkCanMove(int startRow, int startColumn, int rowOffset, int columnOffset) {
         try {
             int checkRow = startRow + rowOffset;
             int checkColumn = startColumn + columnOffset;
             return this.tilePieceArrayList(checkRow, checkColumn).size() == 0;
         }
-        catch (IndexOutOfBoundsException e){
+        catch (IndexOutOfBoundsException e) {
             return false;
         }
     }
 
-    public boolean checkCanEat(int startRow, int startColumn, int rowOffset, int columnOffset, Color color){
+    /**
+     * check whether you could eat a ChessPiece of the opponent
+     */
+    public boolean checkCanEat(int startRow, int startColumn, int rowOffset, int columnOffset, Color color) {
         try {
             int checkRow = startRow + rowOffset;
             int checkColumn = startColumn + columnOffset;
-            return this.tilePieceArrayList(checkRow, checkColumn).size() == 1 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
+            return this.tilePieceArrayList(checkRow, checkColumn).size() != 0 && this.tilePieceArrayList(checkRow, checkColumn).get(0).getColor() == this.getOppositeColor(color);
         }
-        catch (IndexOutOfBoundsException e){
+        catch (IndexOutOfBoundsException e) {
             return false;
         }
     }
 
-    public boolean underCheck(){
+    /**
+     * check whether a player is under check
+     */
+    public boolean underCheck() {
+        // for all the rows and columns
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
-                if (this.tiles[row][column].getPieceArrayList().size() != 0){
-                    this.tiles[row][column].getPieceArrayList().get(0).getPossibleMoves();
+                // if there is a ChessPiece
+                if (this.tilePieceArrayList(row, column).size() != 0) {
+                    // get their possible moves
+                    this.tilePieceArrayList(row, column).get(0).getPossibleMoves();
+                    // of those possible moves
                     for (int r = 0; r < 8; r++) {
                         for (int c = 0; c < 8; c++) {
-                            if (this.tiles[r][c].getColor() == Color.RED){
-                                if (this.tiles[r][c].getPieceArrayList().get(0) instanceof King){
-                                    this.checkPiece = this.tiles[row][column].getPieceArrayList().get(0);
-                                    this.checkedKingColor = this.tiles[r][c].getPieceArrayList().get(0).getColor();
-                                    return true;
-                                }
+                            // if a King is highlighted as red
+                            if (this.tiles[r][c].getColor() == Color.RED && this.tilePieceArrayList(r, c).get(0) instanceof King) {
+                                this.checkPiece = this.tilePieceArrayList(row, column).get(0);
+                                this.checkedKingColor = this.tilePieceArrayList(r, c).get(0).getColor();
+                                return true;
                             }
                         }
                     }
@@ -248,21 +308,30 @@ public class Game {
         return false;
     }
 
-    public boolean searchForCheckMate(){
+    /**
+     * check whether there is a checkmate
+     */
+    public boolean searchForCheckMate() {
+        // for all the rows and columns
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
-                if (this.tiles[row][column].getPieceArrayList().size() != 0 && this.tiles[row][column].getPieceArrayList().get(0).getColor() != this.playerColor.convertPlayerColorToColor()){
+                // if there is a ChessPiece of the opponent's color
+                if (this.tilePieceArrayList(row, column).size() != 0 && this.tilePieceArrayList(row, column).get(0).getColor() != this.playerColor.convertPlayerColorToColor()) {
+                    // get their possible moves
                     ArrayList<Coordinate<Integer, Integer>> coordinateArrayList = new ArrayList<>();
-                    this.tiles[row][column].getPieceArrayList().get(0).overallMovement(coordinateArrayList);
+                    this.tilePieceArrayList(row, column).get(0).overallMovement(coordinateArrayList);
+                    // loop through their possible moves
                     for (Coordinate<Integer, Integer> coordinate : coordinateArrayList) {
-                        this.tiles[row][column].getPieceArrayList().get(0).simulateMove(row, column, coordinate.getRow(), coordinate.getC());
+                        // simulate the move
+                        this.tilePieceArrayList(row, column).get(0).simulateMove(row, column, coordinate.getRow(), coordinate.getC());
+                        // if it takes the opponent out of check, it is not a checkmate
                         if (!this.underCheck()) {
                             this.clearBoard();
-                            this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
+                            this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).getChessPieceEaten());
                             return false;
                         } else {
                             this.clearBoard();
-                            this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tiles[coordinate.getRow()][coordinate.getC()].getPieceArrayList().get(0).getChessPieceEaten());
+                            this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).getChessPieceEaten());
                         }
                     }
                 }
@@ -271,43 +340,40 @@ public class Game {
         return true;
     }
 
-    private void handleKeyPress() {
-        this.gamePane.setOnKeyPressed(this::keyPress);
-        this.gamePane.setFocusTraversable(true);
-    }
-
-    private void keyPress(KeyEvent keyPress){
-        KeyCode keyPressed = keyPress.getCode();
-        if (keyPressed == KeyCode.R) {
-            this.clearBoard();
-            this.reverseMove();
-        }
-    }
-
-    public boolean canLeftCastle(){
+    /**
+     * check whether you could castle on the left
+     */
+    public boolean canLeftCastle() {
         try {
-            if (this.isCheck){
+            // if the King is under check
+            if (this.isCheck) {
                 return false;
             }
-            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                // if the King has moved
+                if (!(this.tilePieceArrayList(7, 4).get(0) instanceof King)) {
                     return false;
                 }
-                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0 || this.tiles[7][3].getPieceArrayList().size() != 0){
+                // if there is a ChessPiece between the King and the Rook
+                if (this.tilePieceArrayList(7, 1).size() != 0 || this.tilePieceArrayList(7, 2).size() != 0 || this.tilePieceArrayList(7, 3).size() != 0) {
                     return false;
                 }
-                if (this.tiles[7][0].getPieceArrayList().size() == 0 || !(this.tiles[7][0].getPieceArrayList().get(0) instanceof Rook)){
+                // if there isn't a Rook in the right position
+                if (this.tilePieceArrayList(7, 0).size() == 0 || !(this.tilePieceArrayList(7, 0).get(0) instanceof Rook)) {
                     return false;
                 }
             }
-            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)) {
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                // if the King has moved
+                if (!(this.tilePieceArrayList(7, 3).get(0) instanceof King)) {
                     return false;
                 }
-                if (this.tiles[7][1].getPieceArrayList().size() != 0 || this.tiles[7][2].getPieceArrayList().size() != 0){
+                // if there is a ChessPiece between the King and the Rook
+                if (this.tilePieceArrayList(7, 1).size() != 0 || this.tilePieceArrayList(7, 2).size() != 0) {
                     return false;
                 }
-                if (this.tiles[7][0].getPieceArrayList().size() == 0 || !(this.tiles[7][0].getPieceArrayList().get(0) instanceof Rook)){
+                // if there isn't a Rook in the right position
+                if (this.tilePieceArrayList(7, 0).size() == 0 || !(this.tilePieceArrayList(7, 0).get(0) instanceof Rook)) {
                     return false;
                 }
             }
@@ -316,30 +382,40 @@ public class Game {
         return true;
     }
 
-    public boolean canRightCastle(){
+    /**
+     * check whether you could castle on the right
+     */
+    public boolean canRightCastle() {
         try {
-            if (this.isCheck){
+            // if the King is under check
+            if (this.isCheck) {
                 return false;
             }
-            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                if (!(this.tiles[7][4].getPieceArrayList().get(0) instanceof King)){
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                // if the King has moved
+                if (!(this.tilePieceArrayList(7, 4).get(0) instanceof King)) {
                     return false;
                 }
-                if (this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
+                // if there is a ChessPiece between the King and the Rook
+                if (this.tilePieceArrayList(7, 5).size() != 0 || this.tilePieceArrayList(7, 6).size() != 0) {
                     return false;
                 }
-                if (this.tiles[7][7].getPieceArrayList().size() == 0 || !(this.tiles[7][7].getPieceArrayList().get(0) instanceof Rook)){
+                // if there isn't a Rook in the right position
+                if (this.tilePieceArrayList(7, 7).size() == 0 || !(this.tilePieceArrayList(7, 7).get(0) instanceof Rook)) {
                     return false;
                 }
             }
-            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                if (!(this.tiles[7][3].getPieceArrayList().get(0) instanceof King)){
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                // if the King has moved
+                if (!(this.tilePieceArrayList(7, 3).get(0) instanceof King)) {
                     return false;
                 }
-                if (this.tiles[7][4].getPieceArrayList().size() != 0 || this.tiles[7][5].getPieceArrayList().size() != 0 || this.tiles[7][6].getPieceArrayList().size() != 0){
+                // if there is a ChessPiece between the King and the Rook
+                if (this.tilePieceArrayList(7, 4).size() != 0 || this.tilePieceArrayList(7, 5).size() != 0 || this.tilePieceArrayList(7, 6).size() != 0) {
                     return false;
                 }
-                if (this.tiles[7][7].getPieceArrayList().size() == 0 || !(this.tiles[7][7].getPieceArrayList().get(0) instanceof Rook)){
+                // if there isn't a Rook in the right position
+                if (this.tilePieceArrayList(7, 7).size() == 0 || !(this.tilePieceArrayList(7, 7).get(0) instanceof Rook)) {
                     return false;
                 }
             }
@@ -348,35 +424,142 @@ public class Game {
         return true;
     }
 
-    private void rotate(){
+    /**
+     * check whether a Pawn is in the top row (and therefore could be promoted)
+     */
+    public ChessPiece checkPawnPromotion() {
+        for (int column = 0; column < 8; column++) {
+            if (this.tilePieceArrayList(0, column).size() != 0 && this.tilePieceArrayList(0, column).get(0) instanceof Pawn) {
+                return this.tilePieceArrayList(0, column).get(0);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * get the text from the textField to see what the Pawn is being promoted to
+     */
+    public String getPawnPromotionPiece() {return this.textField.getText();}
+
+    // TODO: fix
+    public void promotePawn() throws InterruptedException {
+        String pawnPromotionPieceText = this.getPawnPromotionPiece();
+        if (Objects.equals(pawnPromotionPieceText, "Queen") || pawnPromotionPieceText.isEmpty()) {
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece queen = null;
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteQueen.png");
+            }
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackQueen.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(queen);
+        }
+        if (Objects.equals(pawnPromotionPieceText, "Rook")) {
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece rook = null;
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteRook.png");
+            }
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackRook.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(rook);
+        }
+        if (Objects.equals(pawnPromotionPieceText, "Bishop")) {
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece bishop = null;
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteBishop.png");
+            }
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackBishop.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(bishop);
+        }
+        if (Objects.equals(pawnPromotionPieceText, "Knight")) {
+            this.checkPawnPromotion().removeImage();
+            int pawnRow = this.checkPawnPromotion().getRow();
+            int pawnColumn = this.checkPawnPromotion().getColumn();
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
+            ChessPiece knight = null;
+            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteKnight.png");
+            }
+            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackKnight.png");
+            }
+            this.tiles[pawnRow][pawnColumn].addPiece(knight);
+        }
+    }
+
+    /**
+     * rotate the entire board
+     */
+    private void rotate() {
         // rotate gamePane
         Rotate rotate = new Rotate();
         rotate.setAngle(180);
         rotate.setPivotX(320);
         rotate.setPivotY(320);
         this.gamePane.getTransforms().add(rotate);
-
+        // make a copy of the board
         BoardSquare[][] tilesCopy = new BoardSquare[8][8];
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 tilesCopy[row][column] = new BoardSquare(this.gamePane, Color.TRANSPARENT, row, column);
-                tilesCopy[row][column].replacePieceArrayList(new ArrayList<>(this.tiles[row][column].getPieceArrayList()));
+                tilesCopy[row][column].replacePieceArrayList(new ArrayList<>(this.tilePieceArrayList(row, column)));
             }
         }
+        // for all the rows and columns
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
-                this.tiles[row][column].replacePieceArrayList(tilesCopy[7 - row][7 - column].getPieceArrayList());
-                if (this.tiles[row][column].getPieceArrayList().size() != 0){
-                    this.tiles[row][column].getPieceArrayList().get(0).setRow(7 - this.tiles[row][column].getPieceArrayList().get(0).getRow());
-                    this.tiles[row][column].getPieceArrayList().get(0).setColumn(7 - this.tiles[row][column].getPieceArrayList().get(0).getColumn());
+                // if there is a ChessPiece, we rotate it graphically
+                if (this.tilePieceArrayList(row, column).size() != 0) {
+                    this.tilePieceArrayList(row, column).get(0).setRow(7 - this.tilePieceArrayList(row, column).get(0).getRow());
+                    this.tilePieceArrayList(row, column).get(0).setColumn(7 - this.tilePieceArrayList(row, column).get(0).getColumn());
                 }
+                // rotate the pieceArrayLists
+                this.tiles[row][column].replacePieceArrayList(tilesCopy[7 - row][7 - column].getPieceArrayList());
             }
         }
         this.gamePane.getTransforms().add(rotate);
     }
 
-    private void reverseMove(){
-        try{
+    /**
+     * handle key press
+     */
+    private void handleKeyPress() {
+        this.gamePane.setOnKeyPressed(this::keyPress);
+        this.gamePane.setFocusTraversable(true);
+    }
+
+    /**
+     * defines key presses
+     */
+    private void keyPress(KeyEvent keyPress) {
+        KeyCode keyPressed = keyPress.getCode();
+        // R reverses the most recent move
+        if (keyPressed == KeyCode.R) {
+            this.clearBoard();
+            this.reverseMove();
+        }
+    }
+
+    /**
+     * reverse the move
+     */
+    private void reverseMove() {
+        try {
             Move moveToReverse = this.reverseStack.pop();
             ChessPiece currentChessPiece = moveToReverse.getCurrentPiece();
             this.rotate();
@@ -387,113 +570,32 @@ public class Game {
         }
     }
 
-    public String getPawnPromotionPiece(){
-        return this.textField.getText();
-    }
+    public BoardSquare[][] getTiles() {return this.tiles;}
 
-    public Color getOppositeColor(Color color){
+    public ArrayList<ChessPiece> tilePieceArrayList(int row, int column) {return this.tiles[row][column].getPieceArrayList();}
+
+    public void changeColor(int row, int column, Color color) {this.tiles[row][column].changeColor(color);}
+
+    public Color getPlayerColor() {return this.playerColor.convertPlayerColorToColor();}
+
+    public Color getOppositeColor(Color color) {
         Color colorToReturn = null;
-        if (color == Color.WHITE){
+        if (color == Color.WHITE) {
             colorToReturn = Color.BLACK;
         }
-        if (color == Color.BLACK){
+        if (color == Color.BLACK) {
             colorToReturn = Color.WHITE;
         }
         return colorToReturn;
     }
 
-    public ArrayList<ChessPiece> tilePieceArrayList(int row, int column){return this.tiles[row][column].getPieceArrayList();}
+    public boolean getCanLeftCastle() {return this.canLeftCastle();}
 
-    public boolean getCanLeftCastle(){
-        return this.canLeftCastle();
-    }
+    public boolean getCanRightCastle() {return this.canRightCastle();}
 
-    public boolean getCanRightCastle(){return this.canRightCastle();}
+    public Label getErrorMessageLabel() {return this.errorMessageLabel;}
 
-    public ChessPiece checkPawnPromotion(){
-        for (int column = 0; column < 8; column++){
-            if (this.tiles[0][column].getPieceArrayList().size() != 0 && this.tiles[0][column].getPieceArrayList().get(0) instanceof Pawn){
-                return this.tiles[0][column].getPieceArrayList().get(0);
-            }
-        }
-        return null;
-    }
+    public TextField getTextField() {return this.textField;}
 
-    public void promotePawn() throws InterruptedException {
-        String pawnPromotionPieceText = this.getPawnPromotionPiece();
-        if (Objects.equals(pawnPromotionPieceText, "Queen") || pawnPromotionPieceText.isEmpty()){
-            this.checkPawnPromotion().removeImage();
-            int pawnRow = this.checkPawnPromotion().getRow();
-            int pawnColumn = this.checkPawnPromotion().getColumn();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
-            ChessPiece queen = null;
-            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteQueen.png");
-            }
-            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackQueen.png");
-            }
-            this.tiles[pawnRow][pawnColumn].addPiece(queen);
-        }
-        if (Objects.equals(pawnPromotionPieceText, "Rook")){
-            this.checkPawnPromotion().removeImage();
-            int pawnRow = this.checkPawnPromotion().getRow();
-            int pawnColumn = this.checkPawnPromotion().getColumn();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
-            ChessPiece rook = null;
-            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteRook.png");
-            }
-            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackRook.png");
-            }
-            this.tiles[pawnRow][pawnColumn].addPiece(rook);
-        }
-        if (Objects.equals(pawnPromotionPieceText, "Bishop")){
-            this.checkPawnPromotion().removeImage();
-            int pawnRow = this.checkPawnPromotion().getRow();
-            int pawnColumn = this.checkPawnPromotion().getColumn();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
-            ChessPiece bishop = null;
-            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteBishop.png");
-            }
-            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackBishop.png");
-            }
-            this.tiles[pawnRow][pawnColumn].addPiece(bishop);
-        }
-        if (Objects.equals(pawnPromotionPieceText, "Knight")){
-            this.checkPawnPromotion().removeImage();
-            int pawnRow = this.checkPawnPromotion().getRow();
-            int pawnColumn = this.checkPawnPromotion().getColumn();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
-            ChessPiece knight = null;
-            if (this.playerColor.convertPlayerColorToColor() == Color.WHITE){
-                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteKnight.png");
-            }
-            if (this.playerColor.convertPlayerColorToColor() == Color.BLACK){
-                knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackKnight.png");
-            }
-            this.tiles[pawnRow][pawnColumn].addPiece(knight);
-        }
-    }
-
-    public Color getPlayerColor(){
-        return this.playerColor.convertPlayerColorToColor();
-    }
-
-    public void changeColor(int row, int column, Color color){
-        this.tiles[row][column].changeColor(color);
-    }
-
-    public BoardSquare[][] getTiles(){
-        return this.tiles;
-    }
-
-    public Label getErrorMessageLabel(){return this.errorMessageLabel;}
-
-    public TextField getTextField(){return this.textField;}
-
-    public Button getSubmitButton(){return this.submitButton;}
+    public Button getSubmitButton() {return this.submitButton;}
 }
