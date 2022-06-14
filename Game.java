@@ -18,7 +18,7 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: reverse pawn promotion, restart, timer, checkpiece
+// TODO: reverse pawn promotion, restart, timer, checkpiece, Q
 
 public class Game {
     
