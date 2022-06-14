@@ -116,6 +116,7 @@ public class ChessPiece {
             int column = coordinate.getC();
             if (this.getPieceArrayList(row, column).size() != 0 && this.getPieceArrayList(row, column).get(0) instanceof King) {
                 this.game.changeColor(7 - row, 7 - column, Color.RED);
+                return;
             }
         }
     }

@@ -18,14 +18,12 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: reverse pawn promotion, restart, timer, checkpiece, Q
-
+// TODO: reverse pawn promotion, timer, background
 public class Game {
     
     private final Pane gamePane;
     private BoardSquare[][] tiles;
     private PlayerColor playerColor;
-    private Timeline timeline;
     private int previousClickRow;
     private int previousClickColumn;
 
@@ -35,14 +33,19 @@ public class Game {
 
     private Stack<Move> reverseStack;
 
+    private Timeline timeline;
+    private boolean isGameOver;
+
     private final Label errorMessageLabel;
     private final TextField textField;
     private final Button submitButton;
+    private final Button restartButton;
 
     public Game(Pane gamePane) {
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
+        this.isGameOver = false;
 
         this.errorMessageLabel = new Label("Error messages are displayed here!");
         this.errorMessageLabel.setPrefWidth(200);
@@ -60,6 +63,13 @@ public class Game {
         this.submitButton.setTranslateX(-20);
         this.submitButton.setAlignment(Pos.CENTER);
         this.submitButton.setFocusTraversable(false);
+
+        this.restartButton = new Button("Restart");
+        this.restartButton.setOnAction((ActionEvent e) -> this.restart());
+        this.restartButton.setPrefWidth(100);
+        this.restartButton.setTranslateX(-20);
+        this.restartButton.setAlignment(Pos.CENTER);
+        this.restartButton.setFocusTraversable(false);
 
         this.makeBoard();
         this.initializeBoard();
@@ -177,6 +187,9 @@ public class Game {
 
     // TODO: add to
     private void movePiece(MouseEvent mouseClicked) {
+        if (this.isGameOver) {
+            return;
+        }
         // get the row, column, and color of the tile that was clicked
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
@@ -197,7 +210,7 @@ public class Game {
                 }
             }
             // if the tile color is green or red
-            if (tileColor == Color.GREEN || tileColor == Color.RED) {
+            else if (tileColor == Color.GREEN || tileColor == Color.RED) {
                 // get the ChessPiece that was clicked previously (before the click for the move)
                 ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
                 // if the turn is correct
@@ -220,8 +233,8 @@ public class Game {
                         this.clearBoard();
                         // if there is a checkmate
                         if (this.underCheckMate()) {
-                            // TODO: stop timeline
                             this.errorMessageLabel.setText("CHECKMATE! " + this.playerColor.getOppositeColorString() + " won!");
+                            this.isGameOver = true;
                             this.timeline.stop();
                         } else {
                             this.errorMessageLabel.setText("CHECK!");
@@ -229,8 +242,8 @@ public class Game {
                         this.checkPiece.getCheckMove();
                         // if there is a move by a player that checks themselves
                         if (this.checkedKingColor == this.playerColor.convertPlayerColorToColor()) {
-                            // TODO: stop timeline
                             this.errorMessageLabel.setText("Illegal move! " + this.playerColor.getOppositePlayerColor().getOppositeColorString() + " won!");
+                            this.isGameOver = true;
                             this.timeline.stop();
                         }
                         this.isCheck = true;
@@ -557,15 +570,20 @@ public class Game {
     /**
      * defines key presses
      */
-    // TODO
     private void keyPress(KeyEvent keyPress) {
         KeyCode keyPressed = keyPress.getCode();
-        // R reverses the most recent move
-        if (keyPressed == KeyCode.R) {
+        if (!this.isGameOver && keyPressed == KeyCode.R) {
+            // R reverses the most recent move
             this.clearBoard();
             this.reverseMove();
-        } else if (keyPressed == KeyCode.S) {
+        }
+        // S restarts the game
+        if (keyPressed == KeyCode.S) {
             this.restart();
+        }
+        // Q quits the game
+        if (keyPressed == KeyCode.Q) {
+            System.exit(0);
         }
     }
 
@@ -595,6 +613,7 @@ public class Game {
         this.checkPiece = null;
         this.checkedKingColor = null;
         this.reverseStack = new Stack<>();
+        this.isGameOver = false;
         this.errorMessageLabel.setText("No errors!");
         this.textField.setText("");
 
@@ -629,6 +648,8 @@ public class Game {
     public Label getErrorMessageLabel() {return this.errorMessageLabel;}
 
     public TextField getTextField() {return this.textField;}
+
+    public Button getRestartButton() {return this.restartButton;}
 
     public Button getSubmitButton() {return this.submitButton;}
 }
