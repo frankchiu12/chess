@@ -18,13 +18,14 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: reverse pawn promotion, restart, timer
+// TODO: reverse pawn promotion, restart, timer, checkpiece
 
 public class Game {
     
     private final Pane gamePane;
     private BoardSquare[][] tiles;
     private PlayerColor playerColor;
+    private Timeline timeline;
     private int previousClickRow;
     private int previousClickColumn;
 
@@ -34,9 +35,9 @@ public class Game {
 
     private Stack<Move> reverseStack;
 
-    private Label errorMessageLabel;
-    private TextField textField;
-    private Button submitButton;
+    private final Label errorMessageLabel;
+    private final TextField textField;
+    private final Button submitButton;
 
     public Game(Pane gamePane) {
         this.gamePane = gamePane;
@@ -51,6 +52,7 @@ public class Game {
         this.textField = new TextField();
         this.textField.setPrefWidth(200);
         this.textField.setTranslateX(-20);
+        this.textField.setFocusTraversable(false);
 
         this.submitButton = new Button("Submit");
         this.submitButton.setOnAction((ActionEvent e) -> this.getPawnPromotionPiece());
@@ -152,9 +154,9 @@ public class Game {
      */
     private void setUpMainTimeLine() {
         KeyFrame kf = new KeyFrame(Duration.seconds(0.1), (ActionEvent timeline) -> this.timelineActions());
-        Timeline timeline = new Timeline(kf);
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        this.timeline = new Timeline(kf);
+        this.timeline.setCycleCount(Animation.INDEFINITE);
+        this.timeline.play();
     }
 
     /**
@@ -217,9 +219,10 @@ public class Game {
                     if (this.underCheck()) {
                         this.clearBoard();
                         // if there is a checkmate
-                        if (this.searchForCheckMate()) {
+                        if (this.underCheckMate()) {
                             // TODO: stop timeline
                             this.errorMessageLabel.setText("CHECKMATE! " + this.playerColor.getOppositeColorString() + " won!");
+                            this.timeline.stop();
                         } else {
                             this.errorMessageLabel.setText("CHECK!");
                         }
@@ -227,7 +230,8 @@ public class Game {
                         // if there is a move by a player that checks themselves
                         if (this.checkedKingColor == this.playerColor.convertPlayerColorToColor()) {
                             // TODO: stop timeline
-                            this.errorMessageLabel.setText("Cannot move to check yourself!" + this.playerColor.getOppositeColorString() + " won!");
+                            this.errorMessageLabel.setText("Illegal move! " + this.playerColor.getOppositePlayerColor().getOppositeColorString() + " won!");
+                            this.timeline.stop();
                         }
                         this.isCheck = true;
                     } else {
@@ -311,7 +315,7 @@ public class Game {
     /**
      * check whether there is a checkmate
      */
-    public boolean searchForCheckMate() {
+    public boolean underCheckMate() {
         // for all the rows and columns
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
@@ -439,7 +443,10 @@ public class Game {
     /**
      * get the text from the textField to see what the Pawn is being promoted to
      */
-    public String getPawnPromotionPiece() {return this.textField.getText();}
+    public String getPawnPromotionPiece() {
+        this.gamePane.requestFocus();
+        return this.textField.getText();
+    }
 
     // TODO: add to
     public void promotePawn() throws InterruptedException {
@@ -558,7 +565,7 @@ public class Game {
             this.clearBoard();
             this.reverseMove();
         } else if (keyPressed == KeyCode.S) {
-//            this.restart();
+            this.restart();
         }
     }
 
@@ -577,33 +584,24 @@ public class Game {
         }
     }
 
-//    /**
-//     * restart the game
-//     */
-//    private void restart() {
-//        this.playerColor = PlayerColor.WHITE;
-//        this.reverseStack = new Stack<>();
-//
-//        this.errorMessageLabel = new Label("Error messages are displayed here!");
-//        this.errorMessageLabel.setPrefWidth(200);
-//        this.errorMessageLabel.setTranslateX(-20);
-//        this.errorMessageLabel.setAlignment(Pos.CENTER);
-//
-//        this.textField = new TextField();
-//        this.textField.setPrefWidth(200);
-//        this.textField.setTranslateX(-20);
-//
-//        this.submitButton = new Button("Submit");
-//        this.submitButton.setOnAction((ActionEvent e) -> this.getPawnPromotionPiece());
-//        this.submitButton.setPrefWidth(100);
-//        this.submitButton.setTranslateX(-20);
-//        this.submitButton.setAlignment(Pos.CENTER);
-//        this.submitButton.setFocusTraversable(false);
-//
-//        this.makeBoard();
-//        this.initializeBoard();
-//        this.setUpMainTimeLine();
-//    }
+    /**
+     * restart the game
+     */
+    private void restart() {
+        this.gamePane.getChildren().clear();
+
+        this.playerColor = PlayerColor.WHITE;
+        this.isCheck = false;
+        this.checkPiece = null;
+        this.checkedKingColor = null;
+        this.reverseStack = new Stack<>();
+        this.errorMessageLabel.setText("No errors!");
+        this.textField.setText("");
+
+        this.makeBoard();
+        this.initializeBoard();
+        this.setUpMainTimeLine();
+    }
 
     public BoardSquare[][] getTiles() {return this.tiles;}
 
