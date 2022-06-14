@@ -30,12 +30,10 @@ public class Game {
     private Color checkedKingColor;
     private PlayerColor playerColor;
     private final Label errorMessageLabel;
-    private final Label pawnPromotionLabel;
     private final TextField textField;
     private final Button submitButton;
 
     public Game(Pane gamePane){
-        // TODO: save
         this.gamePane = gamePane;
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
@@ -44,11 +42,6 @@ public class Game {
         this.errorMessageLabel.setPrefWidth(200);
         this.errorMessageLabel.setTranslateX((880-640)/2 * -1 + 200/2);
         this.errorMessageLabel.setAlignment(Pos.CENTER);
-
-        this.pawnPromotionLabel = new Label("Chess Piece: ");
-        this.pawnPromotionLabel.setPrefWidth(200);
-        this.pawnPromotionLabel.setTranslateX((880-640)/2 * -1 + 200/2);
-        this.pawnPromotionLabel.setAlignment(Pos.CENTER);
 
         this.textField = new TextField();
         this.textField.setPrefWidth(200);
@@ -499,8 +492,6 @@ public class Game {
     }
 
     public Label getErrorMessageLabel(){return this.errorMessageLabel;}
-
-    public Label getPawnPromotionLabel(){return this.pawnPromotionLabel;}
 
     public TextField getTextField(){return this.textField;}
 
