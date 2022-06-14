@@ -31,9 +31,7 @@ public class BoardSquare {
 
     public void addPiece(ChessPiece chessPiece) {this.pieceArrayList.add(chessPiece);}
 
-    public Color getColor(){
-        return this.color;
-    }
+    public Color getColor() {return this.color;}
 
     public ArrayList<ChessPiece> getPieceArrayList() {return this.pieceArrayList;}
 

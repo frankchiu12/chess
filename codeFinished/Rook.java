@@ -1,6 +1,7 @@
-package chess;
+package chess.codeFinished;
 
-import chess.codeFinished.Coordinate;
+import chess.Game;
+import chess.Queen;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import java.util.ArrayList;
