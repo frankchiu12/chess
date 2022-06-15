@@ -186,8 +186,11 @@ public class Game {
         this.gamePane.setFocusTraversable(true);
     }
 
-    // TODO: add to
+    /**
+     * main game logic
+     */
     private void movePiece(MouseEvent mouseClicked) {
+        // if it is game over, don't execute the method
         if (this.isGameOver) {
             return;
         }
@@ -229,6 +232,7 @@ public class Game {
                     this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten(), null, 0, 0, this.playerColor, false));
                     this.clearBoard();
                     this.errorMessageLabel.setText("No errors!");
+                    // castling
                     if (this.canLeftCastle()) {
                         if (pieceClicked instanceof King && playerColor.convertPlayerColorToColor() == Color.WHITE && clickRow == 7 && clickColumn == 2) {
                             this.reverseStack.pop();
@@ -486,7 +490,9 @@ public class Game {
         return this.textField.getText();
     }
 
-    // TODO: add to
+    /**
+     * promotes the Pawn
+     */
     public void promotePawn(ChessPiece pieceClicked, int clickRow, int clickColumn) throws InterruptedException {
         String pawnPromotionPieceText = this.getPawnPromotionPiece();
         // Queen (defaults to Queen if no text is entered into the textField)
@@ -528,7 +534,6 @@ public class Game {
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.checkPawnPromotion().removeImage();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece bishop = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
                 bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteBishop.png");
@@ -546,7 +551,6 @@ public class Game {
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.checkPawnPromotion().removeImage();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece knight = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
                 knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteKnight.png");

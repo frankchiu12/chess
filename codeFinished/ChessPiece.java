@@ -144,13 +144,13 @@ public class ChessPiece {
     /**
      * reverses a move
      */
-    public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten, ChessPiece specialMovePiece, int specialMoveRow, int specialMoveColumn, PlayerColor playerColor, boolean isPawnPromotion){
+    public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten, ChessPiece specialMovePiece, int specialMoveRow, int specialMoveColumn, PlayerColor playerColor, boolean isPawnPromotion) {
         this.setRow(previousRow);
         this.setColumn(previousColumn);
         this.getPieceArrayList(currentRow, currentColumn).clear();
         this.getPieceArrayList(previousRow, previousColumn).add(this);
         // if the chessPieceEaten is not null
-        if (chessPieceEaten != null){
+        if (chessPieceEaten != null) {
             chessPieceEaten.setRow(currentRow);
             chessPieceEaten.setColumn(currentColumn);
             this.getPieceArrayList(currentRow, currentColumn).add(chessPieceEaten);
@@ -190,7 +190,7 @@ public class ChessPiece {
     /**
      * moves the left Rook for castling
      */
-    public void leftRookCastle(){
+    public void leftRookCastle() {
         if (this.game.getPlayerColor() == Color.WHITE) {
             this.getPieceArrayList(7, 0).get(0).rookJump(7, 3);
         }
@@ -202,11 +202,11 @@ public class ChessPiece {
     /**
      * moves the right Rook for castling
      */
-    public void rightRookCastle(){
-        if (this.game.getPlayerColor() == Color.WHITE){
+    public void rightRookCastle() {
+        if (this.game.getPlayerColor() == Color.WHITE) {
             this.getPieceArrayList(7,7).get(0).rookJump( 7, 5);
         }
-        if (this.game.getPlayerColor() == Color.BLACK){
+        if (this.game.getPlayerColor() == Color.BLACK) {
             this.getPieceArrayList(7,7).get(0).rookJump(7, 4);
         }
     }
@@ -214,7 +214,7 @@ public class ChessPiece {
     /**
      * jumps the Rook to the correct spot over the King for castling
      */
-    public void rookJump(int jumpRow, int jumpColumn){
+    public void rookJump(int jumpRow, int jumpColumn) {
         this.setRow(jumpRow);
         this.setColumn(jumpColumn);
         this.getPieceArrayList(jumpRow, jumpColumn).add(this);
