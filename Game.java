@@ -1,7 +1,5 @@
 package chess;
 
-import chess.codeFinished.*;
-import chess.codeFinished.Timer;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

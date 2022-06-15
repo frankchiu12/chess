@@ -1,4 +1,4 @@
-package chess.codeFinished;
+package chess;
 
 public class Coordinate<Row, Column> {
 

@@ -1,4 +1,4 @@
-package chess.codeFinished;
+package chess;
 
 import javafx.scene.paint.Color;
 

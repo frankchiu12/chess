@@ -1,6 +1,5 @@
-package chess.codeFinished;
+package chess;
 
-import chess.Game;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
