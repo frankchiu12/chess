@@ -19,8 +19,6 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: timer
-
 public class Game {
     
     private final Pane gamePane;
@@ -39,18 +37,18 @@ public class Game {
     private boolean isGameOver;
 
     private Timeline countDownTimeLine;
-    private Timer whiteTimer;
-    private Timer blackTimer;
+    private final Timer whiteTimer;
+    private final Timer blackTimer;
     private int whiteMinute;
     private int whiteSecond;
     private int blackMinute;
     private int blackSecond;
-    private Label whiteTimerLabel;
-    private Label blackTimerLabel;
+    private final Label whiteTimerLabel;
+    private final Label blackTimerLabel;
 
     private final Label errorMessageLabel;
     private final TextField textField;
-    private Button startButton;
+    private final Button startButton;
     private final Button submitButton;
     private final Button restartButton;
 
