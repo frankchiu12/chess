@@ -156,7 +156,7 @@ public class ChessPiece {
             this.getPieceArrayList(currentRow, currentColumn).add(chessPieceEaten);
             chessPieceEaten.addImage();
         }
-        if (specialMovePiece instanceof Rook) {
+        if (specialMovePiece instanceof Rook && !isPawnPromotion) {
             specialMovePiece.setRow(specialMoveRow);
             specialMovePiece.setColumn(specialMoveColumn);
             this.getPieceArrayList(specialMoveRow, specialMoveColumn).add(specialMovePiece);

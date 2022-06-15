@@ -18,7 +18,7 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: reverse pawn promotion, timer
+// TODO: timer
 public class Game {
     
     private final Pane gamePane;
@@ -517,6 +517,8 @@ public class Game {
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackRook.png");
             }
+            this.reverseStack.pop();
+            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten(), rook, clickRow, clickColumn, this.playerColor, true));
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             this.tiles[pawnRow][pawnColumn].addPiece(rook);
         }
@@ -533,6 +535,8 @@ public class Game {
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackBishop.png");
             }
+            this.reverseStack.pop();
+            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten(), bishop, clickRow, clickColumn, this.playerColor, true));
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             this.tiles[pawnRow][pawnColumn].addPiece(bishop);
         }
@@ -549,6 +553,8 @@ public class Game {
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackKnight.png");
             }
+            this.reverseStack.pop();
+            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten(), knight, clickRow, clickColumn, this.playerColor, true));
             this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             this.tiles[pawnRow][pawnColumn].addPiece(knight);
         }
@@ -643,6 +649,7 @@ public class Game {
         this.reverseStack = new Stack<>();
         this.isGameOver = false;
         this.errorMessageLabel.setText("No errors!");
+        this.textField.clear();
         this.textField.setText("");
 
         this.makeBoard();
