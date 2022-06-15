@@ -1,7 +1,6 @@
 package chess;
 
-import chess.codeFinished.Coordinate;
-import chess.codeFinished.King;
+import chess.codeFinished.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -143,16 +142,42 @@ public class ChessPiece {
     }
 
     // TODO: fix
-    public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten){
+    public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten, ChessPiece specialMovePiece, int specialMoveRow, int specialMoveColumn, PlayerColor playerColor, boolean isPawnPromotion){
         this.setRow(previousRow);
         this.setColumn(previousColumn);
         this.getPieceArrayList(currentRow, currentColumn).clear();
         this.getPieceArrayList(previousRow, previousColumn).add(this);
+        if (this instanceof King) {
+            this.kingHasMoved = false;
+        }
         if (chessPieceEaten != null){
             chessPieceEaten.setRow(currentRow);
             chessPieceEaten.setColumn(currentColumn);
             this.getPieceArrayList(currentRow, currentColumn).add(chessPieceEaten);
             chessPieceEaten.addImage();
+        }
+        if (specialMovePiece instanceof Rook) {
+            specialMovePiece.setRow(specialMoveRow);
+            specialMovePiece.setColumn(specialMoveColumn);
+            this.getPieceArrayList(specialMoveRow, specialMoveColumn).add(specialMovePiece);
+            if (specialMoveRow == 7 && specialMoveColumn == 0 && playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                this.getPieceArrayList(7, 3).clear();
+            }
+            if (specialMoveRow == 7 && specialMoveColumn == 0 && playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                this.getPieceArrayList(7, 2).clear();
+            }
+            if (specialMoveRow == 7 && specialMoveColumn == 7 && playerColor.convertPlayerColorToColor() == Color.WHITE) {
+                this.getPieceArrayList(7, 5).clear();
+            }
+            if (specialMoveRow == 7 && specialMoveColumn == 7 && playerColor.convertPlayerColorToColor() == Color.BLACK) {
+                this.getPieceArrayList(7, 4).clear();
+            }
+            this.kingHasMoved = false;
+        }
+        else if (isPawnPromotion) {
+            this.getPieceArrayList(currentRow, currentColumn).add(specialMovePiece);
+            this.addImage();
+            specialMovePiece.removeImage();
         }
     }
 
@@ -161,10 +186,10 @@ public class ChessPiece {
      */
     public void leftRookCastle(){
         if (this.game.getPlayerColor() == Color.WHITE) {
-            this.getPieceArrayList(7, 0).get(0).rookJump(7, 0, 7, 3);
+            this.getPieceArrayList(7, 0).get(0).rookJump(7, 3);
         }
         if (this.game.getPlayerColor() == Color.BLACK) {
-            this.getPieceArrayList(7, 0).get(0).rookJump(7, 0, 7, 2);
+            this.getPieceArrayList(7, 0).get(0).rookJump(7, 2);
         }
     }
 
@@ -173,20 +198,19 @@ public class ChessPiece {
      */
     public void rightRookCastle(){
         if (this.game.getPlayerColor() == Color.WHITE){
-            this.getPieceArrayList(7,7).get(0).rookJump(7, 7, 7, 5);
+            this.getPieceArrayList(7,7).get(0).rookJump( 7, 5);
         }
         if (this.game.getPlayerColor() == Color.BLACK){
-            this.getPieceArrayList(7,7).get(0).rookJump(7, 7, 7, 4);
+            this.getPieceArrayList(7,7).get(0).rookJump(7, 4);
         }
     }
 
     /**
      * jumps the Rook to the correct spot over the King for castling
      */
-    public void rookJump(int previousRow, int previousColumn, int jumpRow, int jumpColumn){
+    public void rookJump(int jumpRow, int jumpColumn){
         this.setRow(jumpRow);
         this.setColumn(jumpColumn);
-        this.getPieceArrayList(previousRow, previousColumn).clear();
         this.getPieceArrayList(jumpRow, jumpColumn).add(this);
     }
 

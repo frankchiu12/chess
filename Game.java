@@ -18,7 +18,7 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: reverse pawn promotion, timer, background
+// TODO: reverse pawn promotion, timer
 public class Game {
     
     private final Pane gamePane;
@@ -225,9 +225,37 @@ public class Game {
                     // move the ChessPiece
                     pieceClicked.move(clickRow, clickColumn);
                     // add the move to the reverseStack
-                    this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten()));
+                    this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten(), null, 0, 0, this.playerColor, false));
                     this.clearBoard();
                     this.errorMessageLabel.setText("No errors!");
+                    if (this.canLeftCastle()) {
+                        if (pieceClicked instanceof King && playerColor.convertPlayerColorToColor() == Color.WHITE && clickRow == 7 && clickColumn == 2) {
+                            this.reverseStack.pop();
+                            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), null, this.tilePieceArrayList(7,0).get(0), 7, 0, this.playerColor, false));
+                            this.tilePieceArrayList(7,0).clear();
+                        }
+                        if (pieceClicked instanceof King && playerColor.convertPlayerColorToColor() == Color.BLACK && clickRow == 7 && clickColumn == 1) {
+                            this.reverseStack.pop();
+                            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), null, this.tilePieceArrayList(7,0).get(0), 7, 0, this.playerColor, false));
+                            this.tilePieceArrayList(7,0).clear();
+                        }
+                    }
+                    if (this.canRightCastle()) {
+                        if (pieceClicked instanceof King && playerColor.convertPlayerColorToColor() == Color.WHITE && clickRow == 7 && clickColumn == 6) {
+                            this.reverseStack.pop();
+                            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), null, this.tilePieceArrayList(7,7).get(0), 7, 7, this.playerColor, false));
+                            this.tilePieceArrayList(7,7).clear();
+                        }
+                        if (pieceClicked instanceof King && playerColor.convertPlayerColorToColor() == Color.BLACK && clickRow == 7 && clickColumn == 5) {
+                            this.reverseStack.pop();
+                            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), null, this.tilePieceArrayList(7,7).get(0), 7, 7, this.playerColor, false));
+                            this.tilePieceArrayList(7,7).clear();
+                        }
+                    }
+                    // if there is a Pawn promotion
+                    if (this.checkPawnPromotion() != null) {
+                        this.promotePawn(pieceClicked, clickRow, clickColumn);
+                    }
                     // if there is a check
                     if (this.underCheck()) {
                         this.clearBoard();
@@ -250,10 +278,6 @@ public class Game {
                     } else {
                         this.clearBoard();
                         this.isCheck = false;
-                    }
-                    // if there is a Pawn promotion
-                    if (this.checkPawnPromotion() != null) {
-                        this.promotePawn();
                     }
                     this.rotate();
                     this.playerColor = this.playerColor.getOppositePlayerColor();
@@ -344,11 +368,11 @@ public class Game {
                         // if it takes the opponent out of check, it is not a checkmate
                         if (!this.underCheck()) {
                             this.clearBoard();
-                            this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).getChessPieceEaten());
+                            this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).getChessPieceEaten(), null, 0, 0, this.playerColor, false);
                             return false;
                         } else {
                             this.clearBoard();
-                            this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).getChessPieceEaten());
+                            this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).getChessPieceEaten(), null, 0 ,0, this.playerColor, false);
                         }
                     }
                 }
@@ -462,14 +486,13 @@ public class Game {
     }
 
     // TODO: add to
-    public void promotePawn() throws InterruptedException {
+    public void promotePawn(ChessPiece pieceClicked, int clickRow, int clickColumn) throws InterruptedException {
         String pawnPromotionPieceText = this.getPawnPromotionPiece();
         // Queen (defaults to Queen if no text is entered into the textField)
         if (Objects.equals(pawnPromotionPieceText, "Queen") || pawnPromotionPieceText.isEmpty()) {
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.checkPawnPromotion().removeImage();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece queen = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
                 queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteQueen.png");
@@ -477,6 +500,9 @@ public class Game {
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 queen = new Queen(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackQueen.png");
             }
+            this.reverseStack.pop();
+            this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten(), queen, clickRow, clickColumn, this.playerColor, true));
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             this.tiles[pawnRow][pawnColumn].addPiece(queen);
         }
         // Rook
@@ -484,7 +510,6 @@ public class Game {
             int pawnRow = this.checkPawnPromotion().getRow();
             int pawnColumn = this.checkPawnPromotion().getColumn();
             this.checkPawnPromotion().removeImage();
-            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             ChessPiece rook = null;
             if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
                 rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/whiteRook.png");
@@ -492,6 +517,7 @@ public class Game {
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 rook = new Rook(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackRook.png");
             }
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             this.tiles[pawnRow][pawnColumn].addPiece(rook);
         }
         // Bishop
@@ -507,6 +533,7 @@ public class Game {
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 bishop = new Bishop(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackBishop.png");
             }
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             this.tiles[pawnRow][pawnColumn].addPiece(bishop);
         }
         // Knight
@@ -522,6 +549,7 @@ public class Game {
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 knight = new Knight(this.gamePane, this, pawnColumn, pawnRow, this.playerColor.convertPlayerColorToColor(), "chess/chessPiecePNG/blackKnight.png");
             }
+            this.tilePieceArrayList(pawnRow, pawnColumn).clear();
             this.tiles[pawnRow][pawnColumn].addPiece(knight);
         }
     }
@@ -595,7 +623,7 @@ public class Game {
             Move moveToReverse = this.reverseStack.pop();
             ChessPiece currentChessPiece = moveToReverse.getCurrentPiece();
             this.rotate();
-            currentChessPiece.reverseMove(moveToReverse.getFromCoordinate().getRow(), moveToReverse.getFromCoordinate().getC(), moveToReverse.getToCoordinate().getRow(), moveToReverse.getToCoordinate().getC(), moveToReverse.getEatenChessPiece());
+            currentChessPiece.reverseMove(moveToReverse.getFromCoordinate().getRow(), moveToReverse.getFromCoordinate().getC(), moveToReverse.getToCoordinate().getRow(), moveToReverse.getToCoordinate().getC(), moveToReverse.getEatenChessPiece(), moveToReverse.getSpecialMovePiece(), moveToReverse.getSpecialMoveRow(), moveToReverse.getSpecialMoveColumn(), moveToReverse.getPlayerColor(), moveToReverse.isPawnPromotion());
             this.playerColor = this.playerColor.getOppositePlayerColor();
         } catch (EmptyStackException e) {
             this.errorMessageLabel.setText("No moves to reverse!");
