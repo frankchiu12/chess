@@ -1,6 +1,5 @@
 package chess.codeFinished;
 
-import chess.ChessPiece;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;

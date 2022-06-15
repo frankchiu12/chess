@@ -1,6 +1,6 @@
-package chess;
+package chess.codeFinished;
 
-import chess.codeFinished.*;
+import chess.Game;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -141,21 +141,26 @@ public class ChessPiece {
         this.getPieceArrayList(currentRow, currentColumn).add(this);
     }
 
-    // TODO: fix
+    /**
+     * reverses a move
+     */
     public void reverseMove(int previousRow, int previousColumn, int currentRow, int currentColumn, ChessPiece chessPieceEaten, ChessPiece specialMovePiece, int specialMoveRow, int specialMoveColumn, PlayerColor playerColor, boolean isPawnPromotion){
         this.setRow(previousRow);
         this.setColumn(previousColumn);
         this.getPieceArrayList(currentRow, currentColumn).clear();
         this.getPieceArrayList(previousRow, previousColumn).add(this);
-        if (this instanceof King) {
-            this.kingHasMoved = false;
-        }
+        // if the chessPieceEaten is not null
         if (chessPieceEaten != null){
             chessPieceEaten.setRow(currentRow);
             chessPieceEaten.setColumn(currentColumn);
             this.getPieceArrayList(currentRow, currentColumn).add(chessPieceEaten);
             chessPieceEaten.addImage();
         }
+        // if the ChessPiece is a King, set kingHasMoved to false, so it could castle again
+        if (this instanceof King) {
+            this.kingHasMoved = false;
+        }
+        // if it is a castle
         if (specialMovePiece instanceof Rook && !isPawnPromotion) {
             specialMovePiece.setRow(specialMoveRow);
             specialMovePiece.setColumn(specialMoveColumn);
@@ -174,6 +179,7 @@ public class ChessPiece {
             }
             this.kingHasMoved = false;
         }
+        // if it is a pawn promotion
         else if (isPawnPromotion) {
             this.getPieceArrayList(currentRow, currentColumn).add(specialMovePiece);
             this.addImage();

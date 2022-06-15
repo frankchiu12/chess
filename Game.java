@@ -19,6 +19,7 @@ import javafx.util.Duration;
 import java.util.*;
 
 // TODO: timer
+
 public class Game {
     
     private final Pane gamePane;

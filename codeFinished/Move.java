@@ -1,8 +1,4 @@
-package chess;
-
-import chess.ChessPiece;
-import chess.codeFinished.Coordinate;
-import chess.codeFinished.PlayerColor;
+package chess.codeFinished;
 
 public class Move {
 

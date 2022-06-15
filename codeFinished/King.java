@@ -1,6 +1,5 @@
 package chess.codeFinished;
 
-import chess.ChessPiece;
 import chess.Game;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
