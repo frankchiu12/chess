@@ -1,4 +1,4 @@
-package chess;
+package chess.codeFinished;
 
 public class Timer {
 
@@ -8,14 +8,6 @@ public class Timer {
     public Timer() {
         this.minutes = "15";
         this.seconds = "00";
-    }
-
-    public String getMinutes() {
-        return this.minutes;
-    }
-
-    public String getSeconds() {
-        return this.seconds;
     }
 
     public void setMinutes(int min) {

@@ -1,5 +1,6 @@
-package chess;
+package chess.codeFinished;
 
+import chess.Game;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -38,7 +39,7 @@ public class PaneOrganizer {
         quitButton.setAlignment(Pos.CENTER);
         quitButton.setFocusTraversable(false);
 
-        vBox.getChildren().addAll(game.getErrorMessageLabel(), game.getTextField(), game.getSubmitButton(), game.getRestartButton(), quitButton);
+        vBox.getChildren().addAll(game.getWhiteTimerLabel(), game.getBlackTimerLabel(), game.getErrorMessageLabel(), game.getTextField(), game.getStartButton(), game.getSubmitButton(), game.getRestartButton(), quitButton);
     }
 
     public BorderPane getRoot(){

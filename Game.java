@@ -1,6 +1,7 @@
 package chess;
 
 import chess.codeFinished.*;
+import chess.codeFinished.Timer;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -37,8 +38,19 @@ public class Game {
     private Timeline timeline;
     private boolean isGameOver;
 
+    private Timeline countDownTimeLine;
+    private Timer whiteTimer;
+    private Timer blackTimer;
+    private int whiteMinute;
+    private int whiteSecond;
+    private int blackMinute;
+    private int blackSecond;
+    private Label whiteTimerLabel;
+    private Label blackTimerLabel;
+
     private final Label errorMessageLabel;
     private final TextField textField;
+    private Button startButton;
     private final Button submitButton;
     private final Button restartButton;
 
@@ -47,6 +59,24 @@ public class Game {
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
         this.isGameOver = false;
+
+        this.whiteTimer = new Timer();
+        this.blackTimer = new Timer();
+        this.whiteMinute = 15;
+        this.whiteSecond = 0;
+        this.blackMinute = 15;
+        this.blackSecond = 0;
+        this.whiteTimerLabel = new Label(whiteTimer.toString());
+        this.whiteTimerLabel.setPrefWidth(200);
+        this.whiteTimerLabel.setTranslateX(-20);
+        this.whiteTimerLabel.setAlignment(Pos.CENTER);
+        this.whiteTimerLabel.setStyle("-fx-background-color: #FFFFFF");
+        this.blackTimerLabel = new Label(blackTimer.toString());
+        this.blackTimerLabel.setPrefWidth(200);
+        this.blackTimerLabel.setTranslateX(-20);
+        this.blackTimerLabel.setAlignment(Pos.CENTER);
+        this.blackTimerLabel.setStyle("-fx-background-color: #000000");
+        this.blackTimerLabel.setTextFill(Color.WHITE);
 
         this.errorMessageLabel = new Label("Error messages are displayed here!");
         this.errorMessageLabel.setPrefWidth(200);
@@ -57,6 +87,13 @@ public class Game {
         this.textField.setPrefWidth(200);
         this.textField.setTranslateX(-20);
         this.textField.setFocusTraversable(false);
+
+        this.startButton = new Button("Start");
+        this.startButton.setOnAction((ActionEvent e) -> this.countDownTimeLine.play());
+        this.startButton.setPrefWidth(100);
+        this.startButton.setTranslateX(-20);
+        this.startButton.setAlignment(Pos.CENTER);
+        this.startButton.setFocusTraversable(false);
 
         this.submitButton = new Button("Submit");
         this.submitButton.setOnAction((ActionEvent e) -> this.getPawnPromotionPiece());
@@ -75,6 +112,7 @@ public class Game {
         this.makeBoard();
         this.initializeBoard();
         this.setUpMainTimeLine();
+        this.setUpCountDownTimeLine();
     }
 
     /**
@@ -164,7 +202,7 @@ public class Game {
      * set up main timeline
      */
     private void setUpMainTimeLine() {
-        KeyFrame kf = new KeyFrame(Duration.seconds(0.1), (ActionEvent timeline) -> this.timelineActions());
+        KeyFrame kf = new KeyFrame(Duration.seconds(0.1), (ActionEvent timeline) -> this.mainTimelineActions());
         this.timeline = new Timeline(kf);
         this.timeline.setCycleCount(Animation.INDEFINITE);
         this.timeline.play();
@@ -173,7 +211,7 @@ public class Game {
     /**
      * timeline actions that are called on a loop
      */
-    private void timelineActions() {
+    private void mainTimelineActions() {
         this.movePieceOnClick();
         this.handleKeyPress();
     }
@@ -192,6 +230,10 @@ public class Game {
     private void movePiece(MouseEvent mouseClicked) {
         // if it is game over, don't execute the method
         if (this.isGameOver) {
+            return;
+        }
+        // if the countdown hasn't started yet, don't execute the method
+        if (this.countDownTimeLine.getStatus() == Animation.Status.STOPPED) {
             return;
         }
         // get the row, column, and color of the tile that was clicked
@@ -268,6 +310,7 @@ public class Game {
                         if (this.underCheckMate()) {
                             this.errorMessageLabel.setText("CHECKMATE! " + this.playerColor.getOppositeColorString() + " won!");
                             this.isGameOver = true;
+                            this.countDownTimeLine.stop();
                             this.timeline.stop();
                         } else {
                             this.errorMessageLabel.setText("CHECK!");
@@ -277,6 +320,7 @@ public class Game {
                         if (this.checkedKingColor == this.playerColor.convertPlayerColorToColor()) {
                             this.errorMessageLabel.setText("Illegal move! " + this.playerColor.getOppositePlayerColor().getOppositeColorString() + " won!");
                             this.isGameOver = true;
+                            this.countDownTimeLine.stop();
                             this.timeline.stop();
                         }
                         this.isCheck = true;
@@ -611,6 +655,10 @@ public class Game {
      */
     private void keyPress(KeyEvent keyPress) {
         KeyCode keyPressed = keyPress.getCode();
+        if (!this.isGameOver && keyPressed == KeyCode.P) {
+            // P starts the game
+            this.countDownTimeLine.play();
+        }
         if (!this.isGameOver && keyPressed == KeyCode.R) {
             // R reverses the most recent move
             this.clearBoard();
@@ -653,6 +701,19 @@ public class Game {
         this.checkedKingColor = null;
         this.reverseStack = new Stack<>();
         this.isGameOver = false;
+        this.countDownTimeLine.stop();
+
+        this.whiteMinute = 15;
+        this.whiteSecond = 0;
+        this.blackMinute = 15;
+        this.blackSecond = 0;
+        whiteTimer.setMinutes(this.whiteMinute);
+        whiteTimer.setSeconds(this.whiteSecond);
+        whiteTimerLabel.setText(whiteTimer.toString());
+        blackTimer.setMinutes(this.blackMinute);
+        blackTimer.setSeconds(this.blackSecond);
+        blackTimerLabel.setText(blackTimer.toString());
+
         this.errorMessageLabel.setText("No errors!");
         this.textField.clear();
         this.textField.setText("");
@@ -660,6 +721,44 @@ public class Game {
         this.makeBoard();
         this.initializeBoard();
         this.setUpMainTimeLine();
+    }
+
+    private void setUpCountDownTimeLine() {
+        KeyFrame kf = new KeyFrame(Duration.seconds(1), (ActionEvent timeline) -> this.countDownTimeLineActions());
+        this.countDownTimeLine = new Timeline(kf);
+        this.countDownTimeLine.setCycleCount(Animation.INDEFINITE);
+    }
+
+    private void countDownTimeLineActions() {
+        if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
+            this.whiteCountDown();
+        } else {
+            this.blackCountDown();
+        }
+    }
+
+    private void whiteCountDown() {
+        if (this.whiteSecond == 0) {
+            this.whiteMinute--;
+            this.whiteSecond = 59;
+        } else {
+            this.whiteSecond--;
+        }
+        whiteTimer.setMinutes(this.whiteMinute);
+        whiteTimer.setSeconds(this.whiteSecond);
+        whiteTimerLabel.setText(whiteTimer.toString());
+    }
+
+    private void blackCountDown() {
+        if (this.blackSecond == 0) {
+            this.blackMinute--;
+            this.blackSecond = 59;
+        } else {
+            this.blackSecond--;
+        }
+        blackTimer.setMinutes(this.blackMinute);
+        blackTimer.setSeconds(this.blackSecond);
+        blackTimerLabel.setText(blackTimer.toString());
     }
 
     public BoardSquare[][] getTiles() {return this.tiles;}
@@ -685,9 +784,15 @@ public class Game {
 
     public boolean getCanRightCastle() {return this.canRightCastle();}
 
+    public Label getWhiteTimerLabel() {return this.whiteTimerLabel;}
+
+    public Label getBlackTimerLabel() {return this.blackTimerLabel;}
+
     public Label getErrorMessageLabel() {return this.errorMessageLabel;}
 
     public TextField getTextField() {return this.textField;}
+
+    public Button getStartButton() {return this.startButton;}
 
     public Button getRestartButton() {return this.restartButton;}
 
