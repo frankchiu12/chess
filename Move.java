@@ -50,5 +50,5 @@ public class Move {
 
     public PlayerColor getPlayerColor() {return playerColor;}
 
-    public boolean isPawnPromotion() {return isPawnPromotion;}
+    public boolean getIsPawnPromotion() {return isPawnPromotion;}
 }

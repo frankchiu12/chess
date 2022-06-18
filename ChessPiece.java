@@ -77,14 +77,6 @@ public class ChessPiece {
         Color tileColor = this.game.getTiles()[clickRow][clickColumn].getColor();
         // if it is a King, the King hasn't moved yet, and it could either castle left or right, you can castle
         if (this instanceof King && !this.hasMoved && (this.game.getCanLeftCastle() || this.game.getCanRightCastle())) {
-            // right Rook castle for white
-            if (this.game.getPlayerColor() == Color.WHITE && clickRow == 7 && clickColumn == 6) {
-                this.rightRookCastle();
-            }
-            // right Rook castle for black
-            if (this.game.getPlayerColor() == Color.BLACK && clickRow == 7 && clickColumn == 5) {
-                this.rightRookCastle();
-            }
             // left Rook castle for white
             if (this.game.getPlayerColor() == Color.WHITE && clickRow == 7 && clickColumn == 2) {
                 this.leftRookCastle();
@@ -92,6 +84,14 @@ public class ChessPiece {
             // left Rook castle for black
             if (this.game.getPlayerColor() == Color.BLACK && clickRow == 7 && clickColumn == 1) {
                 this.leftRookCastle();
+            }
+            // right Rook castle for white
+            if (this.game.getPlayerColor() == Color.WHITE && clickRow == 7 && clickColumn == 6) {
+                this.rightRookCastle();
+            }
+            // right Rook castle for black
+            if (this.game.getPlayerColor() == Color.BLACK && clickRow == 7 && clickColumn == 5) {
+                this.rightRookCastle();
             }
         }
         // if the tileColor is green or red
@@ -193,6 +193,15 @@ public class ChessPiece {
     }
 
     /**
+     * jumps the Rook to the correct spot over the King for castling
+     */
+    public void rookJump(int jumpRow, int jumpColumn) {
+        this.setRow(jumpRow);
+        this.setColumn(jumpColumn);
+        this.getPieceArrayList(jumpRow, jumpColumn).add(this);
+    }
+
+    /**
      * moves the left Rook for castling
      */
     public void leftRookCastle() {
@@ -218,15 +227,6 @@ public class ChessPiece {
             this.getPieceArrayList(7,7).get(0).rookJump(7, 4);
             this.getPieceArrayList(7,7).clear();
         }
-    }
-
-    /**
-     * jumps the Rook to the correct spot over the King for castling
-     */
-    public void rookJump(int jumpRow, int jumpColumn) {
-        this.setRow(jumpRow);
-        this.setColumn(jumpColumn);
-        this.getPieceArrayList(jumpRow, jumpColumn).add(this);
     }
 
     public int getRow() {return (int) (this.imageView.getY() / 80);}

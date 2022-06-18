@@ -40,6 +40,7 @@ public class Pawn extends ChessPiece {
                 coordinateArrayList.add(new Coordinate<>(this.getRow() - 1, this.getColumn() - 1));
             }
         } else {
+            // move forward one space
             if (this.game.checkCanMove(this.getRow(), this.getColumn(), 1, 0)) {
                 coordinateArrayList.add(new Coordinate<>(this.getRow() + 1, this.getColumn()));
             }

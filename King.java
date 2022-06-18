@@ -70,10 +70,12 @@ public class King extends ChessPiece {
             coordinateArrayList.add(new Coordinate<>(row, column + 1));
         }
 
+        // left castling
         if (this.game.getCanLeftCastle() && !this.getHasMoved()) {
             coordinateArrayList.add(new Coordinate<>(row, column - 2));
         }
 
+        // right castling
         if (this.game.getCanRightCastle() && !this.getHasMoved()) {
             coordinateArrayList.add(new Coordinate<>(row, column + 2));
         }
