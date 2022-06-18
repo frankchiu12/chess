@@ -38,7 +38,7 @@ public class PaneOrganizer {
         quitButton.setAlignment(Pos.CENTER);
         quitButton.setFocusTraversable(false);
 
-        vBox.getChildren().addAll(game.getWhiteTimerLabel(), game.getBlackTimerLabel(), game.getErrorMessageLabel(), game.getTextField(), game.getStartButton(), game.getSubmitButton(), game.getRestartButton(), quitButton);
+        vBox.getChildren().addAll(game.getTurnLabel(), game.getWhiteTimerLabel(), game.getBlackTimerLabel(), game.getErrorMessageLabel(), game.getTextField(), game.getStartButton(), game.getSubmitButton(), game.getRestartButton(), quitButton);
     }
 
     public BorderPane getRoot(){

@@ -43,6 +43,8 @@ public class Game {
     private Timeline timeline;
     private boolean isGameOver;
 
+    private final Label turnLabel;
+
     private Timeline countDownTimeLine;
     private final Timer whiteTimer;
     private final Timer blackTimer;
@@ -64,6 +66,11 @@ public class Game {
         this.playerColor = PlayerColor.WHITE;
         this.reverseStack = new Stack<>();
         this.isGameOver = false;
+
+        this.turnLabel = new Label("white turn");
+        this.turnLabel.setPrefWidth(200);
+        this.turnLabel.setTranslateX(-20);
+        this.turnLabel.setAlignment(Pos.CENTER);
 
         this.whiteTimer = new Timer();
         this.blackTimer = new Timer();
@@ -258,7 +265,7 @@ public class Game {
                     // get the possible moves of the ChessPiece that was clicked
                     pieceClicked.getPossibleMoves();
                 } else {
-                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColorString() + " piece!");
+                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getColorString() + " piece!");
                 }
             }
             // if the tile color is green or red
@@ -311,7 +318,7 @@ public class Game {
                         this.clearBoard();
                         // if there is a checkmate
                         if (this.underCheckMate()) {
-                            this.errorMessageLabel.setText("CHECKMATE! " + this.playerColor.getOppositeColorString() + " won!");
+                            this.errorMessageLabel.setText("CHECKMATE! " + this.playerColor.getColorString() + " won!");
                             this.isGameOver = true;
                             this.countDownTimeLine.stop();
                             this.timeline.stop();
@@ -321,7 +328,7 @@ public class Game {
                         this.checkPiece.getCheckMove();
                         // if there is a move by a player that checks themselves
                         if (this.checkedKingColor == this.playerColor.convertPlayerColorToColor()) {
-                            this.errorMessageLabel.setText("Illegal move! " + this.playerColor.getOppositePlayerColor().getOppositeColorString() + " won!");
+                            this.errorMessageLabel.setText("Illegal move! " + this.playerColor.getOppositePlayerColor().getColorString() + " won!");
                             this.isGameOver = true;
                             this.countDownTimeLine.stop();
                             this.timeline.stop();
@@ -333,8 +340,9 @@ public class Game {
                     }
                     this.rotate();
                     this.playerColor = this.playerColor.getOppositePlayerColor();
+                    this.turnLabel.setText(this.playerColor.getColorString() + " turn");
                 } else {
-                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getOppositeColorString() + " piece!");
+                    this.errorMessageLabel.setText("Please select a " + this.playerColor.getColorString() + " piece!");
                 }
             }
         } catch (IndexOutOfBoundsException e) {
@@ -743,6 +751,8 @@ public class Game {
         this.isGameOver = false;
         this.countDownTimeLine.stop();
 
+        this.turnLabel.setText("white turn");
+
         this.whiteMinute = 15;
         this.whiteSecond = 0;
         this.blackMinute = 15;
@@ -835,6 +845,8 @@ public class Game {
     public boolean getCanLeftCastle() {return this.canLeftCastle();}
 
     public boolean getCanRightCastle() {return this.canRightCastle();}
+
+    public Label getTurnLabel() {return turnLabel;}
 
     public Label getWhiteTimerLabel() {return this.whiteTimerLabel;}
 

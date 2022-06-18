@@ -31,7 +31,7 @@ public enum PlayerColor {
         }
     }
 
-    public String getOppositeColorString() {
+    public String getColorString() {
         if (this == PlayerColor.WHITE) {
             return "white";
         } else {
