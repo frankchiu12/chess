@@ -13,14 +13,14 @@ public class ChessPiece {
     private final Color color;
     private final ImageView imageView;
     private ChessPiece chessPieceEaten;
-    public boolean kingHasMoved;
+    public boolean hasMoved;
 
     public ChessPiece(Pane gamePane, Game game, int x, int y, Color color, String imagePath) {
         this.gamePane = gamePane;
         this.game = game;
         this.color = color;
         this.imageView = new ImageView();
-        this.kingHasMoved = false;
+        this.hasMoved = false;
 
         this.addImage(x, y, imagePath);
     }
@@ -58,6 +58,15 @@ public class ChessPiece {
         }
     }
 
+    public void setCheckPieceEaten(int clickRow, int clickColumn) {
+        // if there is a ChessPiece in the pieceArrayList, you set the variable this.chessPieceEaten to that ChessPiece, else it is null
+        if (this.getPieceArrayList(clickRow, clickColumn).size() != 0) {
+            this.chessPieceEaten = this.getPieceArrayList(clickRow, clickColumn).get(0);
+        } else {
+            this.chessPieceEaten = null;
+        }
+    }
+
     /**
      * moves the ChessPiece
      */
@@ -68,18 +77,12 @@ public class ChessPiece {
             // set the ChessPiece to the clickRow and clickColumn
             this.setRow(clickRow);
             this.setColumn(clickColumn);
-            // if there is a ChessPiece in the pieceArrayList, you set the variable this.chessPieceEaten to that ChessPiece, else it is null
-            if (this.getPieceArrayList(clickRow, clickColumn).size() != 0) {
-                this.chessPieceEaten = this.getPieceArrayList(clickRow, clickColumn).get(0);
-            } else {
-                this.chessPieceEaten = null;
-            }
             // you clear the pieceArrayList and add the new ChessPiece into the pieceArrayList
             this.getPieceArrayList(clickRow, clickColumn).clear();
             this.getPieceArrayList(clickRow, clickColumn).add(this);
         }
         // if it is a King and the King hasn't moved yet, you can castle
-        if (this instanceof King && !this.kingHasMoved) {
+        if (this instanceof King && !this.hasMoved) {
             // right Rook castle for white
             if (this.game.getPlayerColor() == Color.WHITE && clickRow == 7 && clickColumn == 6) {
                 this.rightRookCastle();
@@ -96,9 +99,8 @@ public class ChessPiece {
             if (this.game.getPlayerColor() == Color.BLACK && clickRow == 7 && clickColumn == 1) {
                 this.leftRookCastle();
             }
-            // King has moved
-            this.kingHasMoved = true;
         }
+        this.hasMoved = true;
     }
 
     /**
@@ -155,9 +157,9 @@ public class ChessPiece {
             this.getPieceArrayList(currentRow, currentColumn).add(chessPieceEaten);
             chessPieceEaten.addImage();
         }
-        // if the ChessPiece is a King, set kingHasMoved to false, so it could castle again
-        if (this instanceof King) {
-            this.kingHasMoved = false;
+        // if the ChessPiece is a King or Rook, set hasMoved to false, so it could castle again
+        if (this instanceof King || this instanceof Rook) {
+            this.hasMoved = false;
         }
         // if it is a castle
         if (specialMovePiece instanceof Rook && !isPawnPromotion) {
@@ -176,7 +178,7 @@ public class ChessPiece {
             if (specialMoveRow == 7 && specialMoveColumn == 7 && playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 this.getPieceArrayList(7, 4).clear();
             }
-            this.kingHasMoved = false;
+            this.hasMoved = false;
         }
         // if it is a pawn promotion
         else if (isPawnPromotion) {
@@ -192,9 +194,11 @@ public class ChessPiece {
     public void leftRookCastle() {
         if (this.game.getPlayerColor() == Color.WHITE) {
             this.getPieceArrayList(7, 0).get(0).rookJump(7, 3);
+            this.getPieceArrayList(7,0).clear();
         }
         if (this.game.getPlayerColor() == Color.BLACK) {
             this.getPieceArrayList(7, 0).get(0).rookJump(7, 2);
+            this.getPieceArrayList(7,0).clear();
         }
     }
 
@@ -204,9 +208,11 @@ public class ChessPiece {
     public void rightRookCastle() {
         if (this.game.getPlayerColor() == Color.WHITE) {
             this.getPieceArrayList(7,7).get(0).rookJump( 7, 5);
+            this.getPieceArrayList(7,7).clear();
         }
         if (this.game.getPlayerColor() == Color.BLACK) {
             this.getPieceArrayList(7,7).get(0).rookJump(7, 4);
+            this.getPieceArrayList(7,7).clear();
         }
     }
 
@@ -235,7 +241,7 @@ public class ChessPiece {
 
     public ChessPiece getChessPieceEaten() {return this.chessPieceEaten;}
 
-    public boolean getKingHasMoved() {return this.kingHasMoved;}
+    public boolean getHasMoved() {return this.hasMoved;}
 
     public ArrayList<ChessPiece> getPieceArrayList(int row, int column) {return this.game.getTiles()[row][column].getPieceArrayList();}
 }
