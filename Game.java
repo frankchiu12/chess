@@ -17,8 +17,6 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
-// TODO: if countdown hits 0; turn label
-
 public class Game {
     
     private final Pane gamePane;
@@ -806,6 +804,13 @@ public class Game {
         whiteTimer.setMinutes(this.whiteMinute);
         whiteTimer.setSeconds(this.whiteSecond);
         whiteTimerLabel.setText(whiteTimer.toString());
+        // end the game if the countdown hits 0
+        if (this.whiteMinute == 0 && this.whiteSecond == 0) {
+            this.errorMessageLabel.setText("black won!");
+            this.isGameOver = true;
+            this.countDownTimeLine.stop();
+            this.timeline.stop();
+        }
     }
 
     /**
@@ -821,6 +826,13 @@ public class Game {
         blackTimer.setMinutes(this.blackMinute);
         blackTimer.setSeconds(this.blackSecond);
         blackTimerLabel.setText(blackTimer.toString());
+        // end the game if the countdown hits 0
+        if (this.blackMinute == 0 && this.blackSecond == 0) {
+            this.errorMessageLabel.setText("white won!");
+            this.isGameOver = true;
+            this.countDownTimeLine.stop();
+            this.timeline.stop();
+        }
     }
 
     public BoardSquare[][] getTiles() {return this.tiles;}
