@@ -17,6 +17,8 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import java.util.*;
 
+// TODO: if countdown hits 0; turn label
+
 public class Game {
     
     private final Pane gamePane;
@@ -239,11 +241,12 @@ public class Game {
         if (this.countDownTimeLine.getStatus() == Animation.Status.STOPPED) {
             return;
         }
-        // get the row, column, and color of the tile that was clicked
+        // get the row and column of the tile that was clicked
         int clickRow = (int) mouseClicked.getSceneY() / 80;
         int clickColumn = (int) mouseClicked.getSceneX() / 80;
-        Color tileColor = this.tiles[clickRow][clickColumn].getColor();
         try {
+            // get the color of the tile that was clicked
+            Color tileColor = this.tiles[clickRow][clickColumn].getColor();
             boolean isRedKingMove = tileColor == Color.RED && this.tilePieceArrayList(clickRow, clickColumn).get(0) instanceof King;
             // if the tile color is brown or white or a King under check
             if (tileColor == Color.BROWN || tileColor == Color.WHITE || isRedKingMove) {
@@ -264,9 +267,11 @@ public class Game {
                 ChessPiece pieceClicked = this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).get(0);
                 // if the turn is correct
                 if (this.playerColor.isRightTurn(pieceClicked.getColor())) {
-                    pieceClicked.setCheckPieceEaten(clickRow, clickColumn);
+                    // set this.chessPieceEaten
+                    pieceClicked.setChessPieceEaten(clickRow, clickColumn);
                     // add the move to the reverseStack
                     this.reverseStack.add(new Move(pieceClicked, new Coordinate<>(this.previousClickRow, this.previousClickColumn), new Coordinate<>(clickRow, clickColumn), pieceClicked.getChessPieceEaten(), null, 0, 0, this.playerColor, false));
+                    // adding castling to the reverseStack
                     if (this.canLeftCastle()) {
                         if (pieceClicked.equals(this.whiteKing) && clickRow == 7 && clickColumn == 2) {
                             this.reverseStack.pop();
@@ -292,18 +297,17 @@ public class Game {
                         // remove the image of the ChessPiece being eaten
                         this.tilePieceArrayList(clickRow, clickColumn).get(0).removeImage();
                     }
+                    pieceClicked.move(clickRow, clickColumn);
                     // clear the pieceArrayList of the ChessPiece that was clicked previously
                     this.tilePieceArrayList(this.previousClickRow, this.previousClickColumn).clear();
-                    pieceClicked.move(clickRow, clickColumn);
                     this.clearBoard();
                     this.errorMessageLabel.setText("No errors!");
-                    // castling
                     // if there is a Pawn promotion
                     if (this.checkPawnPromotion() != null) {
                         this.promotePawn(pieceClicked, clickRow, clickColumn);
                     }
                     // if there is a check
-                    if (this.underCheck()) {
+                    if (this.underCheck(false)) {
                         this.clearBoard();
                         // if there is a checkmate
                         if (this.underCheckMate()) {
@@ -372,7 +376,7 @@ public class Game {
     /**
      * check whether a player is under check
      */
-    public boolean underCheck() {
+    public boolean underCheck(boolean hasChecked) {
         // for all the rows and columns
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
@@ -385,8 +389,11 @@ public class Game {
                         for (int c = 0; c < 8; c++) {
                             // if a King is highlighted as red
                             if (this.tiles[r][c].getColor() == Color.RED && this.tilePieceArrayList(r, c).get(0) instanceof King) {
-                                this.checkPiece = this.tilePieceArrayList(row, column).get(0);
-                                this.checkedKingColor = this.tilePieceArrayList(r, c).get(0).getColor();
+                                if (!hasChecked) {
+                                    this.checkPiece = this.tilePieceArrayList(row, column).get(0);
+                                    System.out.println(this.checkPiece);
+                                    this.checkedKingColor = this.tilePieceArrayList(r, c).get(0).getColor();
+                                }
                                 return true;
                             }
                         }
@@ -414,7 +421,7 @@ public class Game {
                         // simulate the move
                         this.tilePieceArrayList(row, column).get(0).simulateMove(row, column, coordinate.getRow(), coordinate.getC());
                         // if it takes the opponent out of check, it is not a checkmate
-                        if (!this.underCheck()) {
+                        if (!this.underCheck(true)) {
                             this.clearBoard();
                             this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).reverseMove(row, column, coordinate.getRow(), coordinate.getC(), this.tilePieceArrayList(coordinate.getRow(), coordinate.getC()).get(0).getChessPieceEaten(), null, 0, 0, this.playerColor, false);
                             return false;
@@ -443,14 +450,6 @@ public class Game {
                 if (!(this.tilePieceArrayList(7, 4).get(0) instanceof King)) {
                     return false;
                 }
-                // if the King has moved
-                if (this.whiteKing.getHasMoved()) {
-                    return false;
-                }
-                // if the Rook has moved
-                if (this.whiteRook1.getHasMoved()) {
-                    return false;
-                }
                 // if there is a ChessPiece between the King and the Rook
                 if (this.tilePieceArrayList(7, 1).size() != 0 || this.tilePieceArrayList(7, 2).size() != 0 || this.tilePieceArrayList(7, 3).size() != 0) {
                     return false;
@@ -459,18 +458,18 @@ public class Game {
                 if (this.tilePieceArrayList(7, 0).size() == 0 || !(this.tilePieceArrayList(7, 0).get(0).equals(this.whiteRook1))) {
                     return false;
                 }
+                // if the King has moved
+                if (this.whiteKing.getHasMoved()) {
+                    return false;
+                }
+                // if the Rook has moved
+                if (this.whiteRook1.getHasMoved()) {
+                    return false;
+                }
             }
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 // if the King isn't in the correct position
                 if (!(this.tilePieceArrayList(7, 3).get(0) instanceof King)) {
-                    return false;
-                }
-                // if the King has moved
-                if (this.blackKing.getHasMoved()) {
-                    return false;
-                }
-                // if the Rook has moved
-                if (this.blackRook1.getHasMoved()) {
                     return false;
                 }
                 // if there is a ChessPiece between the King and the Rook
@@ -479,6 +478,14 @@ public class Game {
                 }
                 // if there isn't a Rook in the right position
                 if (this.tilePieceArrayList(7, 0).size() == 0 || !(this.tilePieceArrayList(7, 0).get(0).equals(this.blackRook1))) {
+                    return false;
+                }
+                // if the King has moved
+                if (this.blackKing.getHasMoved()) {
+                    return false;
+                }
+                // if the Rook has moved
+                if (this.blackRook1.getHasMoved()) {
                     return false;
                 }
             }
@@ -502,14 +509,6 @@ public class Game {
                 if (!(this.tilePieceArrayList(7, 4).get(0) instanceof King)) {
                     return false;
                 }
-                // if the King has moved
-                if (this.whiteKing.getHasMoved()) {
-                    return false;
-                }
-                // if the Rook has moved
-                if (this.whiteRook2.getHasMoved()) {
-                    return false;
-                }
                 // if there is a ChessPiece between the King and the Rook
                 if (this.tilePieceArrayList(7, 5).size() != 0 || this.tilePieceArrayList(7, 6).size() != 0) {
                     return false;
@@ -518,18 +517,18 @@ public class Game {
                 if (this.tilePieceArrayList(7, 7).size() == 0 || !(this.tilePieceArrayList(7, 7).get(0).equals(this.whiteRook2))) {
                     return false;
                 }
+                // if the King has moved
+                if (this.whiteKing.getHasMoved()) {
+                    return false;
+                }
+                // if the Rook has moved
+                if (this.whiteRook2.getHasMoved()) {
+                    return false;
+                }
             }
             if (this.playerColor.convertPlayerColorToColor() == Color.BLACK) {
                 // if the King isn't in the correct position
                 if (!(this.tilePieceArrayList(7, 3).get(0) instanceof King)) {
-                    return false;
-                }
-                // if the King has moved
-                if (this.blackKing.getHasMoved()) {
-                    return false;
-                }
-                // if the Rook has moved
-                if (this.blackRook2.getHasMoved()) {
                     return false;
                 }
                 // if there is a ChessPiece between the King and the Rook
@@ -538,6 +537,14 @@ public class Game {
                 }
                 // if there isn't a Rook in the right position
                 if (this.tilePieceArrayList(7, 7).size() == 0 || !(this.tilePieceArrayList(7, 7).get(0).equals(this.blackRook2))) {
+                    return false;
+                }
+                // if the King has moved
+                if (this.blackKing.getHasMoved()) {
+                    return false;
+                }
+                // if the Rook has moved
+                if (this.blackRook2.getHasMoved()) {
                     return false;
                 }
             }
@@ -756,12 +763,18 @@ public class Game {
         this.setUpMainTimeLine();
     }
 
+    /**
+     * set up countdown timeline
+     */
     private void setUpCountDownTimeLine() {
         KeyFrame kf = new KeyFrame(Duration.seconds(1), (ActionEvent timeline) -> this.countDownTimeLineActions());
         this.countDownTimeLine = new Timeline(kf);
         this.countDownTimeLine.setCycleCount(Animation.INDEFINITE);
     }
 
+    /**
+     * countdown
+     */
     private void countDownTimeLineActions() {
         if (this.playerColor.convertPlayerColorToColor() == Color.WHITE) {
             this.whiteCountDown();
@@ -770,6 +783,9 @@ public class Game {
         }
     }
 
+    /**
+     * white countdown
+     */
     private void whiteCountDown() {
         if (this.whiteSecond == 0) {
             this.whiteMinute--;
@@ -782,6 +798,9 @@ public class Game {
         whiteTimerLabel.setText(whiteTimer.toString());
     }
 
+    /**
+     * black countdown
+     */
     private void blackCountDown() {
         if (this.blackSecond == 0) {
             this.blackMinute--;

@@ -58,8 +58,10 @@ public class ChessPiece {
         }
     }
 
-    public void setCheckPieceEaten(int clickRow, int clickColumn) {
-        // if there is a ChessPiece in the pieceArrayList, you set the variable this.chessPieceEaten to that ChessPiece, else it is null
+    /**
+     * if there is a ChessPiece in the pieceArrayList, set the variable this.chessPieceEaten to that ChessPiece, else it is null
+     */
+    public void setChessPieceEaten(int clickRow, int clickColumn) {
         if (this.getPieceArrayList(clickRow, clickColumn).size() != 0) {
             this.chessPieceEaten = this.getPieceArrayList(clickRow, clickColumn).get(0);
         } else {
@@ -71,18 +73,10 @@ public class ChessPiece {
      * moves the ChessPiece
      */
     public void move(int clickRow, int clickColumn) {
+        // get the tileColor
         Color tileColor = this.game.getTiles()[clickRow][clickColumn].getColor();
-        // if the tileColor is green or red
-        if (tileColor == Color.GREEN || tileColor == Color.RED) {
-            // set the ChessPiece to the clickRow and clickColumn
-            this.setRow(clickRow);
-            this.setColumn(clickColumn);
-            // you clear the pieceArrayList and add the new ChessPiece into the pieceArrayList
-            this.getPieceArrayList(clickRow, clickColumn).clear();
-            this.getPieceArrayList(clickRow, clickColumn).add(this);
-        }
-        // if it is a King and the King hasn't moved yet, you can castle
-        if (this instanceof King && !this.hasMoved) {
+        // if it is a King, the King hasn't moved yet, and it could either castle left or right, you can castle
+        if (this instanceof King && !this.hasMoved && (this.game.getCanLeftCastle() || this.game.getCanRightCastle())) {
             // right Rook castle for white
             if (this.game.getPlayerColor() == Color.WHITE && clickRow == 7 && clickColumn == 6) {
                 this.rightRookCastle();
@@ -100,6 +94,16 @@ public class ChessPiece {
                 this.leftRookCastle();
             }
         }
+        // if the tileColor is green or red
+        if (tileColor == Color.GREEN || tileColor == Color.RED) {
+            // set the ChessPiece to the clickRow and clickColumn
+            this.setRow(clickRow);
+            this.setColumn(clickColumn);
+            // you clear the pieceArrayList and add the new ChessPiece into the pieceArrayList
+            this.getPieceArrayList(clickRow, clickColumn).clear();
+            this.getPieceArrayList(clickRow, clickColumn).add(this);
+        }
+        // set hasMoved to true
         this.hasMoved = true;
     }
 
