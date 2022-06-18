@@ -397,7 +397,6 @@ public class Game {
                             if (this.tiles[r][c].getColor() == Color.RED && this.tilePieceArrayList(r, c).get(0) instanceof King) {
                                 if (!hasChecked) {
                                     this.checkPiece = this.tilePieceArrayList(row, column).get(0);
-                                    System.out.println(this.checkPiece);
                                     this.checkedKingColor = this.tilePieceArrayList(r, c).get(0).getColor();
                                 }
                                 return true;
