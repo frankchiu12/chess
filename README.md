@@ -14,7 +14,6 @@ In terms of functionality:
 9. The default timer is 15 minutes. If any player's timer hits 0, the opponent wins.
 10. If there are any questions, the errorMessageLabel on the right panel is helpful.
 
-
 In addition to the buttons:
 1. Pressing "S" restarts the game.
 2. Pressing "Q" quits the game.
